@@ -1,0 +1,9 @@
+.idea
+.idea_modules
+lib_managed
+target
+project/target
+project/boot
+project/project
+tools
+sbt
