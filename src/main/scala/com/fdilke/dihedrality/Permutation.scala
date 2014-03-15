@@ -14,7 +14,7 @@ class Permutation(val values: Seq[Int]) {
   def parity = {
     val array = values.toArray
 
-    var flag = 1;
+    var flag = 1
     for (index <- 0 to array.length-1) {
       if (array(index) != index) {
         var other = index

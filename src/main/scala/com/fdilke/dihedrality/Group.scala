@@ -2,7 +2,7 @@ package com.fdilke.dihedrality
 
 object Group {
   def generate(generators: Permutation*) = {
-    if (generators isEmpty) {
+    if (generators.isEmpty) {
       throw new UnsupportedOperationException("No generators")
     }
 
