@@ -4,6 +4,8 @@
 # Output files
 target/
 project/target/
+project/project/
+project/project/target/
 
 # IDEA project files
 .idea/
