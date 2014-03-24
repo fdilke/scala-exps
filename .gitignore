@@ -1,9 +1,13 @@
+# tools
+sbt
+
 # Class files
 # *.class
 
 # Output files
 target/
 project/target/
+project/boot/
 project/project/
 project/project/target/
 
