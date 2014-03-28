@@ -1,7 +1,6 @@
 package x.y.z
 
 import Element.elem
-import scala.runtime.RichInt
 
 /**
  * Author: fdilke

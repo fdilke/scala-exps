@@ -1,8 +1,5 @@
 package x.y.z
 
-import org.junit.Test
-import org.junit.Assert._
-import scala.collection.mutable.ListBuffer
 
 /**
  * Author: fdilke

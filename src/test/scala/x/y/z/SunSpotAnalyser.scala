@@ -1,7 +1,6 @@
 package x.y.z
 
-import org.junit.{Assert, Test}
-import Assert._
+import org.junit.Test
 
 /**
  * Author: fdilke
