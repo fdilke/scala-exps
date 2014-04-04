@@ -3,7 +3,7 @@ package com.fdilke.dihedrality
 import scala.math.max
 
 object Permutation {
-  def identity(numSymbols : Int) = new Permutation(Seq.tabulate(numSymbols) { x : Int => x })
+  val identity = new Permutation(Seq[Int]())
 
   def apply(values:Int*) = new Permutation(canonical(values:_*))
 
@@ -57,5 +57,5 @@ class Permutation(val values: Seq[Int]) {
 
   override def toString = s"Permutation(${values.mkString(",")})"
 
-  def degree = values.length
+  val degree = values.length
 }
