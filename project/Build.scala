@@ -10,7 +10,7 @@ object Build extends Build {
     parallelExecution := false
   )
 
-  val root = Project("ml-bulk-extractor", file("."))
+  val root = Project("scala-exp", file("."))
     .settings(buildSettings: _*)
 
 }
