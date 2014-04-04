@@ -1,15 +1,31 @@
 package com.fdilke.dihedrality
 
+import scala.math.max
+
 object Permutation {
   def identity(numSymbols : Int) = new Permutation(Seq.tabulate(numSymbols) { x : Int => x })
 
-  def apply(values:Int*) = new Permutation(values)
+  def apply(values:Int*) = new Permutation(canonical(values:_*))
+
+  def canonical(values:Int*) = values slice(0, essentialDegree(values:_*))
+
+  def essentialDegree(values:Int*) =
+    (0 until values.length reverse) find {
+      n => values(n) != n
+    } match {
+      case None => 0
+      case Some(n) => n + 1
+    }
 }
 
 class Permutation(val values: Seq[Int]) {
-  def apply(that : Permutation) = new Permutation(that.values map { values(_) })
+  def apply(that : Permutation) : Permutation = {
+    val maxDegree = max(degree, that.degree)
+    val composite = { n : Int => apply(that.apply(n))}
+    new Permutation(0 until maxDegree map composite)
+  }
 
-//  def at(index: Int) = values(index)
+  def apply(n : Int) : Int = if (n < degree) values(n) else n
 
   def parity = {
     val array = values.toArray
@@ -40,4 +56,6 @@ class Permutation(val values: Seq[Int]) {
   }
 
   override def toString = s"Permutation(${values.mkString(",")})"
+
+  def degree = values.length
 }
