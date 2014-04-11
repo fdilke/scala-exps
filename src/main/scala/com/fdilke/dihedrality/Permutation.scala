@@ -22,7 +22,7 @@ class Permutation(val values: Seq[Int]) {
   def apply(that : Permutation) : Permutation = {
     val maxDegree = max(degree, that.degree)
     val composite = { n : Int => apply(that.apply(n))}
-    new Permutation(0 until maxDegree map composite)
+    Permutation(0 until maxDegree map composite:_*)
   }
 
   def apply(n : Int) : Int = if (n < degree) values(n) else n

@@ -4,10 +4,10 @@ import org.scalatest.{ShouldMatchers, FunSpec}
 
 class GroupTest extends FunSpec with ShouldMatchers {
   describe("Generating groups") {
-    it("should not work with the empty set as a basis") {
-      intercept[UnsupportedOperationException] {
-        Group.generate()
-      }
+    it("should work even with the empty set as a basis") {
+      Group.generate().set should be (
+        Set(Permutation.identity)
+      )
     }
 
     it("should give cyclic groups when started with a single element") {

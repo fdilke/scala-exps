@@ -35,12 +35,16 @@ class PermutationTest extends FunSpec with ShouldMatchers {
     }
 
     it("should have equality semantics depending only on elements shifted") {
+
+      Permutation(0,1,2) should be(Permutation.identity)
+
       val a = Permutation(1,0)
       val b = Permutation(1,0,2)
       val c = Permutation(2,1,0)
 
       a should be(a)
       a should be(b)
+      a(a) should be (Permutation.identity)
       a should not be c
 
       a.degree should be(2)

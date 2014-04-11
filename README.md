@@ -1,4 +1,6 @@
-scala-exps
-==========
+# scala-exps (Scala experiments)
 
-Scala experiments
+## things to experiment with:
+
+HyperSQL / Slick
+
