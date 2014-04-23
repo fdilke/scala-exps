@@ -2,6 +2,7 @@ package com.fdilke.scala
 
 import org.junit.Test
 import org.junit.Assert._
+import Value._
 
 /**
  * Author: fdilke
