@@ -1,4 +1,4 @@
-package x.y.z
+package com.fdilke.scala
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.FunSuite

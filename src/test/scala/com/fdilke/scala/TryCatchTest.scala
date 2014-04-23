@@ -1,4 +1,4 @@
-package x.y.z
+package com.fdilke.scala
 
 import org.scalatest.{FunSpec, ShouldMatchers}
 import scala.util.{Failure, Success, Try}

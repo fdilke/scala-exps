@@ -1,4 +1,4 @@
-package x.y.z
+package com.fdilke.scala
 
 import org.junit._
 import Assert._

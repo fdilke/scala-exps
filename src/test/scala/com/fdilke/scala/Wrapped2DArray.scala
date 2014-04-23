@@ -1,5 +1,4 @@
-package x.y.z
-
+package com.fdilke.scala
 
 /**
  * Author: fdilke

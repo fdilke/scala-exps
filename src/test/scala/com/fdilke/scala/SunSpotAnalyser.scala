@@ -1,6 +1,5 @@
-package x.y.z
+package com.fdilke.scala
 
-import org.junit.Test
 
 /**
  * Author: fdilke
