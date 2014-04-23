@@ -1,12 +1,7 @@
-# scala-exps (Scala experiments)
-
-## permutations
-
-Be able to multiply permutations, manipulate them, determine parity
+# Things to add
 
 ## groups
 
-Generate a group from a bunch of permutations
 ? Calculate all the subgroups
 ? Arrange them in a structure so we can generate a sequence of upward and downward 'segues'
 ? Precalculate coset representatives
@@ -18,4 +13,10 @@ Generate a group from a bunch of permutations
 ## Databases
 
 HyperSQL / Slick
+
+## Monads
+
+Experiments with classes that support map, flatMap, filter
+Construct the double exponential?
+
 
