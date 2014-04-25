@@ -1,12 +1,12 @@
 package com.fdilke.scala
 
-import org.scalatest.{ShouldMatchers, FunSpec}
-import org.junit.Assert
-import Assert._
+import org.scalatest.FunSpec
+import org.scalatest.matchers.ShouldMatchers
+import ShouldMatchers._
 
 // User: Felix Date: 23/04/2014 Time: 21:20
 
-class MonadicForTests extends FunSpec with ShouldMatchers {
+class MonadicForTests extends FunSpec {
   describe("The built-in monadic logic of 'for'") {
     it("should express 'map' implicitly") {
       class Foo {
@@ -14,7 +14,7 @@ class MonadicForTests extends FunSpec with ShouldMatchers {
       }
       val foo = new Foo
       val bar = for (x <- foo) yield x
-      assertTrue(bar.isInstanceOf[Foo])
+      bar shouldBe foo
     }
 
     it("can adapt to map returning different types") {
@@ -23,7 +23,7 @@ class MonadicForTests extends FunSpec with ShouldMatchers {
       }
       val foo = new Foo
       val bar = for (x <- foo) yield x
-      assertTrue(bar.isInstanceOf[String])
+      bar shouldBe ""
     }
 
     it("can apply filters") {
@@ -33,7 +33,7 @@ class MonadicForTests extends FunSpec with ShouldMatchers {
       }
       val foo = new Foo
       val bar = for (x <- foo ; if x > 7) yield x
-      assertTrue(bar.isInstanceOf[String])
+      bar shouldBe ""
     }
   }
 }

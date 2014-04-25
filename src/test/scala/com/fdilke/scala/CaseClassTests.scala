@@ -1,9 +1,12 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
+import org.scalatest.{ShouldMatchers, FunSuite}
 import org.scalamock.scalatest.MockFactory
 import org.junit.Assert
 import Assert._
+import org.scalatest.matchers.ShouldMatchers
+import ShouldMatchers._
+import TypeMatching._
 
 object Expression {
   implicit def numberAsExpression(x : Double) = Number(x)
@@ -48,15 +51,14 @@ class CaseClassTests extends FunSuite with MockFactory {
     assert(x.isInstanceOf[Var])
 
     val binOp = BinaryOp("+", Number(1.0), Var("x"))
-    assert(binOp.isInstanceOf[Expression])
+    binOp should be ( anInstanceOf[Expression] )
   }
 
   test("using fields") {
-    val x = Var("x")
-    assert(x.name === "x")
+    Var("x") should have ('name ("x"))
 
     val binOp = BinaryOp("+", Number(1.0), Var("x"))
-    assert(binOp.operator === "+")
+    binOp.operator should be ("+")
   }
 
   test("using toString") {
@@ -64,7 +66,7 @@ class CaseClassTests extends FunSuite with MockFactory {
     assert(x.toString === "Var(x)")
 
     val binOp = BinaryOp("+", Number(1.0), Var("x"))
-    assert(binOp.toString === "BinaryOp(+,Number(1.0),Var(x))")
+    binOp.toString should be ("BinaryOp(+,Number(1.0),Var(x))")
   }
 
   test("equality") {
@@ -74,68 +76,58 @@ class CaseClassTests extends FunSuite with MockFactory {
     assert(x === x2)
     assertFalse(x == y)
 
-    assert(BinaryOp("+", x, Number(1.0)) === BinaryOp("+", x2, Number(1.0)))
-    assertFalse(BinaryOp("-", x, Number(1.0)) == BinaryOp("+", y, Number(1.0)))
+    BinaryOp("+", x, Number(1.0)) shouldBe BinaryOp("+", x2, Number(1.0))
+    BinaryOp("-", x, Number(1.0)) should not be ( BinaryOp("+", y, Number(1.0)))
   }
 
   test("simplifying expressions with operators") {
     val x = Var("x")
 
-    // --x = x
-    assert(x === -(-x))
+    -(-x) shouldBe x
 
-    // x * 0 = 0
-    assert(Number(0) === x * 0)
+    (x * 0) shouldBe Number(0)
+    (0 * x) shouldBe Number(0)
 
-    // 0 * x = 0
-    assert(Number(0) === 0 * x)
+    (x + 0) shouldBe x
+    (0 + x) shouldBe x
 
-    // x + 0 = x
-    assert(x === x + 0)
-
-    // 0 + x = x
-    assert(x === 0 + x)
-
-    // x * 1 = x
-    assert(x === x * 1)
-
-    // 1 * x = x
-    assert(x === 1 * x)
+    (x * 1) shouldBe x
+    (1 * x) shouldBe x
   }
 
   test("compound simplifications") {
     val x = Var("x")
 
-    assert(x == -(-(x + 0)))
-    assert(UnaryOp("abs", x) == UnaryOp("abs", UnaryOp("-", UnaryOp("-", x + 0))).simplify)
+    -(-(x + 0)) shouldBe x
+    UnaryOp("abs", UnaryOp("-", UnaryOp("-", x + 0))).simplify shouldBe UnaryOp("abs", x)
 
-    assert(x === 1 * (0 + x))
-    assert(x === 1 * (x + 0))
-    assert(x === 0 + (x * 1))
-    assert(1 + x === 0 + ((1 + x) * 1))
-    assert(1 + x === 1 + BinaryOp("+", 0, x * 1))
+    1 * (0 + x) shouldBe x
+    1 * (x + 0) shouldBe x
+    0 + (x * 1) shouldBe x
+    0 + ((1 + x) * 1) shouldBe 1 + x
+    1 + BinaryOp("+", 0, x * 1) shouldBe 1 + x
   }
 
   test("description") {
-    assert(Number(3).describe === "a number")
-    assert(Var("x").describe === "a variable")
-    assert("a variable + a number" === (Var("x") + 1).describe)
-    assert("abs(a number)" === UnaryOp("abs", 3).describe)
+    Number(3).describe shouldBe "a number"
+    Var("x").describe shouldBe "a variable"
+    (Var("x") + 1).describe shouldBe "a variable + a number"
+    UnaryOp("abs", 3).describe shouldBe "abs(a number)"
   }
 
   test("use in defining vals/vars") {
     val x = Var("x")
     val Var(xName) = x
-    assert(xName === "x")
+    xName shouldBe "x"
   }
 
   test("use of option") {
     val capitals = Map("France" -> "Paris", "Japan" -> "Tokyo", "UK" -> "London")
     val beijing : Option[String]= capitals.get("China")
-    assert("N/A" === (beijing match {
+    (beijing match {
       case Some(x : String) => x
       case None => "N/A"
-    }))
+    }) shouldBe "N/A"
   }
 
   test("case sequences as function literals") {
@@ -149,15 +141,15 @@ class CaseClassTests extends FunSuite with MockFactory {
       case Number(num) => num toString()
     }
 
-    assert(output === List("3.0", "x", "[a variable + a number * a number]", "-[a number * a variable]"))
+    output shouldBe List("3.0", "x", "[a variable + a number * a number]", "-[a number * a variable]")
   }
 
   test("case sequences as function literals II") {
     val x = Var("x")
 
-    assert(1 == (List[Expression](3, x, (x+1)*5, -(7*x), (x+1)*(2*x)) count {
+    (List[Expression](3, x, (x+1)*5, -(7*x), (x+1)*(2*x)) count {
       case BinaryOp(_, left : BinaryOp, right : BinaryOp) => true
       case _ => false
-    }))
+    }) shouldBe 1
   }
 }
