@@ -1,6 +1,6 @@
 package com.fdilke.bewl.fsets
 
-import com.fdilke.bewl.{ToposArrow, ToposDot, Topos}
+import com.fdilke.bewl.{ProductDiagram, ToposArrow, ToposDot, Topos}
 
 class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSetsArrow] {
   override def identity: FiniteSetsArrow = new FiniteSetsArrow(
@@ -55,7 +55,12 @@ object FiniteSetsArrow {
     new FiniteSetsArrow(source, target, Map(elements:_*))
 }
 
+class FiniteSetsProductDiagram extends ProductDiagram[FiniteSetsDot, FiniteSetsArrow] {
+
+}
 
 object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
-
+  override def product(dots: FiniteSetsDot*) = {
+    new FiniteSetsProductDiagram
+  }
 }

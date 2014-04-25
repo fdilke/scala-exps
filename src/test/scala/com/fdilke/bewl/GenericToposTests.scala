@@ -1,11 +1,39 @@
 package com.fdilke.bewl
 
 import org.scalatest._
+import org.scalatest.matchers.ShouldMatchers
+import ShouldMatchers._
 
 trait ToposFixtures[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
   val foo : DOT
   val bar : DOT
+  val baz : DOT
+
   val foo2bar : ARROW
+  val foo2baz : ARROW
+}
+
+abstract class ToposFixtureSanityTests[
+DOT <: ToposDot[DOT, ARROW],
+ARROW <: ToposArrow[DOT, ARROW]
+](
+  fixtures: ToposFixtures[DOT, ARROW]
+) extends FunSpec {
+  import fixtures._
+
+  describe(s"The fixtures ${fixtures.getClass.getSimpleName}") {
+    it("should have distinct objects") {
+      Set(foo, bar, baz) should have size 3
+    }
+
+    it("should have arrows whose sources and targets match their names") {
+      foo2bar.source shouldBe foo
+      foo2bar.target shouldBe bar
+
+      foo2baz.source shouldBe foo
+      foo2baz.target shouldBe baz
+    }
+  }
 }
 
 abstract class GenericToposTests[
@@ -14,7 +42,7 @@ abstract class GenericToposTests[
   ](
   topos: Topos[DOT, ARROW],
   fixtures: ToposFixtures[DOT, ARROW]
-  ) extends FunSpec with ShouldMatchers {
+  ) extends ToposFixtureSanityTests(fixtures) {
 
   import fixtures._
 
@@ -25,7 +53,10 @@ abstract class GenericToposTests[
     }
 
     it("should be able to construct product diagrams") {
+      val barXbaz = topos.product(bar, baz)
+      barXbaz.isInstanceOf[ProductDiagram[DOT, ARROW]] should be(true)
 
+//      barXbaz.multiply(foo2bar, foo2baz)
     }
   }
 }

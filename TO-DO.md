@@ -1,5 +1,9 @@
 # Things to add
 
+## cleaning up tests
+
+Get rid of asserts. Import should-matchers everywhere
+
 ## groups
 
 ? Calculate all the subgroups

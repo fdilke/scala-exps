@@ -6,7 +6,7 @@ import org.junit.Assert
 import Assert._
 import org.scalatest.matchers.ShouldMatchers
 import ShouldMatchers._
-import TypeMatching._
+import FelixMatchers._
 
 object Expression {
   implicit def numberAsExpression(x : Double) = Number(x)
