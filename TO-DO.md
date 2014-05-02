@@ -4,6 +4,10 @@
 
 Get rid of asserts. Import should-matchers everywhere
 
+## Scala
+Work through Odersky's "Scala levels"
+http://www.scala-lang.org/old/node/8610.html
+
 ## groups
 
 ? Calculate all the subgroups
@@ -18,9 +22,19 @@ Get rid of asserts. Import should-matchers everywhere
 
 HyperSQL / Slick
 
+## Bewl
+Add more 'generic topos' tests
+Add signatures and algebras over them
+Add algebraic laws (so we can define groups, rings, commutativity etc)
+Add constructions like: centre of a group, automorphisms of an algebra
+
 ## Monads
 
 Experiments with classes that support map, flatMap, filter
-Construct the double exponential?
+Set up a machinery of operators, double exponentials, etc to express:
+- given a set and a bunch of operators on it, can construct the double-exp monad
+- this is a monad (has left/right identity, associativity)
+Bonus points for:
+- given a monad, express it canonically as a double-exp one.
 
 

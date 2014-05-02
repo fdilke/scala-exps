@@ -10,6 +10,4 @@ object FiniteSetsFixtures extends ToposFixtures[FiniteSetsDot, FiniteSetsArrow] 
   override val foo2baz: FiniteSetsArrow = FiniteSetsArrow.from(foo, baz, "a"->1, "b"->3)
 }
 
-class FiniteSetsTest extends GenericToposTests(FiniteSets, FiniteSetsFixtures) {
-
-}
+class FiniteSetsTest extends GenericToposTests(FiniteSets, FiniteSetsFixtures)

@@ -52,11 +52,15 @@ abstract class GenericToposTests[
       bar.identity(foo2bar) should be(foo2bar)
     }
 
-    it("should be able to construct product diagrams") {
-      val barXbaz = topos.product(bar, baz)
-      barXbaz.isInstanceOf[ProductDiagram[DOT, ARROW]] should be(true)
+    it("should be able to construct biproduct diagrams") {
+      val barXbaz = topos.biproduct(bar, baz)
 
-//      barXbaz.multiply(foo2bar, foo2baz)
+      val productArrow = barXbaz.multiply(foo2bar, foo2baz)
+      productArrow.source shouldBe foo
+      productArrow.target shouldBe barXbaz.product
+
+      barXbaz.leftProjection(productArrow) shouldBe foo2bar
+      barXbaz.rightProjection(productArrow) shouldBe foo2baz
     }
   }
 }
