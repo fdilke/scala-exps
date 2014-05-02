@@ -6,7 +6,7 @@ import ShouldMatchers._
 
 // User: Felix Date: 23/04/2014 Time: 21:20
 
-class MonadicForTests extends FunSpec {
+class SequenceComprehensionTests extends FunSpec {
   describe("The built-in monadic logic of 'for'") {
     it("should express 'map' implicitly") {
       class Foo {
@@ -34,6 +34,19 @@ class MonadicForTests extends FunSpec {
       val foo = new Foo
       val bar = for (x <- foo ; if x > 7) yield x
       bar shouldBe ""
+    }
+
+    it("can't choose between two map functions!") {
+      class Foo {
+        def map(f: Int => Int) = ""
+        def map(f: String => String) = 7
+        def filter(f: Int => Boolean) = this
+      }
+      val bar = for (x : Int <- new Foo) yield x
+      bar should be("")
+
+// But can't go:
+//      (for (x : String <- new Foo) yield x) should be(7)
     }
   }
 }
