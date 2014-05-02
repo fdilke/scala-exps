@@ -3,12 +3,12 @@ package com.fdilke.bewl.fsets
 import org.scalatest.{FunSpec, ShouldMatchers}
 
 class FiniteSetsArrowTest extends FunSpec with ShouldMatchers {
-  val dot = FiniteSetsDot.from("a", "b")
-  val dotBig = FiniteSetsDot.from("a", "b", "c")
-  val dotSmall = FiniteSetsDot.from("a")
-  val doodah = FiniteSetsDot.from(1,2,3)
-  val dash = FiniteSetsDot.from("X", "Y", "Z")
-  val dashBig = FiniteSetsDot.from("X", "Y", "Z", "W")
+  val dot = FiniteSetsDot("a", "b")
+  val dotBig = FiniteSetsDot("a", "b", "c")
+  val dotSmall = FiniteSetsDot("a")
+  val doodah = FiniteSetsDot(1,2,3)
+  val dash = FiniteSetsDot("X", "Y", "Z")
+  val dashBig = FiniteSetsDot("X", "Y", "Z", "W")
   val dot2dash = FiniteSetsArrow(dot, dash, "a"->"X", "b"->"Y")
   val dot2dashBadValues = FiniteSetsArrow(dot, dash, "a"->true, "b"->FiniteSets)
   val dot2dash_2 = FiniteSetsArrow(dot, dash, "a"->"X", "b"->"Y")

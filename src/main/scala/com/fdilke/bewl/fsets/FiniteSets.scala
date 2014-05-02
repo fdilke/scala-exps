@@ -1,6 +1,7 @@
 package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
+import FiniteSetsArrow._
 
 class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSetsArrow] {
   override def identity: FiniteSetsArrow = new FiniteSetsArrow(
@@ -12,14 +13,14 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
     new BiproductDiagram[FiniteSetsDot, FiniteSetsArrow] {
       override val product = new FiniteSetsDot(for(x <- set; y <- that.set) yield(x, y))
 
-      override val leftProjection = FiniteSetsArrow.fromFunction(product, FiniteSetsDot.this,
+      override val leftProjection = fromFunction(product, FiniteSetsDot.this,
         { case (x,y) => x }
       )
-      override val rightProjection = FiniteSetsArrow.fromFunction(product, that,
+      override val rightProjection = fromFunction(product, that,
         { case (x,y) => y }
       )
       override def multiply(leftArrow: FiniteSetsArrow, rightArrow: FiniteSetsArrow): FiniteSetsArrow =
-        FiniteSetsArrow.fromFunction(leftArrow.source, product,
+        fromFunction(leftArrow.source, product,
         { case x => (leftArrow.map(x), rightArrow.map(x)) }
       )
     }
@@ -30,10 +31,12 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
   }
 
   override def hashCode(): Int = set.hashCode()
+
+  override def toConstant = fromFunction(this, FiniteSets.I, (_ => "*"))
 }
 
 object FiniteSetsDot {
-  def from[T](elements: T*) = new FiniteSetsDot(elements.toSet)
+  def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
 }
 
 class FiniteSetsArrow(
@@ -78,4 +81,5 @@ object FiniteSetsArrow {
 }
 
 object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
+  val I = FiniteSetsDot("*")
 }

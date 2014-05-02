@@ -45,11 +45,12 @@ abstract class GenericToposTests[
   ) extends ToposFixtureSanityTests(fixtures) {
 
   import fixtures._
+  import topos._
 
   describe(s"The topos ${topos.getClass.getSimpleName}") {
     it("should have identity arrows which can be composed") {
-      foo2bar(foo.identity) should be(foo2bar)
-      bar.identity(foo2bar) should be(foo2bar)
+      foo2bar(foo.identity) shouldBe foo2bar
+      bar.identity(foo2bar) shouldBe foo2bar
     }
 
     it("should be able to construct biproduct diagrams") {
@@ -61,6 +62,14 @@ abstract class GenericToposTests[
 
       barXbaz.leftProjection(productArrow) shouldBe foo2bar
       barXbaz.rightProjection(productArrow) shouldBe foo2baz
+    }
+
+    it("has a terminator") {
+      val fooToI = foo.toConstant
+      fooToI.source shouldBe foo
+      fooToI.target shouldBe I
+
+      (bar.toConstant)(foo2bar) shouldBe fooToI
     }
   }
 }

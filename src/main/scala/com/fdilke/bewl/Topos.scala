@@ -2,6 +2,7 @@ package com.fdilke.bewl
 
 trait ToposDot[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
   def identity : ARROW
+  def toConstant: ARROW
   def x(that: DOT): BiproductDiagram[DOT, ARROW]
 }
 
@@ -19,5 +20,6 @@ trait BiproductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARR
 }
 
 trait Topos[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
+  val I: DOT
 }
 
