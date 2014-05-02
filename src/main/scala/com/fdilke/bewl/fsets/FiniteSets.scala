@@ -78,5 +78,4 @@ object FiniteSetsArrow {
 }
 
 object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
-  override def biproduct(left: FiniteSetsDot, right: FiniteSetsDot) = left x right
 }

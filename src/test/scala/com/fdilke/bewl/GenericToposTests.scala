@@ -53,14 +53,11 @@ abstract class GenericToposTests[
     }
 
     it("should be able to construct biproduct diagrams") {
-      val barXbaz = topos.biproduct(bar, baz)
+      val barXbaz = bar x baz
 
       val productArrow = barXbaz.multiply(foo2bar, foo2baz)
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXbaz.product
-
-      println("productArrow = " + productArrow)
-      println(s"barXbaz.leftProjection = ${barXbaz.leftProjection}")
 
       barXbaz.leftProjection(productArrow) shouldBe foo2bar
       barXbaz.rightProjection(productArrow) shouldBe foo2baz
