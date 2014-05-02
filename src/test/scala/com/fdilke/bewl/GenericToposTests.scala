@@ -59,6 +59,9 @@ abstract class GenericToposTests[
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXbaz.product
 
+      println("productArrow = " + productArrow)
+      println(s"barXbaz.leftProjection = ${barXbaz.leftProjection}")
+
       barXbaz.leftProjection(productArrow) shouldBe foo2bar
       barXbaz.rightProjection(productArrow) shouldBe foo2baz
     }

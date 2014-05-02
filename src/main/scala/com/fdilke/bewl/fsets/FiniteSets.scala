@@ -12,19 +12,17 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
     new BiproductDiagram[FiniteSetsDot, FiniteSetsArrow] {
       override val product = new FiniteSetsDot(for(x <- set; y <- that.set) yield(x, y))
 
-      override val leftProjection = new FiniteSetsArrow(product, FiniteSetsDot.this,
-        (for ((x,y)<-product.set) yield ((x, y), x)) toMap
+      override val leftProjection = FiniteSetsArrow.fromFunction(product, FiniteSetsDot.this,
+        { case (x,y) => x }
       )
-      override val rightProjection = new FiniteSetsArrow(product, that,
-        (for ((x,y)<-product.set) yield ((x, y), y)) toMap
+      override val rightProjection = FiniteSetsArrow.fromFunction(product, that,
+        { case (x,y) => y }
       )
       override def multiply(leftArrow: FiniteSetsArrow, rightArrow: FiniteSetsArrow): FiniteSetsArrow =
-        new FiniteSetsArrow(leftArrow.source, product,
-          (for (x<-leftArrow.source.set) yield (x, (leftArrow.map(x), rightArrow.map(x)))) toMap
+        FiniteSetsArrow.fromFunction(leftArrow.source, product,
+        { case x => (leftArrow.map(x), rightArrow.map(x)) }
       )
     }
-
-  // TODO: add a helper so that we don't need the toMap here (or the brackets)
 
   override def equals(other: Any): Boolean = other match {
     case that: FiniteSetsDot =>  set == that.set
@@ -72,8 +70,11 @@ class FiniteSetsArrow(
 }
 
 object FiniteSetsArrow {
-  def from(source: FiniteSetsDot, target: FiniteSetsDot, elements: (Any, Any)*) =
+  def apply(source: FiniteSetsDot, target: FiniteSetsDot, elements: (Any, Any)*) =
     new FiniteSetsArrow(source, target, Map(elements:_*))
+
+  def fromFunction(source: FiniteSetsDot, target: FiniteSetsDot, f:Any=>Any) =
+    new FiniteSetsArrow(source, target, (for(x<-source.set) yield (x, f(x))).toMap)
 }
 
 object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
