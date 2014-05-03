@@ -32,7 +32,7 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
 
   override def hashCode(): Int = set.hashCode()
 
-  override def toConstant = fromFunction(this, FiniteSets.I, (_ => "*"))
+  override def toConstant = fromFunction(this, FiniteSets.I, _ => "*")
 }
 
 object FiniteSetsDot {
@@ -52,7 +52,7 @@ class FiniteSetsArrow(
       throw new IllegalArgumentException("Map values not in target")
     }
 
-  override def toString() = s"FiniteSetsArrow(${source.set}, ${target.set}, $map)"
+  override def toString = s"FiniteSetsArrow(${source.set}, ${target.set}, $map)"
 
   override def apply(arrow: FiniteSetsArrow): FiniteSetsArrow =
     if (arrow.target == source) {

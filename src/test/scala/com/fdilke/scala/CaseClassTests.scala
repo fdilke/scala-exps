@@ -77,7 +77,7 @@ class CaseClassTests extends FunSuite with MockFactory {
     assertFalse(x == y)
 
     BinaryOp("+", x, Number(1.0)) shouldBe BinaryOp("+", x2, Number(1.0))
-    BinaryOp("-", x, Number(1.0)) should not be ( BinaryOp("+", y, Number(1.0)))
+    BinaryOp("-", x, Number(1.0)) should not be BinaryOp("+", y, Number(1.0))
   }
 
   test("simplifying expressions with operators") {

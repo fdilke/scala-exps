@@ -69,7 +69,11 @@ abstract class GenericToposTests[
       fooToI.source shouldBe foo
       fooToI.target shouldBe I
 
-      (bar.toConstant)(foo2bar) shouldBe fooToI
+      bar.toConstant(foo2bar) shouldBe fooToI
     }
+
+//    it("has grey hair") {
+//      0 shouldBe 1
+//    }
   }
 }
