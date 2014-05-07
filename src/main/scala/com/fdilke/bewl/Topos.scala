@@ -17,13 +17,6 @@ trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW
   val projections: Seq[ARROW]
   def multiply(arrows: ARROW*): ARROW
 
-  def y() {
-    println(s"self projections = " + self.projections.map( p =>
-      s"[$p]"
-    ).mkString("::;"))
-
-  }
-
   def x(d: DOT) = new ProductDiagram[DOT, ARROW] {
     private val pXd = self.product x d
     override val product = pXd.product
@@ -33,14 +26,14 @@ trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW
     ) :+ pXd.rightProjection
 
     override def multiply(arrows: ARROW*): ARROW =
-      if (arrows.size == projections.size) {
-        pXd.multiply(
-          self.multiply(
-            arrows.slice(0, self.projections.size) : _*
-          ),
-          arrows(self.projections.size)
-        )
-      } else
+      if (arrows.size == projections.size)
+        arrows match {
+          case head :+ tail =>
+            pXd.multiply(
+              self.multiply(head : _*),
+              tail)
+        }
+      else
         throw new IllegalArgumentException(s"{projections.size} arrows required")
     }
 }
