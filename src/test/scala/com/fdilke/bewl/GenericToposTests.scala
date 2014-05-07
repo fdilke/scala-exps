@@ -72,15 +72,15 @@ abstract class GenericToposTests[
       bar.toConstant(foo2bar) shouldBe fooToI
     }
 
-//    it("can chain products") {
-//      val barXfooXbar = bar x foo x baz
-//      val productArrow = barXfooXbaz.multiply(foo2bar, foo.identity, foo2baz)
-//      productArrow.source shouldBe foo
-//      productArrow.target shouldBe barXfooXbaz.product
-//
-//      barXfooXbaz.projections(0)(productArrow) shouldBe foo2bar
-//      barXfooXbaz.projections(1)(productArrow) shouldBe foo.identity
-//      barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
-//    }
+    it("can chain products") {
+      val barXfooXbaz = bar x foo x baz
+      val productArrow = barXfooXbaz.multiply(foo2bar, foo.identity, foo2baz)
+      productArrow.source shouldBe foo
+      productArrow.target shouldBe barXfooXbaz.product
+
+      barXfooXbaz.projections(0)(productArrow) shouldBe foo2bar
+      barXfooXbaz.projections(1)(productArrow) shouldBe foo.identity
+      barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
+    }
   }
 }

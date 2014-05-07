@@ -9,7 +9,7 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
     Map(set.toList.map(x => (x,x)):_*)
   )
 
-  def x(that: FiniteSetsDot) =
+  override def x(that: FiniteSetsDot) =
     new BiproductDiagram[FiniteSetsDot, FiniteSetsArrow] {
       override val product = new FiniteSetsDot(for(x <- set; y <- that.set) yield(x, y))
 
