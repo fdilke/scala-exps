@@ -1,0 +1,8 @@
+<Animals>
+    <Animal type="Cat">
+        <name>Winston</name>
+    </Animal>
+    <Animal type="Dog">
+        <name>Monty</name>
+    </Animal>
+</Animals>
