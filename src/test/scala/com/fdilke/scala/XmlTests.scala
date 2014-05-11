@@ -42,7 +42,7 @@ class XmlTests extends FunSpec {
       <x>{ 3 + 4 }</x>.child(0).text.toInt shouldBe 7
     }
 
-    it("can be used in a 'for' copmrehension to skip whitespace") {
+    it("can be used in a 'for' comprehension to skip whitespace") {
       xml match {
         case <Animals>{animals @ _*}</Animals> =>
           animals should have (
