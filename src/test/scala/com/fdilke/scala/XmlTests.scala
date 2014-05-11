@@ -38,15 +38,23 @@ class XmlTests extends FunSpec {
       fileXml \\ "Animal" should have ('size (2))
     }
 
-    it("can be matched") {
-      xml match {
-        case <Animals>{ animals @ _* }</Animals> =>
-          animals.size shouldBe 5 // see book for trick to exclude whitespace
-      }
-    }
-
     it("can include code") {
       <x>{ 3 + 4 }</x>.child(0).text.toInt shouldBe 7
+    }
+
+    it("can be used in a 'for' copmrehension to skip whitespace") {
+      xml match {
+        case <Animals>{animals @ _*}</Animals> =>
+          animals should have (
+            'class (classOf[NodeBuffer]),
+            'size (5)
+          )
+          ( for(animal @ <Animal>{_*}</Animal> <- animals)
+            yield animal ) should have (
+              'class (classOf[Array[Node]]),
+              'size (2)
+          )
+      }
     }
   }
 }
