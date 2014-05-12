@@ -4,6 +4,7 @@ import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
 import ShouldMatchers._
 import scala.xml._
+import scala.collection.mutable.ArrayBuffer
 
 // User: Felix Date: 08/05/2014 Time: 18:03
 
@@ -51,7 +52,7 @@ class XmlTests extends FunSpec {
           )
           ( for(animal @ <Animal>{_*}</Animal> <- animals)
             yield animal ) should have (
-              'class (classOf[Array[Node]]),
+              'class (classOf[ArrayBuffer[Node]]),
               'size (2)
           )
       }
