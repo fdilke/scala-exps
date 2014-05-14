@@ -1,6 +1,9 @@
 # tools
 sbt
 
+# Local config
+local/
+
 # Class files
 # *.class
 
