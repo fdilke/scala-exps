@@ -22,13 +22,3 @@ class ReadPropertiesTest extends FunSpec {
     }
   }
 }
-
-object Dummy extends App {
-  private val Comment = "\\#.*".r
-  private val Whitespace = "\\s*".r
-
-  "# xx" match {
-    case Comment() => println("Yes")
-    case _ => println("No")
-  }
-}
