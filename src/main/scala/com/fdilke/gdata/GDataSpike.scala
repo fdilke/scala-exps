@@ -13,13 +13,13 @@ import com.google.api.client.util.store.{FileDataStoreFactory, DataStoreFactory}
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import java.net.URL
 import com.google.gdata.data.spreadsheet._
-import com.google.gdata.client.authn.oauth.GoogleOAuthParameters
 import scala.collection.JavaConversions
 import JavaConversions._
 import com.google.gdata.data.PlainTextConstruct
 import scala.Some
 
 // User: Felix Date: 14/05/2014 Time: 18:21
+// See https://developers.google.com/google-apps/spreadsheets/#authorizing_requests_with_oauth_20
 
 trait GDataSpikeCommon {
   protected val oauthConfig = ReadProperties("local/oauth.config")
