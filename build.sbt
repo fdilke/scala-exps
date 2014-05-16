@@ -5,9 +5,18 @@ version := "1.0"
 scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
-  "com.google.apis" % "google-api-services-drive" % "v2-rev123-1.18.0-rc",
-  "com.google.api-client" % "google-api-client" % "1.18.0-rc",
-  "com.google.http-client" % "google-http-client-jackson" % "1.18.0-rc",
+  "com.google.http-client" % "google-http-client" % "1.18.0-rc" withSources() withJavadoc(),
+  "com.google.appengine" % "appengine-testing" % "1.9.4" withSources() withJavadoc(),
+  "com.google.appengine" % "appengine-api" % "1.9.4" withSources() withJavadoc(),
+  "com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
+  "com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
+  "com.google.appengine" % "appengine-api-labs" % "1.9.4" withSources() withJavadoc(),
+  "com.googlecode.objectify" % "objectify" % "4.0b2" withSources() withJavadoc(),
+  "com.google.oauth-client" % "google-oauth-client-servlet" % "1.18.0-rc" withSources() withJavadoc(),
+  "com.google.oauth-client" % "google-oauth-client-appengine" % "1.18.0-rc" withSources() withJavadoc(),
+  "com.google.apis" % "google-api-services-drive" % "v2-rev123-1.18.0-rc" withSources() withJavadoc(),
+  "com.google.api-client" % "google-api-client" % "1.18.0-rc" withSources() withJavadoc(),
+  "com.google.http-client" % "google-http-client-jackson" % "1.18.0-rc" withSources() withJavadoc(),
   "com.google.gdata" % "core" % "1.47.1" withSources() withJavadoc(),
   "junit" % "junit" % "4.11" % "test" withSources() withJavadoc(),
   "org.scalamock" %% "scalamock-scalatest-support" % "3.0.1" % "test" withSources() withJavadoc(),
