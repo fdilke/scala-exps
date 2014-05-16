@@ -13,7 +13,7 @@ import com.google.api.client.util.store.{FileDataStoreFactory, DataStoreFactory}
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import java.net.URL
 import com.google.gdata.data.spreadsheet.{SpreadsheetEntry, SpreadsheetFeed}
-import com.google.gdata.client.authn.oauth.{GoogleOAuthHelper, OAuthHmacSha1Signer, GoogleOAuthParameters}
+import com.google.gdata.client.authn.oauth.GoogleOAuthParameters
 import scala.collection.JavaConversions
 import JavaConversions._
 
@@ -41,16 +41,19 @@ trait GDataSpikeCommon {
       setDataStoreFactory(dataStoreFactory).
       build()
 
-  lazy val feed = {
-    val credential = flow.loadCredential(USER_ID)
-    credential.refreshToken()
-    val accessToken = credential.getAccessToken
+  lazy val feed =
+    Option(flow.loadCredential(USER_ID)) match {
+      case Some(credential) =>
+        credential.refreshToken()
+        val accessToken = credential.getAccessToken
 
-    val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
-    spreadsheetService.setHeader("Authorization", "Bearer " + accessToken);
-    val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-    spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
-  }
+        val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
+        spreadsheetService.setHeader("Authorization", "Bearer " + accessToken)
+        val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
+        spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+      case None =>
+        throw new IllegalArgumentException("No credential found. Create one and add it to the store!")
+    }
 }
 
 // Run this to get a user credential with an access and refresh token, then store it in local/.
@@ -84,7 +87,6 @@ object GDataSpikeSetupCredential extends App with GDataSpikeCommon {
   println("googleCredential =" + credential)
   println(s"access token = ${credential.getAccessToken}")
   println(s"refresh token = ${credential.getRefreshToken}")
-  println(s"flow.credentialStore = ${flow.getCredentialStore}")
   println(s"flow.credentialDataStore = ${flow.getCredentialDataStore}")
   flow.createAndStoreCredential(tokenResponse, USER_ID)
   println("Stored!")
@@ -104,7 +106,7 @@ object GDataSpikeReloadCredential extends App with GDataSpikeCommon {
 }
 
 object ShowSpreadsheets extends App with GDataSpikeCommon {
-  private val sheets = feed.getEntries()
+  private val sheets = feed.getEntries
   println(s"${sheets.size} sheets:")
   sheets.map { sheet =>
     val worksheets = sheet.getWorksheets
