@@ -58,7 +58,7 @@ trait GDataSpikeCommon {
 
   lazy val feed = {
     val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
-    spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+    spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed])
   }
 }
 
@@ -124,20 +124,20 @@ object ShowSpreadsheets extends App with GDataSpikeCommon {
         s"authors=${worksheet.getAuthors.size}"
       )
 
-      val cellFeedUrl = worksheet.getCellFeedUrl();
-      val cellFeed = spreadsheetService.getFeed(cellFeedUrl, classOf[CellFeed]);
+      val cellFeedUrl = worksheet.getCellFeedUrl
+      val cellFeed = spreadsheetService.getFeed(cellFeedUrl, classOf[CellFeed])
 
       // Iterate through each cell, printing its value.
-      cellFeed.getEntries() foreach { cell =>
-        println(s"\t\t\t${cell.getTitle().getPlainText} = ${cell.getCell().getValue}")
+      cellFeed.getEntries foreach { cell =>
+        println(s"\t\t\t${cell.getTitle.getPlainText} = ${cell.getCell.getValue}")
 //          getId().substring(cell.getId().lastIndexOf('/') + 1) + "\t") = cell's address in R1C1 notation
 //          getCell().getInputValue() = formula or text value
 //          getCell().getNumericValue() = empty string if cell's value is not numeric
 //          getCell().getValue() = displayed value (useful if the cell has a formula)
-        if (cell.getTitle().getPlainText().equals("G6")) {
+        if (cell.getTitle.getPlainText.equals("G6")) {
           println("Updating a cell...")
-          cell.changeInputValueLocal("200");
-          cell.update();
+          cell changeInputValueLocal "200"
+          cell.update
           println("Updating a cell...done")
         }
       }
@@ -149,7 +149,7 @@ object ShowSpreadsheets extends App with GDataSpikeCommon {
       worksheet.setTitle(new PlainTextConstruct("AutoAddedSheet"))
       worksheet.setColCount(10)
       worksheet.setRowCount(20)
-      spreadsheetService.insert(sheet.getWorksheetFeedUrl(), worksheet);
+      spreadsheetService.insert(sheet.getWorksheetFeedUrl, worksheet)
       println("Adding new worksheet...done")
     }
   }
