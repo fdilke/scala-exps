@@ -10,6 +10,10 @@ import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeFlow
 import com.google.api.services.drive.DriveScopes
 import com.fdilke.util.ReadProperties
 import com.google.api.client.util.store.{FileDataStoreFactory, DataStoreFactory}
+import com.google.gdata.client.spreadsheet.SpreadsheetService
+import java.net.URL
+import com.google.gdata.data.spreadsheet.{SpreadsheetEntry, SpreadsheetFeed}
+import com.google.gdata.client.authn.oauth.{GoogleOAuthHelper, OAuthHmacSha1Signer, GoogleOAuthParameters}
 
 // User: Felix Date: 14/05/2014 Time: 18:21
 
@@ -75,8 +79,60 @@ object GDataSpike extends App with GDataSpikeCommon {
 
 object GDataSpikeReloadCredential extends App with GDataSpikeCommon {
 
-  def credentialFor(id:String) = flow.loadCredential(USER_ID)
+  Seq("xx", USER_ID) foreach { id =>
+    val credential = flow.loadCredential(id)
 
-  println(s"credentialFor('xx')=${credentialFor("xx")}")
-  println(s"credentialFor($USER_ID)=${credentialFor(USER_ID)}")
+    println(s"Credential for($id) :")
+    if (credential != null) {
+      println(s"access = ${credential.getAccessToken}")
+      println(s"refresh = ${credential.getRefreshToken}")
+    }
+  }
 }
+
+object ShowSpreadsheets extends App with GDataSpikeCommon {
+
+  def duffStuff() {
+    // Authorize the service object for a specific user
+    val oauthParameters = new GoogleOAuthParameters
+    oauthParameters.setOAuthConsumerKey(CLIENT_ID)
+    oauthParameters.setOAuthConsumerSecret(CLIENT_SECRET)
+    oauthParameters.setScope(DriveScopes.DRIVE)
+
+    val signer = new OAuthHmacSha1Signer
+
+    val oauthHelper = new GoogleOAuthHelper(signer);
+    oauthHelper.getUnauthorizedRequestToken(oauthParameters) // needed?
+
+    val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
+    spreadsheetService.setOAuthCredentials(oauthParameters, signer)
+
+    // Define the URL to request.  This should never change.
+    val SPREADSHEET_FEED_URL = new URL(
+      "https://spreadsheets.google.com/feeds/spreadsheets/private/full")
+
+    // Make a request to the API and get all spreadsheets.
+    val feed = spreadsheetService.getFeed(SPREADSHEET_FEED_URL, classOf[SpreadsheetFeed])
+    val spreadsheets = feed.getEntries()
+  }
+
+  val credential = flow.loadCredential(USER_ID)
+  credential.refreshToken()
+  val accessToken = credential.getAccessToken
+
+  val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
+  spreadsheetService.setHeader("Authorization", "Bearer " + accessToken);
+  val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+  val feed = spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+
+  val spreadsheets = feed.getEntries();
+  println("**** List of spreadsheets:")
+  for (i <- 0 to spreadsheets.size) {
+    val entry = spreadsheets.get(i);
+    println("\t" + entry.getTitle().getPlainText());
+  }
+  println("**** List of spreadsheets: end")
+
+}
+
+
