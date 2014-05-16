@@ -12,10 +12,12 @@ import com.fdilke.util.ReadProperties
 import com.google.api.client.util.store.{FileDataStoreFactory, DataStoreFactory}
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import java.net.URL
-import com.google.gdata.data.spreadsheet.{SpreadsheetEntry, SpreadsheetFeed}
+import com.google.gdata.data.spreadsheet._
 import com.google.gdata.client.authn.oauth.GoogleOAuthParameters
 import scala.collection.JavaConversions
 import JavaConversions._
+import com.google.gdata.data.PlainTextConstruct
+import scala.Some
 
 // User: Felix Date: 14/05/2014 Time: 18:21
 
@@ -41,7 +43,7 @@ trait GDataSpikeCommon {
       setDataStoreFactory(dataStoreFactory).
       build()
 
-  lazy val feed =
+  lazy val spreadsheetService =
     Option(flow.loadCredential(USER_ID)) match {
       case Some(credential) =>
         credential.refreshToken()
@@ -49,11 +51,15 @@ trait GDataSpikeCommon {
 
         val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
         spreadsheetService.setHeader("Authorization", "Bearer " + accessToken)
-        val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
-        spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+        spreadsheetService
       case None =>
         throw new IllegalArgumentException("No credential found. Create one and add it to the store!")
     }
+
+  lazy val feed = {
+    val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full")
+    spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+  }
 }
 
 // Run this to get a user credential with an access and refresh token, then store it in local/.
@@ -111,8 +117,40 @@ object ShowSpreadsheets extends App with GDataSpikeCommon {
   sheets.map { sheet =>
     val worksheets = sheet.getWorksheets
     println(s"\t${sheet.getTitle.getPlainText}: ${worksheets.size} worksheets")
-    worksheets map { worksheet =>
-      println(s"\t\t${worksheet.getTitle.getPlainText} (${worksheet.getColCount} x ${worksheet.getRowCount})")
+    worksheets foreach { worksheet =>
+      println(s"\t\t${worksheet.getTitle.getPlainText} " +
+        s"(${worksheet.getColCount} x ${worksheet.getRowCount}) " +
+        s"canEdit=${worksheet.getCanEdit} " +
+        s"authors=${worksheet.getAuthors.size}"
+      )
+
+      val cellFeedUrl = worksheet.getCellFeedUrl();
+      val cellFeed = spreadsheetService.getFeed(cellFeedUrl, classOf[CellFeed]);
+
+      // Iterate through each cell, printing its value.
+      cellFeed.getEntries() foreach { cell =>
+        println(s"\t\t\t${cell.getTitle().getPlainText} = ${cell.getCell().getValue}")
+//          getId().substring(cell.getId().lastIndexOf('/') + 1) + "\t") = cell's address in R1C1 notation
+//          getCell().getInputValue() = formula or text value
+//          getCell().getNumericValue() = empty string if cell's value is not numeric
+//          getCell().getValue() = displayed value (useful if the cell has a formula)
+        if (cell.getTitle().getPlainText().equals("G6")) {
+          println("Updating a cell...")
+          cell.changeInputValueLocal("200");
+          cell.update();
+          println("Updating a cell...done")
+        }
+      }
+    }
+
+    if (sheet.getTitle.getPlainText == "TestSheet") {
+      println("Adding new sheet...")
+      val worksheet = new WorksheetEntry
+      worksheet.setTitle(new PlainTextConstruct("AutoAddedSheet"))
+      worksheet.setColCount(10)
+      worksheet.setRowCount(20)
+      spreadsheetService.insert(sheet.getWorksheetFeedUrl(), worksheet);
+      println("Adding new worksheet...done")
     }
   }
 }
