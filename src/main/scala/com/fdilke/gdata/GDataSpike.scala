@@ -14,6 +14,8 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService
 import java.net.URL
 import com.google.gdata.data.spreadsheet.{SpreadsheetEntry, SpreadsheetFeed}
 import com.google.gdata.client.authn.oauth.{GoogleOAuthHelper, OAuthHmacSha1Signer, GoogleOAuthParameters}
+import scala.collection.JavaConversions
+import JavaConversions._
 
 // User: Felix Date: 14/05/2014 Time: 18:21
 
@@ -32,15 +34,27 @@ trait GDataSpikeCommon {
   )
   val flow: GoogleAuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
     httpTransport, jsonFactory, CLIENT_ID, CLIENT_SECRET,
-    util.Arrays.asList(DriveScopes.DRIVE)).
+    util.Arrays.asList(DriveScopes.DRIVE, "https://spreadsheets.google.com/feeds")).
       setAccessType("online").
       setApprovalPrompt("auto").
       setAccessType("offline").
       setDataStoreFactory(dataStoreFactory).
       build()
+
+  lazy val feed = {
+    val credential = flow.loadCredential(USER_ID)
+    credential.refreshToken()
+    val accessToken = credential.getAccessToken
+
+    val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
+    spreadsheetService.setHeader("Authorization", "Bearer " + accessToken);
+    val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+    spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
+  }
 }
 
-object GDataSpike extends App with GDataSpikeCommon {
+// Run this to get a user credential with an access and refresh token, then store it in local/.
+object GDataSpikeSetupCredential extends App with GDataSpikeCommon {
 
   val redirectUrl:String = flow.
     newAuthorizationUrl().
@@ -78,7 +92,6 @@ object GDataSpike extends App with GDataSpikeCommon {
 }
 
 object GDataSpikeReloadCredential extends App with GDataSpikeCommon {
-
   Seq("xx", USER_ID) foreach { id =>
     val credential = flow.loadCredential(id)
 
@@ -91,48 +104,15 @@ object GDataSpikeReloadCredential extends App with GDataSpikeCommon {
 }
 
 object ShowSpreadsheets extends App with GDataSpikeCommon {
-
-  def duffStuff() {
-    // Authorize the service object for a specific user
-    val oauthParameters = new GoogleOAuthParameters
-    oauthParameters.setOAuthConsumerKey(CLIENT_ID)
-    oauthParameters.setOAuthConsumerSecret(CLIENT_SECRET)
-    oauthParameters.setScope(DriveScopes.DRIVE)
-
-    val signer = new OAuthHmacSha1Signer
-
-    val oauthHelper = new GoogleOAuthHelper(signer);
-    oauthHelper.getUnauthorizedRequestToken(oauthParameters) // needed?
-
-    val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
-    spreadsheetService.setOAuthCredentials(oauthParameters, signer)
-
-    // Define the URL to request.  This should never change.
-    val SPREADSHEET_FEED_URL = new URL(
-      "https://spreadsheets.google.com/feeds/spreadsheets/private/full")
-
-    // Make a request to the API and get all spreadsheets.
-    val feed = spreadsheetService.getFeed(SPREADSHEET_FEED_URL, classOf[SpreadsheetFeed])
-    val spreadsheets = feed.getEntries()
+  private val sheets = feed.getEntries()
+  println(s"${sheets.size} sheets:")
+  sheets.map { sheet =>
+    val worksheets = sheet.getWorksheets
+    println(s"\t${sheet.getTitle.getPlainText}: ${worksheets.size} worksheets")
+    worksheets map { worksheet =>
+      println(s"\t\t${worksheet.getTitle.getPlainText} (${worksheet.getColCount} x ${worksheet.getRowCount})")
+    }
   }
-
-  val credential = flow.loadCredential(USER_ID)
-  credential.refreshToken()
-  val accessToken = credential.getAccessToken
-
-  val spreadsheetService = new SpreadsheetService("MySpreadsheetIntegration-v1")
-  spreadsheetService.setHeader("Authorization", "Bearer " + accessToken);
-  val metafeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-  val feed = spreadsheetService.getFeed(metafeedUrl, classOf[SpreadsheetFeed]);
-
-  val spreadsheets = feed.getEntries();
-  println("**** List of spreadsheets:")
-  for (i <- 0 to spreadsheets.size) {
-    val entry = spreadsheets.get(i);
-    println("\t" + entry.getTitle().getPlainText());
-  }
-  println("**** List of spreadsheets: end")
-
 }
 
 
