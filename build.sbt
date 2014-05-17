@@ -4,13 +4,14 @@ version := "1.0"
 
 scalaVersion := "2.10.3"
 
+//"com.google.appengine" % "appengine-testing" % "1.9.4" withSources() withJavadoc(),
+//"com.google.appengine" % "appengine-api" % "1.9.4" withSources() withJavadoc(),
+//"com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
+//"com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
+//"com.google.appengine" % "appengine-api-labs" % "1.9.4" withSources() withJavadoc(),
+
 libraryDependencies ++= Seq(
   "com.google.http-client" % "google-http-client" % "1.18.0-rc" withSources() withJavadoc(),
-  "com.google.appengine" % "appengine-testing" % "1.9.4" withSources() withJavadoc(),
-  "com.google.appengine" % "appengine-api" % "1.9.4" withSources() withJavadoc(),
-  "com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
-  "com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
-  "com.google.appengine" % "appengine-api-labs" % "1.9.4" withSources() withJavadoc(),
   "com.googlecode.objectify" % "objectify" % "4.0b2" withSources() withJavadoc(),
   "com.google.oauth-client" % "google-oauth-client-servlet" % "1.18.0-rc" withSources() withJavadoc(),
   "com.google.oauth-client" % "google-oauth-client-appengine" % "1.18.0-rc" withSources() withJavadoc(),
