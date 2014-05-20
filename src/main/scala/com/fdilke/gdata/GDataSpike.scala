@@ -136,7 +136,7 @@ object ShowSpreadsheets extends App with GDataSpikeCommon {
 //          getCell().getValue() = displayed value (useful if the cell has a formula)
         if (cell.getTitle.getPlainText.equals("G6")) {
           println("Updating a cell...")
-          cell changeInputValueLocal "200"
+          cell changeInputValueLocal "Hello Anita!"
           cell.update
           println("Updating a cell...done")
         }
