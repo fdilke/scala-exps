@@ -82,5 +82,58 @@ abstract class GenericToposTests[
       barXfooXbaz.projections(1)(productArrow) shouldBe foo.identity
       barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
     }
+
+    it("can construct exponential diagrams") {
+//      val projections = foobar2baz.getProduct.projections
+//      projections should have ('size (2))
+//
+//      val exponential = bar ^ baz
+//
+//      // Check evaluation maps bar^baz x baz -> bar
+//      val ev = exponential.getEvaluation
+//      val expProjections = ev.getProduct.getProjections
+//      expProjections should have ('size (2))
+//      expProjections.get(1).target shouldBe baz
+//      ev.getArrow.target shouldBe bar
+//
+//      val transpose = exponential.getTranspose(foobar2baz)
+//
+//      transpose should have ('source (foo), 'target (expProjections.get(0).target))
+//
+//      // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz
+//      // as the product of foo x baz -> foo -> bar^baz and foo x baz -> baz -> baz
+//      val x1 = transpose(projections(0))
+//      val x2 = projections(1)
+//      val t_x_1 = ev.getProductDiagram().multiply(x1, x2)
+//      foobar2baz.getArrow shouldBe ev.getArrow(t_x_1)
+
+// JAVA VERSION:
+//      MultiArrow<DOT, ARROW> biArrow = fixtures.arrowFooBarToBaz();
+//      List<ARROW> projections = biArrow.getProductDiagram().getProjections();
+//      assertTrue(projections.size() == 2);
+//      DOT a = projections.get(0).getTarget();
+//      DOT b = projections.get(1).getTarget();
+//      DOT c = biArrow.getArrow().getTarget();
+//      ExponentialDiagram<DOT, ARROW> exponential = _topos.getExponentialDiagram(c, b);
+//      // Check evaluation maps C^B x B -> C
+//      MultiArrow<DOT, ARROW> ev = exponential.getEvaluation();
+//      List<ARROW> expProjections = ev.getProductDiagram().getProjections();
+//      assertTrue(expProjections.size() == 2);
+//      assertTrue(expProjections.get(1).getTarget() == b);
+//      assertTrue(ev.getArrow().getTarget() == c);
+//      // and the universal property of evaluation
+//      ARROW transpose = exponential.getTranspose(biArrow); // check this maps A -> B^C
+//      assertTrue(transpose.getSource() == a);
+//      assertTrue(transpose.getTarget() == expProjections.get(0).getTarget()); // the exponent object itself
+//      // Next, construct the arrow: transpose x 1 : A x B -> C^B x B as the productGetDiagram of A x B -> A -> C^B and A x B -> B -> B
+//      ARROW x1 = transpose.compose(projections.get(0));
+//      ARROW x2 = projections.get(1);
+//      List<ARROW> multiplicands = new ArrayList<ARROW>();
+//      multiplicands.add(x1);
+//      multiplicands.add(x2);
+//      ARROW t_x_1 = ev.getProductDiagram().multiplyArrows(biArrow.getProductDiagram().getProduct(), multiplicands);
+//      assertTrue(biArrow.getArrow().equals(ev.getArrow().compose(t_x_1)));
+
+    }
   }
 }
