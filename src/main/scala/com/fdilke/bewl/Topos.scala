@@ -4,6 +4,7 @@ trait ToposDot[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
   def identity : ARROW
   def toConstant: ARROW
   def x(that: DOT): BiproductDiagram[DOT, ARROW]
+  def ^(that: DOT): ExponentialDiagram[DOT, ARROW]
 }
 
 trait ToposArrow[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
@@ -12,6 +13,15 @@ trait ToposArrow[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
   def apply(arrow : ARROW) : ARROW
 }
 
+case class MultiArrow[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]](
+        product: ProductDiagram[DOT, ARROW], arrow: ARROW)
+
+trait ExponentialDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] {
+  val evaluation: MultiArrow[DOT, ARROW]
+  def transpose(multiArrow: MultiArrow[DOT, ARROW]): ARROW
+}
+
+// TODO: do we need 'self' here?
 trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] { self =>
   val product: DOT
   val projections: Seq[ARROW]

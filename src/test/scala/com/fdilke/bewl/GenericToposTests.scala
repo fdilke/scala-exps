@@ -11,6 +11,7 @@ trait ToposFixtures[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]
 
   val foo2bar : ARROW
   val foo2baz : ARROW
+  val foobar2baz : MultiArrow[DOT, ARROW]
 }
 
 abstract class ToposFixtureSanityTests[
@@ -83,29 +84,29 @@ abstract class GenericToposTests[
       barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
     }
 
-    it("can construct exponential diagrams") {
-//      val projections = foobar2baz.getProduct.projections
-//      projections should have ('size (2))
-//
-//      val exponential = bar ^ baz
-//
-//      // Check evaluation maps bar^baz x baz -> bar
-//      val ev = exponential.getEvaluation
-//      val expProjections = ev.getProduct.getProjections
-//      expProjections should have ('size (2))
-//      expProjections.get(1).target shouldBe baz
-//      ev.getArrow.target shouldBe bar
-//
-//      val transpose = exponential.getTranspose(foobar2baz)
-//
-//      transpose should have ('source (foo), 'target (expProjections.get(0).target))
-//
-//      // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz
-//      // as the product of foo x baz -> foo -> bar^baz and foo x baz -> baz -> baz
-//      val x1 = transpose(projections(0))
-//      val x2 = projections(1)
-//      val t_x_1 = ev.getProductDiagram().multiply(x1, x2)
-//      foobar2baz.getArrow shouldBe ev.getArrow(t_x_1)
+    ignore("can construct exponential diagrams") {
+      val projections = foobar2baz.product.projections
+      projections should have ('size (2))
+
+      val exponential = bar ^ baz
+
+      // Check evaluation maps bar^baz x baz -> bar
+      val ev = exponential.evaluation
+      val expProjections = ev.product.projections
+      expProjections should have ('size (2))
+      expProjections(1).target shouldBe baz
+      ev.arrow.target shouldBe bar
+
+      val transpose = exponential.transpose(foobar2baz)
+
+      transpose should have ('source (foo), 'target (expProjections(0).target))
+
+      // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz
+      // as the product of foo x baz -> foo -> bar^baz and foo x baz -> baz -> baz
+      val x1 = transpose(projections(0))
+      val x2 = projections(1)
+      val t_x_1 = ev.product.multiply(x1, x2)
+      foobar2baz.arrow shouldBe ev.arrow(t_x_1)
 
 // JAVA VERSION:
 //      MultiArrow<DOT, ARROW> biArrow = fixtures.arrowFooBarToBaz();

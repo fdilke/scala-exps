@@ -33,6 +33,8 @@ class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSet
   override def hashCode(): Int = set.hashCode()
 
   override def toConstant = fromFunction(this, FiniteSets.I, _ => "*")
+
+  override def ^(that: FiniteSetsDot): ExponentialDiagram[FiniteSetsDot, FiniteSetsArrow] = null
 }
 
 object FiniteSetsDot {
