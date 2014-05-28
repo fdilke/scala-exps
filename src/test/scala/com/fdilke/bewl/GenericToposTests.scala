@@ -84,18 +84,18 @@ abstract class GenericToposTests[
       barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
     }
 
-    ignore("can construct exponential diagrams") {
+    it("can construct exponential diagrams") {
       val projections = foobar2baz.product.projections
       projections should have ('size (2))
 
-      val exponential = bar ^ baz
+      val exponential = baz ^ bar
 
-      // Check evaluation maps bar^baz x baz -> bar
+      // Check evaluation maps baz^bar x bar -> baz
       val ev = exponential.evaluation
       val expProjections = ev.product.projections
       expProjections should have ('size (2))
-      expProjections(1).target shouldBe baz
-      ev.arrow.target shouldBe bar
+      expProjections(1).target shouldBe bar
+      ev.arrow.target shouldBe baz
 
       val transpose = exponential.transpose(foobar2baz)
 

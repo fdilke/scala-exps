@@ -2,6 +2,7 @@ package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
 import FiniteSetsArrow._
+import FiniteSetsUtilities._
 import com.fdilke.bewl.MultiArrow
 
 class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSetsArrow] {
@@ -40,11 +41,31 @@ class FiniteSetsBiproductDiagram(left: FiniteSetsDot, right: FiniteSetsDot
 class FiniteSetsExponentialDiagram(target: FiniteSetsDot, source: FiniteSetsDot)
   extends ExponentialDiagram[FiniteSetsDot, FiniteSetsArrow] {
 
-  // TODO: delete? move?
-  def cartesian[A](factors: Seq[Seq[A]]): Iterator[Seq[A]] = factors match {
+  val theAllMaps: Set[Any] = allMaps(source.set toSeq, target.set).toSet
+  val exponentDot = new FiniteSetsDot(theAllMaps)
+  val productExpDiagram = exponentDot x source
+
+  override val evaluation = new MultiArrow[FiniteSetsDot, FiniteSetsArrow](productExpDiagram,
+    fromFunction(productExpDiagram.product, target, {
+      case (f, x) =>
+        f.asInstanceOf[Map[Any, Any]] (x)
+    }))
+
+  override def transpose(multiArrow: MultiArrow[FiniteSetsDot, FiniteSetsArrow]): FiniteSetsArrow =
+    fromFunction(multiArrow.product.projections(0).target, exponentDot, { t =>
+      (for (u <- source.set) yield (u, multiArrow.arrow.map((t, u)))).toMap
+    })
+}
+
+object FiniteSetsDot {
+  def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
+}
+
+object FiniteSetsUtilities {
+  def cartesian[A](factors: Seq[A]*): Iterator[Seq[A]] = factors match {
     case Seq() => Iterator(Seq())
     case Seq(head, tail @ _*) =>
-      head.iterator.flatMap { i => cartesian(tail).map(i +: _) }
+      head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
   }
 
   // TODO: find a better place to put this. Test it properly
@@ -53,54 +74,8 @@ class FiniteSetsExponentialDiagram(target: FiniteSetsDot, source: FiniteSetsDot)
     case Seq() => Iterator(Map[A, B]())
     case Seq(head, tail @ _*) =>
       for (map <- allMaps(tail, target); choice <- target)
-        yield map + (head -> choice)
+      yield map + (head -> choice)
   }
-
-  val exponentDot = FiniteSetsDot(allMaps(source.set toSeq, target.set) toSet)
-  val productExpDiagram = new FiniteSetsBiproductDiagram(exponentDot, source)
-  val productDot = productExpDiagram.product
-
-  val eval = fromFunction(productDot, target, {
-    case (f: Map[Any, Any], x) => f(x)
-  })
-
-  override val evaluation = new MultiArrow[FiniteSetsDot, FiniteSetsArrow](productExpDiagram, eval)
-
-  override def transpose(multiArrow: MultiArrow[FiniteSetsDot, FiniteSetsArrow]): FiniteSetsArrow = null
-//  public FiniteSetArrow getTranspose(MultiArrow<FiniteSet, FiniteSetArrow> f2) {
-//    FiniteSet originalSource = _evaluation.getProductDiagram().getProjections().get(1).getTarget();
-//    FiniteSet originalTarget = _evaluation.getArrow().getTarget();
-//    FiniteSet exponentialObject = _evaluation.getProductDiagram().getProjections().get(0).getTarget();
-//    // should these be members? It's relatively quick to extract them.
-//
-//    // make sure it's a multi-arrow of the right type, something x source -> target
-//    ProductDiagram<FiniteSet, FiniteSetArrow> productDiagram = f2.getProductDiagram();
-//    if (productDiagram.getProjections().size() != 2) {
-//      throw new IllegalArgumentException("multi-arrow has wrong arity");
-//    } else if (productDiagram.getProjections().get(1).getTarget() != originalSource) {
-//      throw new IllegalArgumentException("multi-arrow has wrong type in 2nd argument");
-//    } else if (f2.getArrow().getTarget() != originalTarget) {
-//      throw new IllegalArgumentException("multi-arrow has wrong return type");
-//    }
-//    FiniteSet transposeSource = productDiagram.getProjections().get(0).getTarget();
-//    Map<Object, Object> map = new HashMap<Object, Object>();
-//    for (Object transposeSourceObject : transposeSource.getUnderlyingSet()) {
-//      Object[] functionArray = new Object[originalSource.getUnderlyingSet().size()];
-//      for (Object originalSourceObject : originalSource.getUnderlyingSet()) {
-//        Object[] pair = new Object[]{transposeSourceObject, originalSourceObject};
-//        Object equivalentPair = FiniteSetsMultiplier.findEquivalentArray(f2.getArrow().getSource(), pair);
-//        Object image = f2.getArrow().getUnderlyingMap().get(equivalentPair);
-//        int index = _indexLookup.get(originalSourceObject);
-//        functionArray[index] = image;
-//      }
-//      map.put(transposeSourceObject, FiniteSetsMultiplier.findEquivalentArray(exponentialObject, functionArray));
-//    }
-//    return new FiniteSetArrow(transposeSource, exponentialObject, map);
-//  }
-}
-
-object FiniteSetsDot {
-  def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
 }
 
 class FiniteSetsArrow(
@@ -148,4 +123,12 @@ object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
   val I = FiniteSetsDot("*")
 }
 
+object FiniteSetsBiArrow {
+  def apply(left: FiniteSetsDot, right: FiniteSetsDot, target: FiniteSetsDot,
+            map: (Any, Any)*) = {
+    val product = left x right
+    MultiArrow[FiniteSetsDot, FiniteSetsArrow](product,
+      FiniteSetsArrow(product.product, target, map: _*))
+  }
+}
 
