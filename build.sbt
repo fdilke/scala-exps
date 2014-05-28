@@ -2,13 +2,7 @@ name := "scala-exp"
 
 version := "1.0"
 
-scalaVersion := "2.10.3"
-
-//"com.google.appengine" % "appengine-testing" % "1.9.4" withSources() withJavadoc(),
-//"com.google.appengine" % "appengine-api" % "1.9.4" withSources() withJavadoc(),
-//"com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
-//"com.google.appengine" % "appengine-api-stubs" % "1.9.4" withSources() withJavadoc(),
-//"com.google.appengine" % "appengine-api-labs" % "1.9.4" withSources() withJavadoc(),
+scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   "com.google.http-client" % "google-http-client" % "1.18.0-rc" withSources() withJavadoc(),
@@ -20,7 +14,8 @@ libraryDependencies ++= Seq(
   "com.google.http-client" % "google-http-client-jackson" % "1.18.0-rc" withSources() withJavadoc(),
   "com.google.gdata" % "core" % "1.47.1" withSources() withJavadoc(),
   "junit" % "junit" % "4.11" % "test" withSources() withJavadoc(),
-  "org.scalamock" %% "scalamock-scalatest-support" % "3.0.1" % "test" withSources() withJavadoc(),
+  "org.scalamock" % "scalamock-scalatest-support_2.11" % "3.1.1" % "test" withSources() withJavadoc(),
+  "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.2" withSources() withJavadoc(),
   "org.mockito" % "mockito-all" % "1.9.5" % "test" withSources() withJavadoc()
 )
 

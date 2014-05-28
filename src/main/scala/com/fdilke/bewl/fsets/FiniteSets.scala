@@ -68,8 +68,7 @@ object FiniteSetsUtilities {
       head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
   }
 
-  // TODO: find a better place to put this. Test it properly
-  // TODO: change FiniteSet to use iterators
+    // TODO: change FiniteSet to use iterators
   def allMaps[A, B](source: Seq[A], target: Set[B]): Iterator[Map[A, B]] = source match {
     case Seq() => Iterator(Map[A, B]())
     case Seq(head, tail @ _*) =>

@@ -21,7 +21,6 @@ trait ExponentialDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, A
   def transpose(multiArrow: MultiArrow[DOT, ARROW]): ARROW
 }
 
-// TODO: do we need 'self' here?
 trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] { self =>
   val product: DOT
   val projections: Seq[ARROW]
@@ -38,8 +37,7 @@ trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW
     override def multiply(arrows: ARROW*): ARROW =
       if (arrows.size == projections.size)
         arrows match {
-          case head :+ tail =>
-            pXd.multiply(
+          case head :+ tail => pXd.multiply(
               self.multiply(head : _*),
               tail)
         }
