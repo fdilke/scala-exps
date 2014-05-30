@@ -1,75 +1,48 @@
 package com.fdilke.scala
 
+import org.scalatest.FunSpec
+
 // User: Felix Date: 29/05/2014 Time: 19:18
 
 object MoreTypeExperiments {
 
-  trait Topos[
-    A <: Topos[A, DOT, ARROW, BIPRODUCT, EXPONENTIAL],
-    DOT[P] <: A#Dot[P],
-    ARROW[P, Q] <: A#Arrow[P, Q],
-    BIPRODUCT[P, Q] <: A#Biproduct[P, Q],
-    EXPONENTIAL[P, Q] <: A#Exponential[P, Q]
-  ] {
+  trait Topos {
+    type DOT[P] <: Dot[P]
+    type ARROW[P, Q] <: Arrow[P, Q]
 
-    val I: DOT[Terminal]
-    trait Terminal
-
-    trait Dot[X
-    ] {
+    trait Dot[X] {
       def identity: ARROW[X, X]
-
-      def toConstant: ARROW[X, Terminal]
-
-      def x[Y](that: DOT[Y]): BIPRODUCT[X, Y]
-
-      def ^[Y](that: DOT[Y]): EXPONENTIAL[Y, X]
     }
 
-    trait Arrow[X, Y
-    ] {
-      val source: DOT[X]
-      val target: DOT[Y]
-
+    trait Arrow[X, Y] {
       def apply[W](arrow: ARROW[W, X]): ARROW[W, Y]
     }
-
-    trait Biproduct[X, Y
-    ] {
-      val leftProjection: ARROW[(X, Y), X]
-      val rightProjection: ARROW[(X, Y), Y]
-
-      def multiply[W](leftArrow: ARROW[W, X],
-                      rightArrow: ARROW[W, Y]): ARROW[W, (X, Y)]
-    }
-
-    trait Exponential[S, T
-    ] {
-      val evaluation: BiArrow[S => T, S, T]
-
-      def transpose[W](multiArrow: BiArrow[W, S, T]): ARROW[W, S => T]
-    }
-
-    case class BiArrow[L, R, T
-    ](
-       product: BIPRODUCT[L, R],
-       arrow: ARROW[(L, R), T])
-
   }
-}
 
-class Widget(val n: Int) extends Ordered[Widget] {
-def compare(that: Widget) =  this.n - that.n
-}
+  trait ToposFixtures[T <: Topos] {
+    type FOO
+    type BAR
 
-//object Doodad extends Ordered[Doodad.type] {
-//  def compare(that: Doodad.type) =  0
-//}
+    val foo : T#DOT[FOO]
+    val bar : T#DOT[BAR]
 
-trait HasTypeA {
-  type A
-}
+    val foo2bar : T#ARROW[FOO, BAR]
+  }
 
-class Gadget extends HasTypeA {
+  abstract class SimplifiedToposTests[
+      T <: Topos,
+      F <: ToposFixtures[T]
+    ](topos: T, fixtures: F) extends FunSpec { self =>
 
+    describe(s"The topos ${topos.getClass.getSimpleName}") {
+      it("has identity arrows which can be composed") {
+// result is confusion about what all these types are
+//        val f2b: T#ARROW[F#FOO, F#BAR] = fixtures.foo2bar
+//        val f2b: T#ARROW[SimplifiedToposTests.this.type#fixtures#FOO, SimplifiedToposTests.this.type#fixtures#BAR] = fixtures.foo2bar
+//
+//        val i = fixtures.foo.identity
+//        f2b.apply[fixtures.type#FOO](i)
+      }
+    }
+  }
 }
