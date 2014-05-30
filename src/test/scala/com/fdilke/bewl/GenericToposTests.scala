@@ -3,25 +3,33 @@ package com.fdilke.bewl
 import org.scalatest._
 import org.scalatest.matchers.ShouldMatchers
 import ShouldMatchers._
+import com.fdilke.bewl.fsets.FiniteSets
 
-trait ToposFixtures[T <: Topos] {
+abstract class ToposWithFixtures {
+  type TOPOS <: Topos
+  val topos : TOPOS
+
   type FOO
   type BAR
   type BAZ
 
-  val foo : T#DOT[FOO]
-  val bar : T#DOT[BAR]
-  val baz : T#DOT[BAZ]
+  type DOT[X] = topos.DOT[X]
+  type ARROW[X, Y] = topos.ARROW[X, Y]
+  type BIARROW[L, R, T] = topos.BIARROW[L, R, T]
 
-  val foo2bar : T#ARROW[FOO, BAR]
-  val foo2baz : T#ARROW[FOO, BAZ]
-  val foobar2baz : T#BIARROW[FOO, BAR, BAZ]
+  val foo : DOT[FOO]
+  val bar : DOT[BAR]
+  val baz : DOT[BAZ]
+
+  val foo2bar : ARROW[FOO, BAR]
+  val foo2baz : ARROW[FOO, BAZ]
+  val foobar2baz : BIARROW[FOO, BAR, BAZ]
 }
 
-abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposFixtures[T]) extends FunSpec {
+abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) extends FunSpec {
   import fixtures._
 
-  describe(s"The fixtures ${fixtures.getClass.getSimpleName}") {
+  describe(s"The fixtures for ${fixtures.topos.getClass.getSimpleName}") {
     it("has distinct objects") {
       Set(foo, bar, baz) should have size 3
     }
@@ -36,20 +44,18 @@ abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposFixtures[T]) e
   }
 }
 
-abstract class GenericToposTests[T <: Topos](
-    topos: T,
-    fixtures: ToposFixtures[T]
+abstract class GenericToposTests[TOPOS <: Topos](
+    fixtures: ToposWithFixtures
   ) extends ToposFixtureSanityTests(fixtures) {
 
-  import topos._
   import fixtures._
 
   describe(s"The topos ${topos.getClass.getSimpleName}") {
     it("has identity arrows which can be composed") {
       // TODO: get rid of these [FOO]s
-      val f2b: T#ARROW[FOO, BAR] = foo2bar
-      val i: T#ARROW[FOO, FOO] = foo.identity
-//      val f2b_i: topos.type#ARROW[FOO, BAR] = f2b.apply[FOO](i)
+      val f2b: ARROW[FOO, BAR] = foo2bar
+      val i: ARROW[FOO, FOO] = foo.identity
+      val f2b_i: ARROW[FOO, BAR] = f2b.apply[FOO](i)
 
 
       println("the one:   " + i.getClass)
