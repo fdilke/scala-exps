@@ -30,6 +30,9 @@ Add constructions like: centre of a group, automorphisms of an algebra
 Bind classes to dots, and to the sources and targets of arrows
 Lose the [FOO] in: foo2bar[FOO](foo.identity) shouldBe foo2bar
 Fix chained products
+Could we multiply arrows with f x g, in a world of 'standardized products'?
+FiniteSets should use traversables (having made sure these are sensible) and functions
+Can get rid of BIARROW?
 
 ## Monads
 
