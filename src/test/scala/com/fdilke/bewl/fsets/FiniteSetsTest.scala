@@ -1,15 +1,21 @@
 package com.fdilke.bewl.fsets
 
-import com.fdilke.bewl.{MultiArrow, ToposFixtures, GenericToposTests}
+import com.fdilke.bewl.{ToposFixtures, GenericToposTests}
+import com.fdilke.bewl.fsets.FiniteSets.{FiniteSetsBiArrow, FiniteSetsArrow, FiniteSetsDot}
 
-object FiniteSetsFixtures extends ToposFixtures[FiniteSetsDot, FiniteSetsArrow] {
-  override val foo = FiniteSetsDot("a", "b")
-  override val bar = FiniteSetsDot("X", "Y")
-  override val foo2bar = FiniteSetsArrow(foo, bar, "a"->"X", "b"->"Y")
-  override val baz = FiniteSetsDot(1, 2, 3)
-  override val foo2baz = FiniteSetsArrow(foo, baz, "a"->1, "b"->3)
-  override val foobar2baz: MultiArrow[FiniteSetsDot, FiniteSetsArrow] = FiniteSetsBiArrow(
-    foo, bar, baz, ("a","X") -> 2, ("b", "X") -> 3, ("a", "Y") -> 1, ("b", "Y") -> 2
+object FiniteSetsFixtures extends ToposFixtures[FiniteSets.type] {
+  type FOO = Boolean
+  type BAR = String
+  type BAZ = Int
+
+  override val foo = FiniteSetsDot[FOO](true, false)
+  override val bar = FiniteSetsDot[BAR]("X", "Y")
+  override val foo2bar = FiniteSetsArrow[FOO, BAR](foo, bar, true->"X", false->"Y")
+  override val baz = FiniteSetsDot[BAZ](1, 2, 3)
+  override val foo2baz = FiniteSetsArrow[FOO, BAZ](foo, baz, true->1, false->3)
+
+  override val foobar2baz = FiniteSetsBiArrow[FOO, BAR, BAZ](
+    foo, bar, baz, (true,"X") -> 2, (false, "X") -> 3, (true, "Y") -> 1, (false, "Y") -> 2
   )
 }
 

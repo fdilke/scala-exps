@@ -1,133 +1,135 @@
 package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
-import FiniteSetsArrow._
-import FiniteSetsUtilities._
-import com.fdilke.bewl.MultiArrow
+import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow.fromFunction
+import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
 
-class FiniteSetsDot(val set: Set[Any]) extends ToposDot[FiniteSetsDot, FiniteSetsArrow] {
-  override def identity: FiniteSetsArrow = new FiniteSetsArrow(
-    this, this,
-    Map(set.toList.map(x => (x,x)):_*)
-  )
+object FiniteSets extends Topos {
+  type DOT[X] = FiniteSetsDot[X]
+  type ARROW[S, T] = FiniteSetsArrow[S, T]
+  type BIARROW[L, R, T] = BiArrow[L, R, T]
+  type BIPRODUCT[L, R] = FiniteSetsBiproduct[L, R]
+  type EXPONENTIAL[S, T] = FiniteSetsExponential[S, T]
 
-  override def x(that: FiniteSetsDot) = new FiniteSetsBiproductDiagram(this, that)
+  val I = FiniteSetsDot[Unit](())
 
-  override def ^(that: FiniteSetsDot) = new FiniteSetsExponentialDiagram(this, that)
+  class FiniteSetsDot[X](val set: Set[X]) extends Dot[X] {
+    override def identity: FiniteSetsArrow[X, X] = new FiniteSetsArrow(
+      this, this,
+      Map(set.toList.map(x => (x,x)):_*)
+    )
 
-  override def equals(other: Any): Boolean = other match {
-    case that: FiniteSetsDot =>  set == that.set
-    case _ => false
+    override def x[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
+
+    override def ^[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
+
+    override def equals(other: Any): Boolean = other match {
+      case that: FiniteSetsDot[X] =>  set == that.set
+      case _ => false
+    }
+
+    override def hashCode(): Int = set.hashCode()
+
+    override def toConstant = fromFunction(this, FiniteSets.I, _ => ())
   }
 
-  override def hashCode(): Int = set.hashCode()
+  class FiniteSetsArrow[X, Y](val source: FiniteSetsDot[X],
+                              val target: FiniteSetsDot[Y],
+                              val map: Map[X, Y]
+                               ) extends Arrow[X, Y] {
 
-  override def toConstant = fromFunction(this, FiniteSets.I, _ => "*")
-}
+    def sanityTest() =
+      if (map.keySet != source.set) {
+        throw new IllegalArgumentException("Map keys != source")
+      } else if (map.values.exists(!target.set.contains(_))) {
+        throw new IllegalArgumentException("Map values not in target")
+      }
 
-class FiniteSetsBiproductDiagram(left: FiniteSetsDot, right: FiniteSetsDot
-  ) extends BiproductDiagram[FiniteSetsDot, FiniteSetsArrow] {
-  override val product = new FiniteSetsDot(for (x <- left.set; y <- right.set) yield (x, y))
+    override def toString = s"FiniteSetsArrow(${source.set}, ${target.set}, $map)"
 
-  override val leftProjection = FiniteSetsArrow.fromFunction(product, left, { case (x, y) => x} )
+    override def apply[W](arrow: FiniteSetsArrow[W, X]) =
+      if (arrow.target == source) {
+        new FiniteSetsArrow(arrow.source, target,
+          Map(arrow.source.set.toList.map(x => (x, map(arrow.map(x)))): _*)
+        )
+      } else {
+        throw new IllegalArgumentException("Target does not match source")
+      }
 
-  override val rightProjection = fromFunction(product, right, { case (x, y) => y})
+    override def equals(other: Any): Boolean = other match {
+      case that: FiniteSetsArrow[X, Y] =>
+        source == that.source && target == that.target && map == that.map
+      case _ => false
+    }
 
-  override def multiply(leftArrow: FiniteSetsArrow, rightArrow: FiniteSetsArrow): FiniteSetsArrow =
-    fromFunction(leftArrow.source, product, { case x => (leftArrow.map(x), rightArrow.map(x))}
-  )
-}
-
-class FiniteSetsExponentialDiagram(target: FiniteSetsDot, source: FiniteSetsDot)
-  extends ExponentialDiagram[FiniteSetsDot, FiniteSetsArrow] {
-
-  val theAllMaps: Set[Any] = allMaps(source.set toSeq, target.set).toSet
-  val exponentDot = new FiniteSetsDot(theAllMaps)
-  val productExpDiagram = exponentDot x source
-
-  override val evaluation = new MultiArrow[FiniteSetsDot, FiniteSetsArrow](productExpDiagram,
-    fromFunction(productExpDiagram.product, target, {
-      case (f, x) =>
-        f.asInstanceOf[Map[Any, Any]] (x)
-    }))
-
-  override def transpose(multiArrow: MultiArrow[FiniteSetsDot, FiniteSetsArrow]): FiniteSetsArrow =
-    fromFunction(multiArrow.product.projections(0).target, exponentDot, { t =>
-      (for (u <- source.set) yield (u, multiArrow.arrow.map((t, u)))).toMap
-    })
-}
-
-object FiniteSetsDot {
-  def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
-}
-
-object FiniteSetsUtilities {
-  def cartesian[A](factors: Seq[A]*): Iterator[Seq[A]] = factors match {
-    case Seq() => Iterator(Seq())
-    case Seq(head, tail @ _*) =>
-      head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
+    override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + map.hashCode() * 13
   }
+
+  class FiniteSetsBiproduct[L, R](left: FiniteSetsDot[L], right: FiniteSetsDot[R]
+                                   ) extends Biproduct[L, R] {
+    override val product = new FiniteSetsDot[(L, R)](for (x <- left.set; y <- right.set) yield (x, y))
+
+    override val leftProjection: FiniteSetsArrow[(L, R), L] = fromFunction(product, left, { case(x, y)  => x} )
+
+    override val rightProjection: FiniteSetsArrow[(L, R), R] = fromFunction(product, right, { case (x, y) => y})
+
+    override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
+      fromFunction(leftArrow.source, product, { case x => (leftArrow.map(x), rightArrow.map(x))} )
+  }
+
+  class FiniteSetsExponential[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T])
+    extends Exponential[S, T] {
+
+    val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).toSet
+    val exponentDot = new FiniteSetsDot[S => T](theAllMaps)
+    val productExpDiagram = exponentDot x source
+
+    override val evaluation = new BiArrow[S => T, S, T](productExpDiagram,
+      fromFunction(productExpDiagram.product, target, {
+        case (f, s) =>
+          f.asInstanceOf[Map[S, T]](s)
+      }))
+
+    override def transpose[W](multiArrow: BiArrow[W, S, T]) =
+      fromFunction(multiArrow.product.leftProjection.target, exponentDot, { t =>
+        (for (u <- source.set) yield (u, multiArrow.arrow.map((t, u)))).toMap
+      })
+  }
+
+  object FiniteSetsDot {
+    def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
+  }
+
+  object FiniteSetsUtilities {
+    def cartesian[A](factors: Seq[A]*): Iterator[Seq[A]] = factors match {
+      case Seq() => Iterator(Seq())
+      case Seq(head, tail @ _*) =>
+        head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
+    }
 
     // TODO: change FiniteSet to use iterators
-  def allMaps[A, B](source: Seq[A], target: Set[B]): Iterator[Map[A, B]] = source match {
-    case Seq() => Iterator(Map[A, B]())
-    case Seq(head, tail @ _*) =>
-      for (map <- allMaps(tail, target); choice <- target)
-      yield map + (head -> choice)
-  }
-}
-
-class FiniteSetsArrow(
-  val source: FiniteSetsDot,
-  val target: FiniteSetsDot,
-  val map: Map[Any, Any]
-) extends ToposArrow[FiniteSetsDot, FiniteSetsArrow] {
-
-  def sanityTest() =
-    if (map.keySet != source.set) {
-      throw new IllegalArgumentException("Map keys != source")
-    } else if (map.values.exists(!target.set.contains(_))) {
-      throw new IllegalArgumentException("Map values not in target")
+    def allMaps[A, B](source: Seq[A], target: Set[B]): Iterator[Map[A, B]] = source match {
+      case Seq() => Iterator(Map[A, B]())
+      case Seq(head, tail @ _*) =>
+        for (map <- allMaps(tail, target); choice <- target)
+        yield map + (head -> choice)
     }
+  }
 
-  override def toString = s"FiniteSetsArrow(${source.set}, ${target.set}, $map)"
+  object FiniteSetsArrow {
+    def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], elements: (S, T)*) =
+      new FiniteSetsArrow[S, T](source, target, Map(elements: _*))
 
-  override def apply(arrow: FiniteSetsArrow): FiniteSetsArrow =
-    if (arrow.target == source) {
-      new FiniteSetsArrow(arrow.source, target,
-        Map(arrow.source.set.toList.map(x => (x, map(arrow.map(x)))): _*)
-      )
-    } else {
-      throw new IllegalArgumentException("Target does not match source")
+    def fromFunction[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], f: S => T) =
+      new FiniteSetsArrow(source, target, (for (x <- source.set) yield (x, f(x))).toMap)
+  }
+
+  object FiniteSetsBiArrow {
+    def apply[L, R, T](left: FiniteSetsDot[L], right: FiniteSetsDot[R], target: FiniteSetsDot[T],
+              map: ((L, R), T)*) : BiArrow[L, R, T] = {
+      val product = left x right
+      BiArrow[L, R, T](product,
+        FiniteSetsArrow(product.product, target, map: _*))
     }
-
-  override def equals(other: Any): Boolean = other match {
-    case that: FiniteSetsArrow =>
-      source == that.source && target == that.target && map == that.map
-    case _ => false
-  }
-
-  override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + map.hashCode() * 13
-}
-
-object FiniteSetsArrow {
-  def apply(source: FiniteSetsDot, target: FiniteSetsDot, elements: (Any, Any)*) =
-    new FiniteSetsArrow(source, target, Map(elements: _*))
-
-  def fromFunction(source: FiniteSetsDot, target: FiniteSetsDot, f: Any => Any) =
-    new FiniteSetsArrow(source, target, (for (x <- source.set) yield (x, f(x))).toMap)
-}
-
-object FiniteSets extends Topos[FiniteSetsDot, FiniteSetsArrow] {
-  val I = FiniteSetsDot("*")
-}
-
-object FiniteSetsBiArrow {
-  def apply(left: FiniteSetsDot, right: FiniteSetsDot, target: FiniteSetsDot,
-            map: (Any, Any)*) = {
-    val product = left x right
-    MultiArrow[FiniteSetsDot, FiniteSetsArrow](product,
-      FiniteSetsArrow(product.product, target, map: _*))
   }
 }
-

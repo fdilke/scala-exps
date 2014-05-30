@@ -5,12 +5,14 @@ package com.fdilke.scala
 object MoreTypeExperiments {
 
   trait Topos[
-    DOT[P] <: Dot[P],
-    ARROW[P, Q] <: Arrow[P, Q],
-    BIPRODUCT[P, Q] <: Biproduct[P, Q],
-    EXPONENTIAL[P, Q] <: Exponential[P, Q]
+    A <: Topos[A, DOT, ARROW, BIPRODUCT, EXPONENTIAL],
+    DOT[P] <: A#Dot[P],
+    ARROW[P, Q] <: A#Arrow[P, Q],
+    BIPRODUCT[P, Q] <: A#Biproduct[P, Q],
+    EXPONENTIAL[P, Q] <: A#Exponential[P, Q]
   ] {
 
+    val I: DOT[Terminal]
     trait Terminal
 
     trait Dot[X
@@ -54,4 +56,20 @@ object MoreTypeExperiments {
        arrow: ARROW[(L, R), T])
 
   }
+}
+
+class Widget(val n: Int) extends Ordered[Widget] {
+def compare(that: Widget) =  this.n - that.n
+}
+
+//object Doodad extends Ordered[Doodad.type] {
+//  def compare(that: Doodad.type) =  0
+//}
+
+trait HasTypeA {
+  type A
+}
+
+class Gadget extends HasTypeA {
+
 }

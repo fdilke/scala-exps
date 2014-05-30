@@ -1,21 +1,22 @@
 package com.fdilke.bewl.fsets
 
 import org.scalatest.{FunSpec, ShouldMatchers}
+import com.fdilke.bewl.fsets.FiniteSets.{FiniteSetsArrow, FiniteSetsDot}
 
 class FiniteSetsArrowTest extends FunSpec with ShouldMatchers {
-  val dot = FiniteSetsDot("a", "b")
-  val dotBig = FiniteSetsDot("a", "b", "c")
-  val dotSmall = FiniteSetsDot("a")
-  val doodah = FiniteSetsDot(1,2,3)
-  val dash = FiniteSetsDot("X", "Y", "Z")
-  val dashBig = FiniteSetsDot("X", "Y", "Z", "W")
-  val dot2dash = FiniteSetsArrow(dot, dash, "a"->"X", "b"->"Y")
-  val dot2dashBadValues = FiniteSetsArrow(dot, dash, "a"->true, "b"->FiniteSets)
-  val dot2dash_2 = FiniteSetsArrow(dot, dash, "a"->"X", "b"->"Y")
-  val dotSmall2dash = FiniteSetsArrow(dotSmall, dash, "a"->"X", "b"->"Y")
-  val dot2dashBig = FiniteSetsArrow(dot, dashBig, "a"->"X", "b"->"Y")
-  val dotBig2dash = FiniteSetsArrow(dotBig, dash, "a"->"X", "b"->"Y")
-  val doodah2dot = FiniteSetsArrow(doodah, dot, 1->"a", 2->"b", 3->"a")
+  val dot = FiniteSetsDot[String]("a", "b")
+  val dotBig = FiniteSetsDot[String]("a", "b", "c")
+  val dotSmall = FiniteSetsDot[String]("a")
+  val doodah = FiniteSetsDot[Int](1,2,3)
+  val dash = FiniteSetsDot[String]("X", "Y", "Z")
+  val dashBig = FiniteSetsDot[String]("X", "Y", "Z", "W")
+  val dot2dash = FiniteSetsArrow[String, String](dot, dash, "a"->"X", "b"->"Y")
+  val dot2dashBadValues = FiniteSetsArrow[String, String](dot, dash, "a"->"boojum", "b"->"heejum")
+  val dot2dash_2 = FiniteSetsArrow[String, String](dot, dash, "a"->"X", "b"->"Y")
+  val dotSmall2dash = FiniteSetsArrow[String, String](dotSmall, dash, "a"->"X", "b"->"Y")
+  val dot2dashBig = FiniteSetsArrow[String, String](dot, dashBig, "a"->"X", "b"->"Y")
+  val dotBig2dash = FiniteSetsArrow[String, String](dotBig, dash, "a"->"X", "b"->"Y")
+  val doodah2dot = FiniteSetsArrow[Int, String](doodah, dot, 1->"a", 2->"b", 3->"a")
 
   describe("An arrow representing a morphism of finite sets") {
     it("should make accessible its source and target") {

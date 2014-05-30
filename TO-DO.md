@@ -27,6 +27,9 @@ Add more 'generic topos' tests
 Add signatures and algebras over them
 Add algebraic laws (so we can define groups, rings, commutativity etc)
 Add constructions like: centre of a group, automorphisms of an algebra
+Bind classes to dots, and to the sources and targets of arrows
+Lose the [FOO] in: foo2bar[FOO](foo.identity) shouldBe foo2bar
+Fix chained products
 
 ## Monads
 
