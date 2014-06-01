@@ -28,7 +28,6 @@ package com.fdilke.bewl
 trait Topos {
   type DOT[P] <: Dot[P]
   type ARROW[P, Q] <: Arrow[P, Q]
-  type BIARROW[L, R, T] <: BiArrow[L, R, T]
   type BIPRODUCT[P, Q] <: Biproduct[P, Q]
   type EXPONENTIAL[P, Q] <: Exponential[P, Q]
 
@@ -70,9 +69,9 @@ trait Topos {
 //  }
 
   trait Exponential[S, T] {
-    val evaluation: BIARROW[S => T, S, T]
+    val evaluation: BiArrow[S => T, S, T]
 
-    def transpose[W](multiArrow: BIARROW[W, S, T]): ARROW[W, S => T]
+    def transpose[W](multiArrow: BiArrow[W, S, T]): ARROW[W, S => T]
   }
 
   case class BiArrow[L, R, T](product: BIPRODUCT[L, R], arrow: ARROW[(L, R), T])

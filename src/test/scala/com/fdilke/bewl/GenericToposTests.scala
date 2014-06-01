@@ -16,7 +16,6 @@ abstract class ToposWithFixtures {
   type DOT[X] = topos.DOT[X]
   type ARROW[X, Y] = topos.ARROW[X, Y]
   type BIPRODUCT[L, R] = topos.BIPRODUCT[L, R]
-  type BIARROW[L, R, T] = topos.BIARROW[L, R, T]
   type EXPONENTIAL[S, T] = topos.EXPONENTIAL[S, T]
 
   val foo : DOT[FOO]
@@ -25,7 +24,7 @@ abstract class ToposWithFixtures {
 
   val foo2bar : ARROW[FOO, BAR]
   val foo2baz : ARROW[FOO, BAZ]
-  val foobar2baz : BIARROW[FOO, BAR, BAZ]
+  val foobar2baz : topos.BiArrow[FOO, BAR, BAZ]
 }
 
 abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) extends FunSpec {
@@ -77,7 +76,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
       bar.toConstant(foo2bar) shouldBe fooToI
     }
 
-//    // Right now, you can't.
+//    // Right now, you can't. Need to have cached products first!
 ////    it("can chain products") {
 ////      val barXfooXbaz = bar.x[FOO](foo).x[BAZ](baz)
 ////      val productArrow = barXfooXbaz.multiply(foo2bar, foo.identity, foo2baz)
@@ -97,7 +96,6 @@ abstract class GenericToposTests[TOPOS <: Topos](
       ev.product.rightProjection.target shouldBe bar
       ev.arrow.target shouldBe baz
 
-      val _foobar2baz: BIARROW[FOO, BAR, BAZ] = foobar2baz
       val transpose: ARROW[FOO, BAR => BAZ] = exponential.transpose[FOO](foobar2baz)
 
       transpose should have ('source (foo), 'target (ev.product.leftProjection.target))

@@ -7,7 +7,6 @@ import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
 object FiniteSets extends Topos {
   type DOT[X] = FiniteSetsDot[X]
   type ARROW[S, T] = FiniteSetsArrow[S, T]
-  type BIARROW[L, R, T] = BiArrow[L, R, T]
   type BIPRODUCT[L, R] = FiniteSetsBiproduct[L, R]
   type EXPONENTIAL[S, T] = FiniteSetsExponential[S, T]
 
