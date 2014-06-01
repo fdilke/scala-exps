@@ -1,8 +1,7 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
 import FelixMatchers._
 
 class FelixMatchersTest extends FunSpec {

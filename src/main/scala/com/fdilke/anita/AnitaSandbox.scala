@@ -29,7 +29,7 @@ object AnitaSandbox extends App {
       }
       println("")
     }
-    println
+    println()
   }
 
 //  showTable(1 to 3, 1 to 3, "*", _ * _)

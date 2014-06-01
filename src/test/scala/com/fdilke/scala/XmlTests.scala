@@ -1,8 +1,8 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
+import org.scalatest.{Matchers, FunSpec}
 import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import Matchers._
 import scala.xml._
 import scala.collection.mutable.ArrayBuffer
 

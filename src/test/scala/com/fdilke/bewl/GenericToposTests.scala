@@ -1,9 +1,7 @@
 package com.fdilke.bewl
 
 import org.scalatest._
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
-import com.fdilke.bewl.fsets.FiniteSets
+import Matchers._
 
 abstract class ToposWithFixtures {
   type TOPOS <: Topos
@@ -13,10 +11,7 @@ abstract class ToposWithFixtures {
   type BAR
   type BAZ
 
-  type DOT[X] = topos.DOT[X]
-  type ARROW[X, Y] = topos.ARROW[X, Y]
-  type BIPRODUCT[L, R] = topos.BIPRODUCT[L, R]
-  type EXPONENTIAL[S, T] = topos.EXPONENTIAL[S, T]
+  import topos._
 
   val foo : DOT[FOO]
   val bar : DOT[BAR]
@@ -24,7 +19,7 @@ abstract class ToposWithFixtures {
 
   val foo2bar : ARROW[FOO, BAR]
   val foo2baz : ARROW[FOO, BAZ]
-  val foobar2baz : topos.BiArrow[FOO, BAR, BAZ]
+  val foobar2baz : BiArrow[FOO, BAR, BAZ]
 }
 
 abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) extends FunSpec {
@@ -50,6 +45,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
   ) extends ToposFixtureSanityTests(fixtures) {
 
   import fixtures._
+  import fixtures.topos._
 
   describe(s"The topos ${topos.getClass.getSimpleName}") {
     it("has identity arrows which can be composed") {

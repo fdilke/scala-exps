@@ -13,12 +13,12 @@ object FelixMatchers {
     }
   }
 
-  def distinct =
-    new BeMatcher[AnyRef] {
-      def apply(left: AnyRef) = left match {
-        case t: Seq[Any] => ???
-        case _ => ???
-      }
-    }
+//  def distinct =
+//    new BeMatcher[AnyRef] {
+//      def apply(left: AnyRef) = left match {
+//        case t: Seq[Any] => ???
+//        case _ => ???
+//      }
+//    }
 }
 

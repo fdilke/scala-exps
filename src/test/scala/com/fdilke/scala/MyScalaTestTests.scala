@@ -27,7 +27,7 @@ class MyScalaTestTests extends FunSuite with MockFactory {
 
   test("expect") {
     intercept[TestFailedException] {
-      expectResult(2) { 3 }
+      assertResult(2) { 3 }
     }
   }
 

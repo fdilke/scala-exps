@@ -2,9 +2,8 @@ package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities
 import FiniteSetsUtilities._
-import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
 
 // User: Felix Date: 28/05/2014 Time: 18:48
 

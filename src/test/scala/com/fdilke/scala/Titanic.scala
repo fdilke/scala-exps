@@ -226,14 +226,14 @@ class TitanicTest extends FunSuite {
   }
 
   test("subsets of the empty set") {
-    expectResult(Set(Set.empty)) {
+    assertResult(Set(Set.empty)) {
       Titanic.subsets(Set.empty)
     }
   }
 
   test("subsets of a singleton") {
     val p = Point(0, 0)
-    expectResult(Set(Set.empty, Set(p))) {
+    assertResult(Set(Set.empty, Set(p))) {
       Titanic.subsets(Set(p))
     }
   }
@@ -241,13 +241,13 @@ class TitanicTest extends FunSuite {
   test("subsets of a doubleton") {
     val p = Point(0, 0)
     val q = Point(0, 1)
-    expectResult(Set(Set.empty, Set(p), Set(q), Set(p, q))) {
+    assertResult(Set(Set.empty, Set(p), Set(q), Set(p, q))) {
       Titanic.subsets(Set(p, q))
     }
   }
 
   test("tuples on a grid of size 0") {
-    expectResult(Set(Set.empty, Set(Point(0, 0)))) {
+    assertResult(Set(Set.empty, Set(Point(0, 0)))) {
       new Grid(0).pointSets
     }
   }

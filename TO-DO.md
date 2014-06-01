@@ -18,6 +18,8 @@ http://www.scala-lang.org/old/node/8610.html
 ? generate the dihedral group of order 4
 ? have a concept of: convex combination in a segue acting on 'transformables'
 
+fix Titanic and other classes that use assertResult. Expunge it
+
 ## Databases
 
 HyperSQL / Slick
@@ -32,7 +34,6 @@ Lose the [FOO] in: foo2bar[FOO](foo.identity) shouldBe foo2bar
 Fix chained products
 Could we multiply arrows with f x g, in a world of 'standardized products'?
 FiniteSets should use traversables (having made sure these are sensible) and functions
-Can get rid of BIARROW?
 
 ## Monads
 

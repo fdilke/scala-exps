@@ -1,11 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.{ShouldMatchers, FunSuite}
+import org.scalatest.{Matchers, FunSuite}
 import org.scalamock.scalatest.MockFactory
 import org.junit.Assert
 import Assert._
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import Matchers._
 import FelixMatchers._
 
 object Expression {

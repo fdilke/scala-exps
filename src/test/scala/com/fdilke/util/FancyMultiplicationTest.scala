@@ -1,8 +1,7 @@
 package com.fdilke.util
 
-import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
 import com.fdilke.util.FancyMultiplicationImplicits._
 
 class FancyMultiplicationTest extends FunSpec {
