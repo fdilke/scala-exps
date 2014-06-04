@@ -56,12 +56,12 @@ abstract class GenericToposTests[TOPOS <: Topos](
     it("can construct biproduct diagrams") {
       val barXbaz = bar x baz
 
-      val productArrow = barXbaz.multiply(foo2bar, foo2baz)
+      val productArrow = foo2bar x foo2baz
       productArrow.source shouldBe foo
-      productArrow.target shouldBe barXbaz.product
+      productArrow.target shouldBe barXbaz
 
-      barXbaz.leftProjection(productArrow) shouldBe foo2bar
-      barXbaz.rightProjection(productArrow) shouldBe foo2baz
+      leftProjection(bar, baz)(productArrow) shouldBe foo2bar
+      rightProjection(bar, baz)(productArrow) shouldBe foo2baz
     }
 
     it("has a terminator") {
@@ -72,17 +72,20 @@ abstract class GenericToposTests[TOPOS <: Topos](
       bar.toConstant(foo2bar) shouldBe fooToI
     }
 
-//    // Right now, you can't. Need to have cached products first!
-////    it("can chain products") {
-////      val barXfooXbaz = bar.x[FOO](foo).x[BAZ](baz)
-////      val productArrow = barXfooXbaz.multiply(foo2bar, foo.identity, foo2baz)
-////      productArrow.source shouldBe foo
-////      productArrow.target shouldBe barXfooXbaz.product
-////
-////      barXfooXbaz.projections(0)(productArrow) shouldBe foo2bar
-////      barXfooXbaz.projections(1)(productArrow) shouldBe foo.identity
-////      barXfooXbaz.projections(2)(productArrow) shouldBe foo2baz
-////    }
+    it("has standardized products") {
+      foo x bar shouldBe (foo x bar)
+    }
+
+    it("can chain products") {
+      val barXfooXbaz = bar x foo x baz
+      val productArrow = foo2bar x foo.identity x foo2baz
+      productArrow.source shouldBe foo
+      productArrow.target shouldBe barXfooXbaz
+
+      leftProjection(bar,foo,baz)(productArrow) shouldBe foo2bar
+      midProjection(bar,foo,baz)(productArrow) shouldBe foo.identity
+      rightProjection(bar,foo,baz)(productArrow) shouldBe foo2baz
+    }
 
     it("can construct exponential diagrams") {
       val exponential: EXPONENTIAL[BAR, BAZ] = baz.^[BAR](bar)

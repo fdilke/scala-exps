@@ -18,7 +18,7 @@ object FiniteSets extends Topos {
       Map(set.toList.map(x => (x,x)):_*)
     )
 
-    override def x[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
+    override def multiply[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
 
     override def ^[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
 
@@ -81,7 +81,7 @@ object FiniteSets extends Topos {
 
     val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).toSet
     val exponentDot = new FiniteSetsDot[S => T](theAllMaps)
-    val productExpDiagram = exponentDot x source
+    val productExpDiagram = exponentDot * source // TODO: expunge *
 
     override val evaluation = new BiArrow[S => T, S, T](productExpDiagram,
       fromFunction(productExpDiagram.product, target, {
@@ -126,7 +126,7 @@ object FiniteSets extends Topos {
   object FiniteSetsBiArrow {
     def apply[L, R, T](left: FiniteSetsDot[L], right: FiniteSetsDot[R], target: FiniteSetsDot[T],
               map: ((L, R), T)*) : BiArrow[L, R, T] = {
-      val product = left x right
+      val product = left * right // TODO: expunge *
       BiArrow[L, R, T](product,
         FiniteSetsArrow(product.product, target, map: _*))
     }

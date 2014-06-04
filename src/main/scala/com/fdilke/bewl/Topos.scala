@@ -38,9 +38,13 @@ trait Topos {
 
     def toConstant: ARROW[X, Unit]
 
-    def x[Y](that: DOT[Y]): BIPRODUCT[X, Y]
+    def multiply[Y](that: DOT[Y]): BIPRODUCT[X, Y]
 
     def ^[W](that: DOT[W]): EXPONENTIAL[W, X]
+
+    final def *[Y](that: DOT[Y]) = standardProduct(this.asInstanceOf[DOT[X]], that)
+
+    final def x[Y](that: DOT[Y]) = (this * that).product
   }
 
   trait Arrow[X, Y] {
@@ -48,6 +52,9 @@ trait Topos {
     val target: DOT[Y]
 
     def apply[W](arrow: ARROW[W, X]): ARROW[W, Y]
+
+    final def x[Z](that: ARROW[X, Z]) = (this.target * that.target).
+      multiply(this.asInstanceOf[ARROW[X, Y]], that)
   }
 
   trait Biproduct[X, Y] {
@@ -76,5 +83,24 @@ trait Topos {
 
   case class BiArrow[L, R, T](product: BIPRODUCT[L, R], arrow: ARROW[(L, R), T])
 
+  private val standardProducts = scala.collection.mutable.Map[(DOT[Any], DOT[Any]), BIPRODUCT[Any, Any]]()
+  def standardProduct[X, Y](x: DOT[X], y: DOT[Y]): BIPRODUCT[X, Y] = {
+    val key: (DOT[Any], DOT[Any]) = (x.asInstanceOf[DOT[Any]], y.asInstanceOf[DOT[Any]])
+    standardProducts.get(key).map( product =>
+      product.asInstanceOf[BIPRODUCT[X, Y]]
+    ).getOrElse {
+      val product: BIPRODUCT[X, Y] = x multiply y
+      standardProducts.put(key, product.asInstanceOf[BIPRODUCT[Any, Any]])
+      product
+    }
+  }
+
+  def leftProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).leftProjection
+  def rightProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).rightProjection
+
+  // Helper methods for triproducts (this could obviously be extended)
+  def leftProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = (x * y).leftProjection(((x x y) * z).leftProjection)
+  def midProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = (x * y).rightProjection(((x x y) * z).leftProjection)
+  def rightProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = ((x x y) * z).rightProjection
 }
 

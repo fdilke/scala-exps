@@ -4,6 +4,9 @@ This is a sandbox for experiments with aspects of Scala.
 Most of them are just to learn about the language but may turn
 out to be useful for other projects.
 
+## Bewl: done
+Bind classes to dots, and to the sources and targets of arrows
+
 ## language 'tests'
 
 These capture my understanding of various language features.
