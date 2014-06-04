@@ -80,13 +80,11 @@ object FiniteSets extends Topos {
     extends Exponential[S, T] {
 
     val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).toSet
-    val exponentDot = new FiniteSetsDot[S => T](theAllMaps)
+    val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
 
-    // TODO: use FiniteSetsBiArrow
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
-      fromFunction(exponentDot x source, target, {
-        case (f, s) =>
-          f.asInstanceOf[Map[S, T]](s)
+      fromFunction[(S => T, S), T](exponentDot x source, target, {
+        case (f:Map[S, T], s:S) => f(s)
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
