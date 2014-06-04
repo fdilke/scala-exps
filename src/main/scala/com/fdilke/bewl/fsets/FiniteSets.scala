@@ -81,16 +81,16 @@ object FiniteSets extends Topos {
 
     val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).toSet
     val exponentDot = new FiniteSetsDot[S => T](theAllMaps)
-    val productExpDiagram = exponentDot * source // TODO: expunge *
 
-    override val evaluation = new BiArrow[S => T, S, T](productExpDiagram,
-      fromFunction(productExpDiagram.product, target, {
+    // TODO: use FiniteSetsBiArrow
+    override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
+      fromFunction(exponentDot x source, target, {
         case (f, s) =>
           f.asInstanceOf[Map[S, T]](s)
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
-      fromFunction(multiArrow.product.leftProjection.target, exponentDot, { t =>
+      fromFunction(multiArrow.left, exponentDot, { t =>
         (for (u <- source.set) yield (u, multiArrow.arrow.map((t, u)))).toMap
       })
   }
@@ -124,11 +124,11 @@ object FiniteSets extends Topos {
   }
 
   object FiniteSetsBiArrow {
-    def apply[L, R, T](left: FiniteSetsDot[L], right: FiniteSetsDot[R], target: FiniteSetsDot[T],
-              map: ((L, R), T)*) : BiArrow[L, R, T] = {
-      val product = left * right // TODO: expunge *
-      BiArrow[L, R, T](product,
-        FiniteSetsArrow(product.product, target, map: _*))
-    }
+    def apply[L, R, T](left: FiniteSetsDot[L],
+                       right: FiniteSetsDot[R],
+                       target: FiniteSetsDot[T],
+              map: ((L, R), T)*) : BiArrow[L, R, T] =
+      BiArrow[L, R, T](left, right,
+        FiniteSetsArrow(left x right, target, map: _*))
   }
 }

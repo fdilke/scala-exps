@@ -6,6 +6,8 @@ out to be useful for other projects.
 
 ## Bewl: done
 Bind classes to dots, and to the sources and targets of arrows
+Fixed chained products
+Can multiply arrows with f x g, in a world of 'standardized products'
 
 ## language 'tests'
 

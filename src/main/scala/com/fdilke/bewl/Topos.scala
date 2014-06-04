@@ -81,7 +81,7 @@ trait Topos {
     def transpose[W](multiArrow: BiArrow[W, S, T]): ARROW[W, S => T]
   }
 
-  case class BiArrow[L, R, T](product: BIPRODUCT[L, R], arrow: ARROW[(L, R), T])
+  case class BiArrow[L, R, T](left: DOT[L], right: DOT[R], arrow: ARROW[(L, R), T])
 
   private val standardProducts = scala.collection.mutable.Map[(DOT[Any], DOT[Any]), BIPRODUCT[Any, Any]]()
   def standardProduct[X, Y](x: DOT[X], y: DOT[Y]): BIPRODUCT[X, Y] = {

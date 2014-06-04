@@ -88,23 +88,21 @@ abstract class GenericToposTests[TOPOS <: Topos](
     }
 
     it("can construct exponential diagrams") {
-      val exponential: EXPONENTIAL[BAR, BAZ] = baz.^[BAR](bar)
+      val exponential: EXPONENTIAL[BAR, BAZ] = baz ^ bar
 
       // Check evaluation maps baz^bar x bar -> baz
       val ev = exponential.evaluation
-      ev.product.rightProjection.target shouldBe bar
+      ev.right shouldBe bar
       ev.arrow.target shouldBe baz
 
       val transpose: ARROW[FOO, BAR => BAZ] = exponential.transpose[FOO](foobar2baz)
 
-      transpose should have ('source (foo), 'target (ev.product.leftProjection.target))
+      transpose should have ('source (foo), 'target (ev.left))
 
       // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz
       // as the product of foo x baz -> foo -> bar^baz and foo x baz -> baz -> baz
-      val x1 = transpose[(FOO, BAR)](foobar2baz.product.leftProjection)
-      val x2 = foobar2baz.product.rightProjection
-      val t_x_1 = ev.product.multiply(x1, x2)
-      foobar2baz.arrow shouldBe ev.arrow(t_x_1)
+      foobar2baz.arrow shouldBe ev.arrow(
+        transpose[(FOO, BAR)](leftProjection(foo, bar)) x rightProjection(foo, bar))
     }
   }
 }
