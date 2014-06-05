@@ -3,6 +3,7 @@ package com.fdilke.bewl.fsets
 import com.fdilke.bewl._
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow.fromFunction
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
+import Function.tupled
 
 object FiniteSets extends Topos {
   type DOT[X] = FiniteSetsDot[X]
@@ -83,8 +84,8 @@ object FiniteSets extends Topos {
     val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
 
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
-      fromFunction[(S => T, S), T](exponentDot x source, target, {
-        case (f:Map[S, T], s:S) => f(s)
+      fromFunction[(S => T, S), T](exponentDot x source, target, tupled {
+        (f:S => T, s:S) => f(s)
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =

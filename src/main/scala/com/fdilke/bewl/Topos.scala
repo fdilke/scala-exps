@@ -1,29 +1,7 @@
 package com.fdilke.bewl
 
-//trait ProductDiagram[DOT <: ToposDot[DOT, ARROW], ARROW <: ToposArrow[DOT, ARROW]] { self =>
-//  val product: DOT
-//  val projections: Seq[ARROW]
-//  def multiply(arrows: ARROW*): ARROW
-//
-//  def x(d: DOT) = new ProductDiagram[DOT, ARROW] {
-//    private val pXd = self.product x d
-//    override val product = pXd.product
-//
-//    override val projections: Seq[ARROW] = self.projections.map(
-//      _(pXd.leftProjection)
-//    ) :+ pXd.rightProjection
-//
-//    override def multiply(arrows: ARROW*): ARROW =
-//      if (arrows.size == projections.size)
-//        arrows match {
-//          case head :+ tail => pXd.multiply(
-//              self.multiply(head : _*),
-//              tail)
-//        }
-//      else
-//        throw new IllegalArgumentException(s"{projections.size} arrows required")
-//    }
-//}
+import com.fdilke.bewl.helper.ResultStore
+import Function.tupled
 
 trait Topos {
   type DOT[P] <: Dot[P]
@@ -42,7 +20,9 @@ trait Topos {
 
     def ^[W](that: DOT[W]): EXPONENTIAL[W, X]
 
-    final def *[Y](that: DOT[Y]) = standardProduct(this.asInstanceOf[DOT[X]], that)
+    final def *[Y](that: DOT[Y]) = standardProducts(
+      (this.asInstanceOf[DOT[Any]],
+       that.asInstanceOf[DOT[Any]])).asInstanceOf[BIPRODUCT[X, Y]]
 
     final def x[Y](that: DOT[Y]) = (this * that).product
   }
@@ -83,17 +63,9 @@ trait Topos {
 
   case class BiArrow[L, R, T](left: DOT[L], right: DOT[R], arrow: ARROW[(L, R), T])
 
-  private val standardProducts = scala.collection.mutable.Map[(DOT[Any], DOT[Any]), BIPRODUCT[Any, Any]]()
-  def standardProduct[X, Y](x: DOT[X], y: DOT[Y]): BIPRODUCT[X, Y] = {
-    val key: (DOT[Any], DOT[Any]) = (x.asInstanceOf[DOT[Any]], y.asInstanceOf[DOT[Any]])
-    standardProducts.get(key).map( product =>
-      product.asInstanceOf[BIPRODUCT[X, Y]]
-    ).getOrElse {
-      val product: BIPRODUCT[X, Y] = x multiply y
-      standardProducts.put(key, product.asInstanceOf[BIPRODUCT[Any, Any]])
-      product
-    }
-  }
+  private val standardProducts = new ResultStore[(DOT[Any], DOT[Any]), BIPRODUCT[Any, Any]](tupled {
+    (x, y) => x multiply y
+  })
 
   def leftProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).leftProjection
   def rightProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).rightProjection
