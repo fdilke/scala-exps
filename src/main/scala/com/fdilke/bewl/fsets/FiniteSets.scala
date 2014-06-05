@@ -21,7 +21,7 @@ object FiniteSets extends Topos {
 
     override def multiply[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
 
-    override def ^[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
+    override def exponential[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
 
     override def equals(other: Any): Boolean = other match {
       case that: FiniteSetsDot[X] =>  set == that.set

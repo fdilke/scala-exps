@@ -73,7 +73,8 @@ abstract class GenericToposTests[TOPOS <: Topos](
     }
 
     it("has standardized products") {
-      foo x bar shouldBe (foo x bar)
+      val product: DOT[(FOO, BAR)] = foo x bar
+      product shouldBe (foo x bar)
     }
 
     it("can chain products") {
@@ -82,27 +83,31 @@ abstract class GenericToposTests[TOPOS <: Topos](
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXfooXbaz
 
-      leftProjection(bar,foo,baz)(productArrow) shouldBe foo2bar
-      midProjection(bar,foo,baz)(productArrow) shouldBe foo.identity
-      rightProjection(bar,foo,baz)(productArrow) shouldBe foo2baz
+      leftProjection(bar, foo, baz)(productArrow) shouldBe foo2bar
+      midProjection(bar, foo, baz)(productArrow) shouldBe foo.identity
+      rightProjection(bar, foo, baz)(productArrow) shouldBe foo2baz
     }
 
     it("can construct exponential diagrams") {
-      val exponential: EXPONENTIAL[BAR, BAZ] = baz ^ bar
-
       // Check evaluation maps baz^bar x bar -> baz
-      val ev = exponential.evaluation
+      val ev = evaluation(bar, baz)
+      ev.left shouldBe baz ^ bar
       ev.right shouldBe bar
       ev.arrow.target shouldBe baz
 
-      val transpose: ARROW[FOO, BAR => BAZ] = exponential.transpose[FOO](foobar2baz)
+      val tran: ARROW[FOO, BAR => BAZ] = transpose(bar, baz, foobar2baz)
 
-      transpose should have ('source (foo), 'target (ev.left))
+      tran should have('source(foo), 'target(ev.left))
 
       // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz
       // as the product of foo x baz -> foo -> bar^baz and foo x baz -> baz -> baz
       foobar2baz.arrow shouldBe ev.arrow(
-        transpose[(FOO, BAR)](leftProjection(foo, bar)) x rightProjection(foo, bar))
+        tran(leftProjection(foo, bar)) x rightProjection(foo, bar))
+    }
+
+    it("has standardized exponentials") {
+      val exponential: DOT[BAR => FOO] = foo ^ bar
+      exponential shouldBe (foo ^ bar)
     }
   }
 }

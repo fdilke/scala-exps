@@ -18,13 +18,19 @@ trait Topos {
 
     def multiply[Y](that: DOT[Y]): BIPRODUCT[X, Y]
 
-    def ^[W](that: DOT[W]): EXPONENTIAL[W, X]
-
     final def *[Y](that: DOT[Y]) = standardProducts(
       (this.asInstanceOf[DOT[Any]],
        that.asInstanceOf[DOT[Any]])).asInstanceOf[BIPRODUCT[X, Y]]
 
     final def x[Y](that: DOT[Y]) = (this * that).product
+
+    def exponential[S](that: DOT[S]): EXPONENTIAL[S, X]
+
+    final def A[S](that: DOT[S]) = standardExponentials(
+      (this.asInstanceOf[DOT[Any]],
+        that.asInstanceOf[DOT[Any]])).asInstanceOf[EXPONENTIAL[S, X]]
+
+    final def ^[S](that: DOT[S]): DOT[S => X] = (this A that).evaluation.left
   }
 
   trait Arrow[X, Y] {
@@ -46,15 +52,6 @@ trait Topos {
                     rightArrow: ARROW[W, Y]): ARROW[W, (X, Y)]
   }
 
-// Fux this! Use old ProductDiagram above as inspiration
-//  trait Product[X, Y] {
-//    val product: DOT[(X, Y)]
-//    def projections: ARROW[(X, Y), X]
-//
-//    def multiply[W](leftArrow: ARROW[W, X],
-//                    rightArrow: ARROW[W, Y]): ARROW[W, (X, Y)]
-//  }
-
   trait Exponential[S, T] {
     val evaluation: BiArrow[S => T, S, T]
 
@@ -67,6 +64,11 @@ trait Topos {
     (x, y) => x multiply y
   })
 
+  private val standardExponentials = new ResultStore[(DOT[Any], DOT[Any]), EXPONENTIAL[Any, Any]](tupled {
+    (x, y) => x exponential y
+  })
+
+  // Helper methods for biproducts
   def leftProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).leftProjection
   def rightProjection[X, Y](x: DOT[X], y: DOT[Y]) = (x * y).rightProjection
 
@@ -74,5 +76,12 @@ trait Topos {
   def leftProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = (x * y).leftProjection(((x x y) * z).leftProjection)
   def midProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = (x * y).rightProjection(((x x y) * z).leftProjection)
   def rightProjection[X, Y, Z](x: DOT[X], y: DOT[Y], z: DOT[Z]) = ((x x y) * z).rightProjection
+
+  // Helper methods for exponentials
+  def evaluation[S, T](s: DOT[S], t: DOT[T]): BiArrow[S=>T, S, T] =
+    (t A s).evaluation
+
+  def transpose[S, T, W](s: DOT[S], t: DOT[T], multiArrow: BiArrow[W, S, T]): ARROW[W, S => T] =
+    (t A s).transpose(multiArrow)
 }
 
