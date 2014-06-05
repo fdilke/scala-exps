@@ -2,6 +2,7 @@ package com.fdilke.scala
 
 import org.scalatest.{Matchers, FunSpec}
 import Matchers._
+import scala.collection.mutable
 
 class TraversableTests extends FunSpec {
   describe("Traversables") {
@@ -35,6 +36,22 @@ class TraversableTests extends FunSpec {
       foo ++ foo shouldBe List(7, 9, 7, 9)
       foo./:(3)(_ * _) shouldBe 189
       foo.filter(_ > 8) shouldBe List(9)
+    }
+
+    it("don't traverse any more than they have to") {
+      val foo = new Traversable[Int]() {
+        override def foreach[U](f: Int => U) = {
+          f(1)
+          f(4)
+          f(9)
+        }
+      }
+      val received = mutable.MutableList[Int]()
+      foo.exists { p =>
+        received += p
+        p > 3
+      } shouldBe true
+      received shouldBe Seq(1, 4)
     }
   }
 }
