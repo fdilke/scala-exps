@@ -1,7 +1,6 @@
 package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
-import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow.fromFunction
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
 import Function.tupled
 
@@ -30,7 +29,7 @@ object FiniteSets extends Topos {
 
     override def hashCode(): Int = set.hashCode()
 
-    override def toConstant = fromFunction(this, FiniteSets.I, _ => ())
+    override def toConstant = new FiniteSetsArrow(this, FiniteSets.I, _ => ())
   }
 
   class FiniteSetsArrow[X, Y](val source: FiniteSetsDot[X],
@@ -67,12 +66,12 @@ object FiniteSets extends Topos {
                                    ) extends Biproduct[L, R] {
     override val product = new FiniteSetsDot[(L, R)](for (x <- left.set; y <- right.set) yield (x, y))
 
-    override val leftProjection: FiniteSetsArrow[(L, R), L] = fromFunction(product, left, { case(x, y)  => x} )
+    override val leftProjection: FiniteSetsArrow[(L, R), L] = new FiniteSetsArrow(product, left, tupled { (x, y)  => x} )
 
-    override val rightProjection: FiniteSetsArrow[(L, R), R] = fromFunction(product, right, { case (x, y) => y})
+    override val rightProjection: FiniteSetsArrow[(L, R), R] = new FiniteSetsArrow(product, right, tupled { (x, y) => y})
 
     override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
-      fromFunction(leftArrow.source, product, { case x => (leftArrow.function(x), rightArrow.function(x))} )
+      new FiniteSetsArrow(leftArrow.source, product, { case x => (leftArrow.function(x), rightArrow.function(x))} )
   }
 
   class FiniteSetsExponential[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T])
@@ -82,13 +81,13 @@ object FiniteSets extends Topos {
     val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
 
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
-      fromFunction[(S => T, S), T](exponentDot x source, target, tupled {
+      new FiniteSetsArrow[(S => T, S), T](exponentDot x source, target, tupled {
         (f:S => T, s:S) => f(s)
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
-      fromFunction(multiArrow.left, exponentDot, { t =>
-        (for (u <- source.set) yield (u, multiArrow.arrow.function((t, u)))).toMap
+      new FiniteSetsArrow(multiArrow.left, exponentDot, { t =>
+        (for (u <- source.set) yield (u, multiArrow.arrow.function((t, u)))).toMap   // TODO: lose the toMap?
       })
   }
 
@@ -115,9 +114,6 @@ object FiniteSets extends Topos {
   object FiniteSetsArrow {
     def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], elements: (S, T)*) =
       new FiniteSetsArrow[S, T](source, target, Map(elements: _*))
-
-    def fromFunction[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], f: S => T) =
-      new FiniteSetsArrow(source, target, (for (x <- source.set) yield (x, f(x))).toMap)
   }
 
   object FiniteSetsBiArrow {
