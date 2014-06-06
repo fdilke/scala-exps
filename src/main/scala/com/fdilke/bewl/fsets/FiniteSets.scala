@@ -35,34 +35,32 @@ object FiniteSets extends Topos {
 
   class FiniteSetsArrow[X, Y](val source: FiniteSetsDot[X],
                               val target: FiniteSetsDot[Y],
-                              val map: Map[X, Y]
+                              val function: X => Y
                                ) extends Arrow[X, Y] {
 
     def sanityTest() =
-      if (map.keySet != source.set) {
-        throw new IllegalArgumentException("Map keys != source")
-      } else if (map.values.exists(!target.set.contains(_))) {
+      if (!source.set.map(function).forall(target.set.contains)) {
         throw new IllegalArgumentException("Map values not in target")
       }
 
-    override def toString = s"FiniteSetsArrow(${source.set}, ${target.set}, $map)"
+    override def toString = s"""FiniteSetsArrow(${source.set}, ${target.set},
+      |${Map(source.set.toList.map(x => (x, function(x))): _*)})""".stripMargin
 
     override def apply[W](arrow: FiniteSetsArrow[W, X]) =
       if (arrow.target == source) {
-        new FiniteSetsArrow(arrow.source, target,
-          Map(arrow.source.set.toList.map(x => (x, map(arrow.map(x)))): _*)
-        )
+        new FiniteSetsArrow(arrow.source, target,  function.compose(arrow.function))
       } else {
         throw new IllegalArgumentException("Target does not match source")
       }
 
     override def equals(other: Any): Boolean = other match {
       case that: FiniteSetsArrow[X, Y] =>
-        source == that.source && target == that.target && map == that.map
+        source == that.source && target == that.target &&
+          source.set.forall(x => function(x) == that.function(x))
       case _ => false
     }
 
-    override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + map.hashCode() * 13
+    override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + function.hashCode() * 13
   }
 
   class FiniteSetsBiproduct[L, R](left: FiniteSetsDot[L], right: FiniteSetsDot[R]
@@ -74,7 +72,7 @@ object FiniteSets extends Topos {
     override val rightProjection: FiniteSetsArrow[(L, R), R] = fromFunction(product, right, { case (x, y) => y})
 
     override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
-      fromFunction(leftArrow.source, product, { case x => (leftArrow.map(x), rightArrow.map(x))} )
+      fromFunction(leftArrow.source, product, { case x => (leftArrow.function(x), rightArrow.function(x))} )
   }
 
   class FiniteSetsExponential[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T])
@@ -90,7 +88,7 @@ object FiniteSets extends Topos {
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
       fromFunction(multiArrow.left, exponentDot, { t =>
-        (for (u <- source.set) yield (u, multiArrow.arrow.map((t, u)))).toMap
+        (for (u <- source.set) yield (u, multiArrow.arrow.function((t, u)))).toMap
       })
   }
 
