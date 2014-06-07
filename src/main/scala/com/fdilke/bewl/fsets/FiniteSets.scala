@@ -83,13 +83,32 @@ object FiniteSets extends Topos {
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
-      new FiniteSetsArrow(multiArrow.left, exponentDot, { t =>
+      new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot, { t =>
         (for (u <- source.set) yield (u, multiArrow.arrow.function((t, u)))).toMap   // TODO: lose the toMap?
+        // TODO: we'd have to return, if not a map, a 'function object' with the right equality semantics.
+        // TODO: spell out what those would have to be.
+        // TODO: we only care that parallel arrows f,g: A -> B are equal iff f(a)===g(a) for all a iterated over by A
+        // TODO: for this to be true here: we have to return not just f sending a -> f(a), but f that can be sensibly
+        // TODO: equality-tested against such parallel f's. So have to wrap f and compare it with similarly wrapped functions.
       })
   }
 
   object FiniteSetsDot {
     def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
+  }
+
+  object FiniteSetsBiArrow {
+    def apply[L, R, T](left: FiniteSetsDot[L],
+                       right: FiniteSetsDot[R],
+                       target: FiniteSetsDot[T],
+              map: ((L, R), T)*) : BiArrow[L, R, T] =
+      BiArrow[L, R, T](left, right,
+        FiniteSetsArrow[(L, R), T](left x right, target, Map(map:_*)))
+  }
+
+  object FiniteSetsArrow {
+    def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], map: (S, T)*): FiniteSetsArrow[S, T] =
+      FiniteSetsArrow(source, target, Map(map:_*))
   }
 
   object FiniteSetsUtilities {
@@ -107,19 +126,5 @@ object FiniteSets extends Topos {
         for (map <- allMaps(tail, target); choice <- target)
         yield map + (head -> choice)
     }
-  }
-
-  object FiniteSetsBiArrow {
-    def apply[L, R, T](left: FiniteSetsDot[L],
-                       right: FiniteSetsDot[R],
-                       target: FiniteSetsDot[T],
-              map: ((L, R), T)*) : BiArrow[L, R, T] =
-      BiArrow[L, R, T](left, right,
-        FiniteSetsArrow[(L, R), T](left x right, target, Map(map:_*)))
-  }
-
-  object FiniteSetsArrow {
-    def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], map: (S, T)*): FiniteSetsArrow[S, T] =
-      FiniteSetsArrow(source, target, Map(map:_*))
   }
 }
