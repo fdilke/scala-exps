@@ -18,7 +18,7 @@ class FiniteSetsDotTest extends FunSpec with ShouldMatchers {
     it("should have an identity arrow") {
       val dot = FiniteSetsDot[String]("a", "b")
       dot.identity should be(
-        FiniteSetsArrow[String, String](dot, dot, Map("a" -> "a", "b" -> "b"))
+        FiniteSetsArrow[String, String](dot, dot, "a" -> "a", "b" -> "b")
       )
     }
   }

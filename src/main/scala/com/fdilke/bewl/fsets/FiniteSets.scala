@@ -13,9 +13,7 @@ object FiniteSets extends Topos {
   val I = FiniteSetsDot[Unit](())
 
   class FiniteSetsDot[X](val set: Set[X]) extends Dot[X] {
-    override def identity: FiniteSetsArrow[X, X] = FiniteSetsArrow(this, this,
-      Map(set.toList.map(x => (x,x)):_*)
-    )
+    override def identity: FiniteSetsArrow[X, X] = FiniteSetsArrow(this, this, x => x)
 
     override def multiply[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
 
@@ -65,9 +63,9 @@ object FiniteSets extends Topos {
                                    ) extends Biproduct[L, R] {
     override val product = new FiniteSetsDot[(L, R)](for (x <- left.set; y <- right.set) yield (x, y))
 
-    override val leftProjection: FiniteSetsArrow[(L, R), L] = FiniteSetsArrow(product, left, tupled { (x, y)  => x} )
+    override val leftProjection = new FiniteSetsArrow[(L, R), L](product, left, tupled { (x, y)  => x} )
 
-    override val rightProjection: FiniteSetsArrow[(L, R), R] = FiniteSetsArrow(product, right, tupled { (x, y) => y})
+    override val rightProjection = new FiniteSetsArrow[(L, R), R](product, right, tupled { (x, y) => y})
 
     override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
       FiniteSetsArrow(leftArrow.source, product, { x => (leftArrow.function(x), rightArrow.function(x))} )
@@ -102,6 +100,7 @@ object FiniteSets extends Topos {
     }
 
     // TODO: change FiniteSet to use traversables
+    // TODO: have this iterate over functions
     def allMaps[A, B](source: Seq[A], target: Set[B]): Iterator[Map[A, B]] = source match {
       case Seq() => Iterator(Map[A, B]())
       case Seq(head, tail @ _*) =>
@@ -116,6 +115,11 @@ object FiniteSets extends Topos {
                        target: FiniteSetsDot[T],
               map: ((L, R), T)*) : BiArrow[L, R, T] =
       BiArrow[L, R, T](left, right,
-        FiniteSetsArrow[(L, R), T](left x right, target, Map(map: _*)))
+        FiniteSetsArrow[(L, R), T](left x right, target, Map(map:_*)))
+  }
+
+  object FiniteSetsArrow {
+    def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], map: (S, T)*): FiniteSetsArrow[S, T] =
+      FiniteSetsArrow(source, target, Map(map:_*))
   }
 }
