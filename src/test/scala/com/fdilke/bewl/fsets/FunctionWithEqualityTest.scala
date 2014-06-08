@@ -6,6 +6,16 @@ import Matchers._
 // User: Felix Date: 07/06/2014 Time: 10:56
 
 class FunctionWithEqualityTest extends FunSpec {
+  describe("functions with equality") {
+    it("pass through the function argument and return value") {
+      val f = (x: Int) => x + x
+      val domain = Set(1,2,3)
+      val fE = FunctionWithEquality(domain,f)
+      fE(1) shouldBe 2
+      fE(2) shouldBe 4
+    }
+  }
+
   describe("the semantics of equality") {
     it("identify functions calculating the same values") {
       val f = (x: Int) => x + x
@@ -26,6 +36,5 @@ class FunctionWithEqualityTest extends FunSpec {
       (FunctionWithEquality(biggerDomain,f) ==
         FunctionWithEquality(biggerDomain, g)) shouldBe false
     }
-
   }
 }

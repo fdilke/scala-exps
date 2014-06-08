@@ -41,6 +41,8 @@ trait Topos {
 
     final def x[Z](that: ARROW[X, Z]) = (this.target * that.target).
       multiply(this.asInstanceOf[ARROW[X, Y]], that)
+
+    def sanityTest: Unit
   }
 
   trait Biproduct[X, Y] {

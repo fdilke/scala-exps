@@ -32,18 +32,17 @@ class FiniteSetsArrowTest extends FunSpec with ShouldMatchers {
     }
 
     it("should support sanity tests") {
-      dot2dash.sanityTest()
-      dot2dashBig.sanityTest()
-      doodah2dot.sanityTest()
-      dotSmall2dash.sanityTest()
+      dot2dash.sanityTest
+      dot2dashBig.sanityTest
+      doodah2dot.sanityTest
+      dotSmall2dash.sanityTest
 
-// TODO: restore
-//      intercept[IllegalArgumentException] {
-//        dotBig2dash.sanityTest()
-//      }.getMessage shouldBe "Map keys != source"
+      intercept[NoSuchElementException] {
+        dotBig2dash.sanityTest
+      }.getMessage shouldBe "key not found: c"
 
       intercept[IllegalArgumentException] {
-        dot2dashBadValues.sanityTest()
+        dot2dashBadValues.sanityTest
       }.getMessage shouldBe "Map values not in target"
     }
 

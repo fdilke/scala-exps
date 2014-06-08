@@ -2,6 +2,7 @@ package com.fdilke.bewl
 
 import org.scalatest._
 import Matchers._
+import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow
 
 abstract class ToposWithFixtures {
   type TOPOS <: Topos
@@ -30,12 +31,18 @@ abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) 
       Set(foo, bar, baz) should have size 3
     }
 
-    it("include arrows whose sources and targets match their names") {
+    it("include sane arrows whose sources and targets match their names") {
       foo2bar.source shouldBe foo
       foo2bar.target shouldBe bar
+      foo2bar.sanityTest
 
       foo2baz.source shouldBe foo
       foo2baz.target shouldBe baz
+      foo2baz.sanityTest
+
+      foobar2baz.arrow.source shouldBe (foo x bar)
+      foobar2baz.arrow.target shouldBe baz
+      foobar2baz.arrow.sanityTest
     }
   }
 }
@@ -59,6 +66,9 @@ abstract class GenericToposTests[TOPOS <: Topos](
       val productArrow = foo2bar x foo2baz
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXbaz
+
+      leftProjection(bar, baz).sanityTest
+      rightProjection(bar, baz).sanityTest
 
       leftProjection(bar, baz)(productArrow) shouldBe foo2bar
       rightProjection(bar, baz)(productArrow) shouldBe foo2baz
@@ -94,9 +104,12 @@ abstract class GenericToposTests[TOPOS <: Topos](
       ev.left shouldBe baz ^ bar
       ev.right shouldBe bar
       ev.arrow.target shouldBe baz
+      ev.arrow.sanityTest
 
       val tran: ARROW[FOO, BAR => BAZ] = transpose(bar, baz, foobar2baz)
 
+      // TODO: fix this!
+//      tran.sanityTest
       tran should have('source(foo), 'target(ev.left))
 
       // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz

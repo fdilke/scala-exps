@@ -2,7 +2,7 @@ package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
-import Function.tupled
+import Function.{tupled, untupled}
 
 object FiniteSets extends Topos {
   type DOT[X] = FiniteSetsDot[X]
@@ -33,12 +33,6 @@ object FiniteSets extends Topos {
                               val target: FiniteSetsDot[Y],
                               val function: X => Y
                                ) extends Arrow[X, Y] {
-
-    def sanityTest() =
-      if (!source.set.map(function).forall(target.set.contains)) {
-        throw new IllegalArgumentException("Map values not in target")
-      }
-
     override def toString = s"""FiniteSetsArrow(${source.set}, ${target.set},
       |${Map(source.set.toList.map(x => (x, function(x))): _*)})""".stripMargin
 
@@ -57,6 +51,11 @@ object FiniteSets extends Topos {
     }
 
     override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + function.hashCode() * 13
+
+    def sanityTest =
+      if (!source.set.map(function).forall(target.set.contains)) {
+        throw new IllegalArgumentException("Map values not in target")
+      }
   }
 
   class FiniteSetsBiproduct[L, R](left: FiniteSetsDot[L], right: FiniteSetsDot[R]
@@ -74,7 +73,11 @@ object FiniteSets extends Topos {
   class FiniteSetsExponential[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T])
     extends Exponential[S, T] {
 
-    val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).toSet
+    // the 'function equality' semantics are needed even if these are all maps, because
+    // we'll be comparing against things that aren't
+    // TODO: can they not be all maps?
+    val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).
+      map(FunctionWithEquality(source.set, _)).toSet
     val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
 
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
@@ -83,14 +86,10 @@ object FiniteSets extends Topos {
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
-      new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot, { t =>
-        (for (u <- source.set) yield (u, multiArrow.arrow.function((t, u)))).toMap   // TODO: lose the toMap?
-        // TODO: we'd have to return, if not a map, a 'function object' with the right equality semantics.
-        // TODO: spell out what those would have to be.
-        // TODO: we only care that parallel arrows f,g: A -> B are equal iff f(a)===g(a) for all a iterated over by A
-        // TODO: for this to be true here: we have to return not just f sending a -> f(a), but f that can be sensibly
-        // TODO: equality-tested against such parallel f's. So have to wrap f and compare it with similarly wrapped functions.
-      })
+      new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
+        t => u => multiArrow.arrow.function((t, u))
+// TODO: ?        FunctionWithEquality[W, S=>T](multiArrow.left.set, t => u => multiArrow.arrow.function((t, u)))
+      )
   }
 
   object FiniteSetsDot {
