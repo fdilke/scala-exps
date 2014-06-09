@@ -106,10 +106,28 @@ object FiniteSets extends Topos {
   }
 
   object FiniteSetsUtilities {
-    def cartesian[A](factors: Seq[A]*): Iterator[Seq[A]] = factors match {
-      case Seq() => Iterator(Seq())
-      case Seq(head, tail @ _*) =>
-        head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
+    def cartesian[A](factors: Seq[A]*): Traversable[Seq[A]] = {
+      println("factors size: " + factors.size)
+      println("factors are: " + factors)
+      factors match {
+        case Seq() =>
+          println("empty!")
+          Traversable(Seq())
+        case Seq(head, tail@_*) =>
+          println("dissected head, tail = " + head + ";;" + tail)
+          val ccc = cartesian(tail.toSeq: _*)
+          println("cartesian(tail) = " + ccc)
+          println("---")
+          new Traversable[Seq[A]] {
+          override def foreach[U](func: Seq[A] => U) {
+            println("tail has size " + tail.size)
+            for (h <- head; sequence <- ccc) {
+              println("h = " + h)
+              func(h +: sequence)
+            }
+          }
+        }
+      }
     }
 
     def allMaps[A, B](source: Traversable[A], target: Traversable[B]): Traversable[A=>B] =
