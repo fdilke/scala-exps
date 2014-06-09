@@ -36,11 +36,12 @@ object AnitaSandbox extends App {
 //  showTable(2 to 7, -1 to 8, "+", _ + _)
 //  showTable(2 to 7, -1 to 8, "-", _ - _)
 
-  val testRange: Seq[Int] = 1 to 30
+  val testRange: Seq[Int] = 1 to 20
 
 
 
-  showTable(testRange, testRange, "*", _ * _)
+  showTable(testRange, testRange, "%", _ % _)
+//  showTable(testRange, testRange, "*", _ * _)
   //showTable(testRange, testRange, "F", _ ** _)
 
   def different(a:Int, b:Int) =

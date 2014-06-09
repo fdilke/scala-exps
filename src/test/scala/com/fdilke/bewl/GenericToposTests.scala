@@ -66,6 +66,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
       val productArrow = foo2bar x foo2baz
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXbaz
+      productArrow.sanityTest
 
       leftProjection(bar, baz).sanityTest
       rightProjection(bar, baz).sanityTest
@@ -78,6 +79,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
       val fooToI = foo.toConstant
       fooToI.source shouldBe foo
       fooToI.target shouldBe topos.I
+      fooToI.sanityTest
 
       bar.toConstant(foo2bar) shouldBe fooToI
     }
@@ -92,6 +94,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
       val productArrow = foo2bar x foo.identity x foo2baz
       productArrow.source shouldBe foo
       productArrow.target shouldBe barXfooXbaz
+      productArrow.sanityTest
 
       leftProjection(bar, foo, baz)(productArrow) shouldBe foo2bar
       midProjection(bar, foo, baz)(productArrow) shouldBe foo.identity
@@ -107,9 +110,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
       ev.arrow.sanityTest
 
       val tran: ARROW[FOO, BAR => BAZ] = transpose(bar, baz, foobar2baz)
-
-      // TODO: fix this!
-//      tran.sanityTest
+      tran.sanityTest
       tran should have('source(foo), 'target(ev.left))
 
       // Next, construct the arrow: transpose x 1 : foo x baz -> bar^baz x baz

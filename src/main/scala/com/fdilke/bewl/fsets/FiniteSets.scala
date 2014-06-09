@@ -87,8 +87,7 @@ object FiniteSets extends Topos {
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
       new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
-        t => u => multiArrow.arrow.function((t, u))
-// TODO: ?        FunctionWithEquality[W, S=>T](multiArrow.left.set, t => u => multiArrow.arrow.function((t, u)))
+        w => FunctionWithEquality[S, T](multiArrow.right.set, { s => multiArrow.arrow.function((w, s)) })
       )
   }
 
