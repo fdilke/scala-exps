@@ -12,7 +12,7 @@ class FiniteSetsExponentialTest extends FunSpec {
       val source = FiniteSetsDot('a, 'b, 'c)
       val target = FiniteSetsDot(1, 2, 3, 4)
       val expDot = target ^ source
-      expDot.set.toSet should have ('size (64))
+      expDot.size shouldBe 64
     }
   }
 }

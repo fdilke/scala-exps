@@ -2,7 +2,7 @@ package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
-import Function.{tupled, untupled}
+import Function.tupled
 
 object FiniteSets extends Topos {
   type DOT[X] = FiniteSetsDot[X]
@@ -12,29 +12,26 @@ object FiniteSets extends Topos {
 
   val I = FiniteSetsDot[Unit](())
 
-  class FiniteSetsDot[X](val set: Set[X]) extends Dot[X] {
+  class FiniteSetsDot[X](elements: Traversable[X]) extends Dot[X] with Traversable[X] {
+    override def toString = elements.toString
+
+    override def foreach[U](f: (X) => U) { elements.foreach(f) }
+
     override def identity: FiniteSetsArrow[X, X] = FiniteSetsArrow(this, this, x => x)
 
     override def multiply[Y](that: FiniteSetsDot[Y]) = new FiniteSetsBiproduct[X, Y](this, that)
 
     override def exponential[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
 
-    override def equals(other: Any): Boolean = other match {
-      case that: FiniteSetsDot[X] =>  set == that.set
-      case _ => false
-    }
-
-    override def hashCode(): Int = set.hashCode()
-
     override def toConstant = FiniteSetsArrow(this, FiniteSets.I, _ => ())
   }
 
-  case class FiniteSetsArrow[X, Y](val source: FiniteSetsDot[X],
-                              val target: FiniteSetsDot[Y],
-                              val function: X => Y
+  case class FiniteSetsArrow[X, Y](source: FiniteSetsDot[X],
+                              target: FiniteSetsDot[Y],
+                              function: X => Y
                                ) extends Arrow[X, Y] {
-    override def toString = s"""FiniteSetsArrow(${source.set}, ${target.set},
-      |${Map(source.set.toList.map(x => (x, function(x))): _*)})""".stripMargin
+    override def toString = s"""FiniteSetsArrow(${source}, ${target},
+      |${Map(source.map(x => (x, function(x))).toList: _*)})""".stripMargin
 
     override def apply[W](arrow: FiniteSetsArrow[W, X]) =
       if (arrow.target == source) {
@@ -46,21 +43,21 @@ object FiniteSets extends Topos {
     override def equals(other: Any): Boolean = other match {
       case that: FiniteSetsArrow[X, Y] =>
         source == that.source && target == that.target &&
-          source.set.forall(x => function(x) == that.function(x))
+          source.forall(x => function(x) == that.function(x))
       case _ => false
     }
 
-    override def hashCode(): Int = source.hashCode() + target.hashCode() * 5 + function.hashCode() * 13
+    override def hashCode(): Int = 0 // don't use these as keys
 
     def sanityTest =
-      if (!source.set.map(function).forall(target.set.contains)) {
+      if (source.map(function).exists(x => target.forall(_ != x))) {
         throw new IllegalArgumentException("Map values not in target")
       }
   }
 
   class FiniteSetsBiproduct[L, R](left: FiniteSetsDot[L], right: FiniteSetsDot[R]
                                    ) extends Biproduct[L, R] {
-    override val product = new FiniteSetsDot[(L, R)](for (x <- left.set; y <- right.set) yield (x, y))
+    override val product = new FiniteSetsDot[(L, R)](for (x <- left; y <- right) yield (x, y))
 
     override val leftProjection = new FiniteSetsArrow[(L, R), L](product, left, tupled { (x, y)  => x} )
 
@@ -75,9 +72,8 @@ object FiniteSets extends Topos {
 
     // the 'function equality' semantics are needed even if these are all maps, because
     // we'll be comparing against things that aren't
-    // TODO: can they not be all maps?
-    val theAllMaps: Set[S => T] = allMaps(source.set toSeq, target.set).
-      map(FunctionWithEquality(source.set, _)).toSet
+    val theAllMaps: Traversable[S => T] = allMaps(source, target).
+      map(FunctionWithEquality(source, _))
     val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
 
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
@@ -87,7 +83,7 @@ object FiniteSets extends Topos {
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
       new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
-        w => FunctionWithEquality[S, T](multiArrow.right.set, { s => multiArrow.arrow.function((w, s)) })
+        w => FunctionWithEquality[S, T](multiArrow.right, { s => multiArrow.arrow.function((w, s)) })
       )
   }
 
@@ -116,13 +112,16 @@ object FiniteSets extends Topos {
         head.iterator.flatMap { i => cartesian(tail:_*).map(i +: _) }
     }
 
-    // TODO: change FiniteSet to use traversables
-    // TODO: have this iterate over functions
-    def allMaps[A, B](source: Seq[A], target: Set[B]): Iterator[Map[A, B]] = source match {
-      case Seq() => Iterator(Map[A, B]())
-      case Seq(head, tail @ _*) =>
-        for (map <- allMaps(tail, target); choice <- target)
-        yield map + (head -> choice)
+    def allMaps[A, B](source: Traversable[A], target: Traversable[B]): Traversable[A=>B] =
+      new Traversable[A=>B] {
+        override def foreach[U](func: (A => B) => U): Unit =
+          if (source.isEmpty)
+            func(_ => ???)
+          else
+            for(f <- allMaps(source.tail, target);
+                choice <- target) {
+                func { x => if (x == source.head) choice else f(x) }
+              }
     }
   }
 }
