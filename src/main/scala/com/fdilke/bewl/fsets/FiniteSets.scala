@@ -106,31 +106,29 @@ object FiniteSets extends Topos {
   }
 
   object FiniteSetsUtilities {
-    def cartesian[A](factors: Seq[A]*): Traversable[Seq[A]] = {
-      println("factors size: " + factors.size)
-      println("factors are: " + factors)
-      factors match {
-        case Seq() =>
-          println("empty!")
-          Traversable(Seq())
-        case Seq(head, tail@_*) =>
-          println("dissected head, tail = " + head + ";;" + tail)
-          val ccc = cartesian(tail.toSeq: _*)
-          println("cartesian(tail) = " + ccc)
-          println("---")
-          new Traversable[Seq[A]] {
-          override def foreach[U](func: Seq[A] => U) {
-            println("tail has size " + tail.size)
-            for (h <- head; sequence <- ccc) {
-              println("h = " + h)
-              func(h +: sequence)
-            }
-          }
-        }
+    def cartesian[A](factors: Seq[Seq[A]]): Traversable[Seq[A]] = factors match {
+        case Nil => Traversable(Seq())
+        case head :: tail =>
+          for (h <- head; sequence <- cartesian[A](tail))
+                yield(h +: sequence)
       }
-    }
 
-    def allMaps[A, B](source: Traversable[A], target: Traversable[B]): Traversable[A=>B] =
+//    def cartesian[A](factors: Seq[A]*): Traversable[Seq[A]] = {
+//      case Seq() =>  Traversable(Seq())
+//      case Seq(head, tail @ _*) =>
+//        new Traversable[Seq[A]]() {
+//          override def foreach[U](f: (Seq[A]) => U): Unit = {
+//            for (s:Seq[A] <- cartesian(tail toSeq);
+//                 h:A <- head
+//                 ) {
+//                f(h +: s)
+//            }
+//
+//          }
+//        }
+//    }
+
+      def allMaps[A, B](source: Traversable[A], target: Traversable[B]): Traversable[A=>B] =
       new Traversable[A=>B] {
         override def foreach[U](func: (A => B) => U): Unit =
           if (source.isEmpty)

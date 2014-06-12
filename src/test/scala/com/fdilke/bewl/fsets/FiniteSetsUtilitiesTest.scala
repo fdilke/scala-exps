@@ -9,9 +9,14 @@ import Matchers._
 
 class FiniteSetsUtilitiesTest extends FunSpec {
   describe("cartesian products") {
-    // TODO: fix this!
-    ignore("enumerate all sequences") {
-      cartesian[Any](Seq(1, 2), Seq("a", "b"), Seq(true, false)).toList shouldBe Seq(
+    it("work in the trivial case") {
+      cartesian[String](List()) shouldBe Seq(
+        Seq()
+      )
+    }
+
+    it("enumerate all sequences") {
+      cartesian[Any](List(Seq(1, 2), Seq("a", "b"), Seq(true, false))).toList shouldBe Seq(
         Seq(1,"a",true), Seq(1,"a",false),
         Seq(1,"b",true), Seq(1,"b",false),
         Seq(2,"a",true), Seq(2,"a",false),
