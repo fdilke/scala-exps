@@ -9,14 +9,16 @@ trait Topos {
   type BIPRODUCT[P, Q] <: Biproduct[P, Q]
   type EXPONENTIAL[P, Q] <: Exponential[P, Q]
   type EQUALIZER[M, T] <: Equalizer[M, T]
-  type EQUALIZER_SOURCE[M, T]
 
-  val I: DOT[Unit] // TODO: make proper Terminal and Omega classes
+  type EQUALIZER_SOURCE[M, T]
+  type TERMINAL
+
+  val I: DOT[TERMINAL]
 
   trait Dot[X] {
     def identity: ARROW[X, X]
 
-    def toConstant: ARROW[X, Unit]
+    def toConstant: ARROW[X, TERMINAL]
 
     def multiply[Y](that: DOT[Y]): BIPRODUCT[X, Y]
 

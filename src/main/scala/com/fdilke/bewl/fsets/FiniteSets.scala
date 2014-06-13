@@ -2,7 +2,7 @@ package com.fdilke.bewl.fsets
 
 import com.fdilke.bewl._
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsUtilities.allMaps
-import Function.tupled
+import Function.{tupled, const}
 
 object FiniteSets extends Topos {
   type DOT[X] = FiniteSetsDot[X]
@@ -11,6 +11,7 @@ object FiniteSets extends Topos {
   type EXPONENTIAL[S, T] = FiniteSetsExponential[S, T]
   type EQUALIZER[M, T] = FiniteSetsEqualizer[M, T]
   type EQUALIZER_SOURCE[M, T] = M
+  type TERMINAL = Unit
 
   val I = FiniteSetsDot[Unit](())
 
@@ -25,7 +26,7 @@ object FiniteSets extends Topos {
 
     override def exponential[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
 
-    override def toConstant = FiniteSetsArrow(this, FiniteSets.I, _ => ())
+    override def toConstant = FiniteSetsArrow[X, TERMINAL](this, FiniteSets.I, const () _)
   }
 
   case class FiniteSetsArrow[X, Y](
