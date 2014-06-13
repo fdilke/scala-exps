@@ -52,7 +52,7 @@ object FiniteSets extends Topos {
 
     override lazy val chi = new Characteristic[X, Y] {
       val arrow = FiniteSetsArrow[Y, Boolean](target, omega,
-        (y: Y) => source.exists(x => function(x) == y) // TODO: simplify
+        (y: Y) => source.exists(function(_) == y)
       )
       def restrict[W](arrow: ARROW[W, Y]) = FiniteSetsArrow[W, X](
         arrow.source, source, (w: W) => {

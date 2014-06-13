@@ -19,7 +19,7 @@ abstract class ToposWithFixtures {
   val baz : DOT[BAZ]
 
   val foo2bar : ARROW[FOO, BAR]
-  val foo2baz : ARROW[FOO, BAZ]
+  val foo2ImageOfBar : ARROW[FOO, BAZ]
   val foobar2baz : BiArrow[FOO, BAR, BAZ]
   val monicBar2baz: ARROW[BAR, BAZ]
 
@@ -34,6 +34,8 @@ abstract class ToposWithFixtures {
 
     s(r) shouldBe t(r)
   }
+
+  final lazy val foo2baz = foo2ImageOfBar // a convenient alias
 }
 
 abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) extends FunSpec {
@@ -154,7 +156,7 @@ abstract class GenericToposTests[TOPOS <: Topos](
     }
 
     it("has a subobject classifier") {
-      truth.source shouldBe I // TODO: enforced by the type system?
+      truth.source shouldBe I
       truth.target shouldBe omega
 
       // given: monic bar -> baz
@@ -162,23 +164,13 @@ abstract class GenericToposTests[TOPOS <: Topos](
 
       val char = monicBar2baz.chi
       char.arrow.source shouldBe baz
-      char.arrow.target shouldBe omega // TODO: remove source.target checks
+      char.arrow.target shouldBe omega
       char.arrow(monicBar2baz) shouldBe truth(bar.toI)
 
-      val restriction = char.restrict(foo2baz)
+      val restriction = char.restrict(foo2ImageOfBar)
       restriction.source shouldBe foo
-      restriction.target shouldBe bar // TODO: remove source.target checks
-      monicBar2baz(restriction) shouldBe foo2baz
-
-//      val char = subBar2bar.chi
-//      char.arrow.source shouldBe bar
-//      char.arrow.target shouldBe omega // TODO: remove source.target checks
-//      char.arrow(subBar2bar) = truth(subBar.toI)
-//
-//      val restriction = char.restrict(foo2bar)
-//      restriction.source shouldBe foo
-//      restriction.target shouldBe subBar // TODO: remove source.target checks
-//      subBar2bar(restriction) shouldBe foo2bar
+      restriction.target shouldBe bar
+      monicBar2baz(restriction) shouldBe foo2ImageOfBar
     }
   }
 }
