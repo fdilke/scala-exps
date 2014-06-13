@@ -9,6 +9,8 @@ object FiniteSets extends Topos {
   type ARROW[S, T] = FiniteSetsArrow[S, T]
   type BIPRODUCT[L, R] = FiniteSetsBiproduct[L, R]
   type EXPONENTIAL[S, T] = FiniteSetsExponential[S, T]
+  type EQUALIZER[M, T] = FiniteSetsEqualizer[M, T]
+  type EQUALIZER_SOURCE[M, T] = M
 
   val I = FiniteSetsDot[Unit](())
 
@@ -26,10 +28,11 @@ object FiniteSets extends Topos {
     override def toConstant = FiniteSetsArrow(this, FiniteSets.I, _ => ())
   }
 
-  case class FiniteSetsArrow[X, Y](source: FiniteSetsDot[X],
-                              target: FiniteSetsDot[Y],
-                              function: X => Y
-                               ) extends Arrow[X, Y] {
+  case class FiniteSetsArrow[X, Y](
+    source: FiniteSetsDot[X],
+    target: FiniteSetsDot[Y],
+    function: X => Y
+  ) extends Arrow[X, Y] {
     override def toString = s"""FiniteSetsArrow(${source}, ${target},
       |${Map(source.map(x => (x, function(x))).toList: _*)})""".stripMargin
 
@@ -39,6 +42,9 @@ object FiniteSets extends Topos {
       } else {
         throw new IllegalArgumentException("Target does not match source")
       }
+
+    override def ?=(that: FiniteSetsArrow[X, Y]): EQUALIZER[X, Y] =
+      new FiniteSetsEqualizer(this, that)
 
     override def equals(other: Any): Boolean = other match {
       case that: FiniteSetsArrow[X, Y] =>
@@ -85,6 +91,23 @@ object FiniteSets extends Topos {
       new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
         w => FunctionWithEquality[S, T](multiArrow.right, { s => multiArrow.arrow.function((w, s)) })
       )
+  }
+
+  class FiniteSetsEqualizer[M, T](arrow: FiniteSetsArrow[M, T], arrow2: FiniteSetsArrow[M, T])
+    extends Equalizer[M, T] {
+      import arrow._
+
+      override val equalizerSource = new FiniteSetsDot[EQUALIZER_SOURCE[M, T]](
+        source.filter(s => arrow.function(s) == arrow2.function(s))
+      )
+
+    override val equalizer = new FiniteSetsArrow[EQUALIZER_SOURCE[M, T], M](
+      equalizerSource, source, identity
+    )
+
+    override def factorize[S](equalizingArrow: FiniteSetsArrow[S, M]) = new FiniteSetsArrow[S, M](
+      equalizingArrow.source, equalizerSource, equalizingArrow.function
+    )
   }
 
   object FiniteSetsDot {

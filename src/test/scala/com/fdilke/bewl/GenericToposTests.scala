@@ -3,6 +3,7 @@ package com.fdilke.bewl
 import org.scalatest._
 import Matchers._
 import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow
+import org.junit.Assert._
 
 abstract class ToposWithFixtures {
   type TOPOS <: Topos
@@ -21,6 +22,18 @@ abstract class ToposWithFixtures {
   val foo2bar : ARROW[FOO, BAR]
   val foo2baz : ARROW[FOO, BAZ]
   val foobar2baz : BiArrow[FOO, BAR, BAZ]
+
+  val equalizerSituation: EqualizerSituation[FOO, BAR, BAZ]
+
+  case class EqualizerSituation[S, M, T](r: ARROW[S, M], s: ARROW[M, T], t: ARROW[M, T]) {
+    def sanityTest {
+      r.sanityTest
+      s.sanityTest
+      t.sanityTest
+    }
+
+    s(r) shouldBe t(r)
+  }
 }
 
 abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) extends FunSpec {
@@ -43,6 +56,8 @@ abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) 
       foobar2baz.arrow.source shouldBe (foo x bar)
       foobar2baz.arrow.target shouldBe baz
       foobar2baz.arrow.sanityTest
+
+      equalizerSituation.sanityTest
     }
   }
 }
@@ -122,6 +137,16 @@ abstract class GenericToposTests[TOPOS <: Topos](
     it("has standardized exponentials") {
       val exponential: DOT[BAR => FOO] = foo ^ bar
       exponential shouldBe (foo ^ bar)
+    }
+
+    it("has equalizers") {
+      import equalizerSituation._
+      val diagram: EQUALIZER[BAR, BAZ] = s ?= t
+      val e: ARROW[EQUALIZER_SOURCE[BAR, BAZ], BAR] = diagram.equalizer
+
+      s(e) shouldBe t(e)
+      val q: ARROW[FOO, EQUALIZER_SOURCE[BAR, BAZ]] = diagram.factorize(r)
+      e(q) shouldBe r
     }
   }
 }

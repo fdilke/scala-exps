@@ -21,5 +21,11 @@ class FiniteSetsTest extends GenericToposTests(new ToposWithFixtures {
   override val foobar2baz = FiniteSetsBiArrow[FOO, BAR, BAZ](
     foo, bar, baz, (true, "X") -> 2, (false, "X") -> 3, (true, "Y") -> 1, (false, "Y") -> 2
   )
+
+  override val equalizerSituation = new EqualizerSituation[FOO, BAR, BAZ](
+    foo2bar,
+    FiniteSetsArrow[BAR, BAZ](bar, baz, "X" -> 1, "Y" -> 2, "Z" -> 3),
+    FiniteSetsArrow[BAR, BAZ](bar, baz, "X" -> 1, "Y" -> 2, "Z" -> 1)
+  )
 })
 
