@@ -14,11 +14,11 @@ object FiniteSets extends Topos {
   type TERMINAL = Unit
   type OMEGA = Boolean
 
-  override val I = FiniteSetsDot[Unit](())
-  override val omega = FiniteSetsDot[Boolean](true, false)
+  override val I = FiniteSetsDot[Unit](Traversable(()))
+  override val omega = FiniteSetsDot[Boolean](Traversable(true, false))
   override val truth = FiniteSetsArrow[Unit, Boolean](I, omega, const (true) _)
 
-  class FiniteSetsDot[X](elements: Traversable[X]) extends Dot[X] with Traversable[X] {
+  case class FiniteSetsDot[X](elements: Traversable[X]) extends Dot[X] with Traversable[X] {
     override def toString = elements.toString
 
     override def foreach[U](f: (X) => U) { elements.foreach(f) }
@@ -61,7 +61,6 @@ object FiniteSets extends Topos {
       })
     }
 
-    // TODO: abolish "new FiniteSetsArrow" ??
     // TODO: clean up unnecessary type paramaters?
 
     override def equals(other: Any): Boolean = other match {
@@ -81,11 +80,11 @@ object FiniteSets extends Topos {
 
   class FiniteSetsBiproduct[L, R](left: FiniteSetsDot[L], right: FiniteSetsDot[R]
                                    ) extends Biproduct[L, R] {
-    override val product = new FiniteSetsDot[(L, R)](for (x <- left; y <- right) yield (x, y))
+    override val product = FiniteSetsDot[(L, R)](for (x <- left; y <- right) yield (x, y))
 
-    override val leftProjection = new FiniteSetsArrow[(L, R), L](product, left, tupled { (x, y)  => x} )
+    override val leftProjection = FiniteSetsArrow[(L, R), L](product, left, tupled { (x, y)  => x} )
 
-    override val rightProjection = new FiniteSetsArrow[(L, R), R](product, right, tupled { (x, y) => y})
+    override val rightProjection = FiniteSetsArrow[(L, R), R](product, right, tupled { (x, y) => y})
 
     override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
       FiniteSetsArrow(leftArrow.source, product, { x => (leftArrow.function(x), rightArrow.function(x))} )
@@ -98,7 +97,7 @@ object FiniteSets extends Topos {
     // we'll be comparing against things that aren't
     val theAllMaps: Traversable[S => T] = allMaps(source, target).
       map(FunctionWithEquality(source, _))
-    val exponentDot: FiniteSetsDot[S => T] = new FiniteSetsDot[S => T](theAllMaps)
+    val exponentDot: FiniteSetsDot[S => T] = FiniteSetsDot[S => T](theAllMaps)
 
     override val evaluation = new BiArrow[S => T, S, T](exponentDot, source,
       FiniteSetsArrow[(S => T, S), T](exponentDot x source, target, tupled {
@@ -115,21 +114,17 @@ object FiniteSets extends Topos {
     extends Equalizer[M, T] {
       import arrow._
 
-      override val equalizerSource = new FiniteSetsDot[EQUALIZER_SOURCE[M, T]](
+      override val equalizerSource = FiniteSetsDot[EQUALIZER_SOURCE[M, T]](
         source.filter(s => arrow.function(s) == arrow2.function(s))
       )
 
-    override val equalizer = new FiniteSetsArrow[EQUALIZER_SOURCE[M, T], M](
+    override val equalizer = FiniteSetsArrow[EQUALIZER_SOURCE[M, T], M](
       equalizerSource, source, identity
     )
 
-    override def restrict[S](equalizingArrow: FiniteSetsArrow[S, M]) = new FiniteSetsArrow[S, M](
+    override def restrict[S](equalizingArrow: FiniteSetsArrow[S, M]) = FiniteSetsArrow[S, M](
       equalizingArrow.source, equalizerSource, equalizingArrow.function
     )
-  }
-
-  object FiniteSetsDot {
-    def apply[T](elements: T*) = new FiniteSetsDot(elements)
   }
 
   object FiniteSetsBiArrow {
@@ -141,12 +136,12 @@ object FiniteSets extends Topos {
         FiniteSetsArrow[(L, R), T](left x right, target, Map(map:_*)))
   }
 
-  object FiniteSetsArrow {
-    def apply[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], map: (S, T)*): FiniteSetsArrow[S, T] =
-      FiniteSetsArrow(source, target, Map(map:_*))
-  }
-
   object FiniteSetsUtilities {
+    def arrow[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T], map: (S, T)*) =
+      FiniteSetsArrow[S, T](source, target, Map(map:_*))
+
+    def dot[T](elements: T*) = FiniteSetsDot(elements)
+
     def cartesian[A](factors: Seq[Seq[A]]): Traversable[Seq[A]] = factors match {
         case Nil => Traversable(Seq())
         case head :: tail =>
