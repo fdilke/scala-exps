@@ -13,6 +13,13 @@ object FelixMatchers {
     }
   }
 
+// TODO: investigate matcher mechanism with ClassTag like this:
+//def readValue[T:ClassTag](s:String):T = {
+//  val tClass = implicitly[ClassTag[T]].runtimeClass
+//  //implementation for different classes.
+//}
+
+
 //  def distinct =
 //    new BeMatcher[AnyRef] {
 //      def apply(left: AnyRef) = left match {
@@ -20,5 +27,17 @@ object FelixMatchers {
 //        case _ => ???
 //      }
 //    }
+
+  // scratch...
+
+//  def unchanged[T](t: T):T = t
+//
+//  def useIt(function[T]:  T => T) = ???
+//
+//  useIt(unchanged)
+
+  // add test that uses this update mechanism:
+//  char.arrow(monicBar2baz) = truth(bar.toI)
+
 }
 

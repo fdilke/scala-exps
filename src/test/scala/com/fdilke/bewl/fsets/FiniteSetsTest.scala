@@ -16,10 +16,17 @@ class FiniteSetsTest extends GenericToposTests(new ToposWithFixtures {
   override val bar = FiniteSetsDot[BAR]("X", "Y")
   override val foo2bar = FiniteSetsArrow[FOO, BAR](foo, bar, true -> "X", false -> "Y")
   override val baz = FiniteSetsDot[BAZ](1, 2, 3)
-  override val foo2baz = FiniteSetsArrow[FOO, BAZ](foo, baz, true -> 1, false -> 3)
+//
+  override val foo2baz = FiniteSetsArrow[FOO, BAZ](foo, baz, true -> 3, false -> 2)
+  // TODO: image has to lie in image of bar!
+  // TODO: work out a naming system that makes this clear (use alias)
 
   override val foobar2baz = FiniteSetsBiArrow[FOO, BAR, BAZ](
     foo, bar, baz, (true, "X") -> 2, (false, "X") -> 3, (true, "Y") -> 1, (false, "Y") -> 2
+  )
+
+  override val monicBar2baz = FiniteSetsArrow[BAR, BAZ](
+    bar, baz, "X" -> 2, "Y" -> 3
   )
 
   override val equalizerSituation = new EqualizerSituation[FOO, BAR, BAZ](

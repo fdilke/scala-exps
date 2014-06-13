@@ -12,13 +12,16 @@ trait Topos {
 
   type EQUALIZER_SOURCE[M, T]
   type TERMINAL
+  type OMEGA
 
   val I: DOT[TERMINAL]
+  val omega: DOT[OMEGA]
+  val truth: ARROW[TERMINAL, OMEGA]
 
   trait Dot[X] {
     def identity: ARROW[X, X]
 
-    def toConstant: ARROW[X, TERMINAL]
+    def toI: ARROW[X, TERMINAL]
 
     def multiply[Y](that: DOT[Y]): BIPRODUCT[X, Y]
 
@@ -47,6 +50,7 @@ trait Topos {
       multiply(this.asInstanceOf[ARROW[X, Y]], that)
 
     def ?=(that: ARROW[X, Y]): EQUALIZER[X, Y]
+    val chi: Characteristic[X, Y]
     def sanityTest: Unit
   }
 
@@ -66,11 +70,15 @@ trait Topos {
   }
 
   case class BiArrow[L, R, T](left: DOT[L], right: DOT[R], arrow: ARROW[(L, R), T])
+  abstract class Characteristic[X, Y] {
+    val arrow: ARROW[Y, OMEGA]
+    def restrict[W](arrow: ARROW[W, Y]): ARROW[W, X]
+  }
 
   trait Equalizer[M, T] {
     val equalizerSource: DOT[EQUALIZER_SOURCE[M, T]]
     val equalizer: ARROW[EQUALIZER_SOURCE[M, T], M]
-    def factorize[S](equalizingArrow: ARROW[S, M]): ARROW[S, EQUALIZER_SOURCE[M, T]]
+    def restrict[S](equalizingArrow: ARROW[S, M]): ARROW[S, EQUALIZER_SOURCE[M, T]]
   }
 
   private val standardProducts = new ResultStore[(DOT[Any], DOT[Any]), BIPRODUCT[Any, Any]](tupled {

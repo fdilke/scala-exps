@@ -1,9 +1,7 @@
 package com.fdilke.bewl
 
+import org.scalatest.Matchers._
 import org.scalatest._
-import Matchers._
-import com.fdilke.bewl.fsets.FiniteSets.FiniteSetsArrow
-import org.junit.Assert._
 
 abstract class ToposWithFixtures {
   type TOPOS <: Topos
@@ -12,6 +10,7 @@ abstract class ToposWithFixtures {
   type FOO
   type BAR
   type BAZ
+  type SUB_BAR
 
   import topos._
 
@@ -22,6 +21,7 @@ abstract class ToposWithFixtures {
   val foo2bar : ARROW[FOO, BAR]
   val foo2baz : ARROW[FOO, BAZ]
   val foobar2baz : BiArrow[FOO, BAR, BAZ]
+  val monicBar2baz: ARROW[BAR, BAZ]
 
   val equalizerSituation: EqualizerSituation[FOO, BAR, BAZ]
 
@@ -57,6 +57,10 @@ abstract class ToposFixtureSanityTests[T <: Topos](fixtures: ToposWithFixtures) 
       foobar2baz.arrow.target shouldBe baz
       foobar2baz.arrow.sanityTest
 
+      monicBar2baz.source shouldBe bar
+      monicBar2baz.target shouldBe baz
+      monicBar2baz.sanityTest
+
       equalizerSituation.sanityTest
     }
   }
@@ -91,12 +95,12 @@ abstract class GenericToposTests[TOPOS <: Topos](
     }
 
     it("has a terminator") {
-      val fooToI = foo.toConstant
+      val fooToI = foo.toI
       fooToI.source shouldBe foo
       fooToI.target shouldBe topos.I
       fooToI.sanityTest
 
-      bar.toConstant(foo2bar) shouldBe fooToI
+      bar.toI(foo2bar) shouldBe fooToI
     }
 
     it("has standardized products") {
@@ -145,8 +149,36 @@ abstract class GenericToposTests[TOPOS <: Topos](
       val e: ARROW[EQUALIZER_SOURCE[BAR, BAZ], BAR] = diagram.equalizer
 
       s(e) shouldBe t(e)
-      val q: ARROW[FOO, EQUALIZER_SOURCE[BAR, BAZ]] = diagram.factorize(r)
+      val q: ARROW[FOO, EQUALIZER_SOURCE[BAR, BAZ]] = diagram.restrict(r)
       e(q) shouldBe r
+    }
+
+    it("has a subobject classifier") {
+      truth.source shouldBe I // TODO: enforced by the type system?
+      truth.target shouldBe omega
+
+      // given: monic bar -> baz
+      // and: foo -> baz whose image lies in the image of bar
+
+      val char = monicBar2baz.chi
+      char.arrow.source shouldBe baz
+      char.arrow.target shouldBe omega // TODO: remove source.target checks
+      char.arrow(monicBar2baz) shouldBe truth(bar.toI)
+
+      val restriction = char.restrict(foo2baz)
+      restriction.source shouldBe foo
+      restriction.target shouldBe bar // TODO: remove source.target checks
+      monicBar2baz(restriction) shouldBe foo2baz
+
+//      val char = subBar2bar.chi
+//      char.arrow.source shouldBe bar
+//      char.arrow.target shouldBe omega // TODO: remove source.target checks
+//      char.arrow(subBar2bar) = truth(subBar.toI)
+//
+//      val restriction = char.restrict(foo2bar)
+//      restriction.source shouldBe foo
+//      restriction.target shouldBe subBar // TODO: remove source.target checks
+//      subBar2bar(restriction) shouldBe foo2bar
     }
   }
 }

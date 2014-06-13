@@ -12,8 +12,11 @@ object FiniteSets extends Topos {
   type EQUALIZER[M, T] = FiniteSetsEqualizer[M, T]
   type EQUALIZER_SOURCE[M, T] = M
   type TERMINAL = Unit
+  type OMEGA = Boolean
 
-  val I = FiniteSetsDot[Unit](())
+  override val I = FiniteSetsDot[Unit](())
+  override val omega = FiniteSetsDot[Boolean](true, false)
+  override val truth = FiniteSetsArrow[Unit, Boolean](I, omega, const (true) _)
 
   class FiniteSetsDot[X](elements: Traversable[X]) extends Dot[X] with Traversable[X] {
     override def toString = elements.toString
@@ -26,7 +29,7 @@ object FiniteSets extends Topos {
 
     override def exponential[Y](that: FiniteSetsDot[Y]) = new FiniteSetsExponential[Y, X](that, this)
 
-    override def toConstant = FiniteSetsArrow[X, TERMINAL](this, FiniteSets.I, const () _)
+    override def toI = FiniteSetsArrow[X, TERMINAL](this, FiniteSets.I, const () _)
   }
 
   case class FiniteSetsArrow[X, Y](
@@ -46,6 +49,20 @@ object FiniteSets extends Topos {
 
     override def ?=(that: FiniteSetsArrow[X, Y]): EQUALIZER[X, Y] =
       new FiniteSetsEqualizer(this, that)
+
+    override lazy val chi = new Characteristic[X, Y] {
+      val arrow = FiniteSetsArrow[Y, Boolean](target, omega,
+        (y: Y) => source.exists(x => function(x) == y) // TODO: simplify
+      )
+      def restrict[W](arrow: ARROW[W, Y]) = FiniteSetsArrow[W, X](
+        arrow.source, source, (w: W) => {
+          val y = arrow.function(w)
+          source.find(function(_) == y).getOrElse(???)
+      })
+    }
+
+    // TODO: abolish "new FiniteSetsArrow" ??
+    // TODO: clean up unnecessary type paramaters?
 
     override def equals(other: Any): Boolean = other match {
       case that: FiniteSetsArrow[X, Y] =>
@@ -72,7 +89,7 @@ object FiniteSets extends Topos {
 
     override def multiply[W](leftArrow: FiniteSetsArrow[W, L], rightArrow: FiniteSetsArrow[W, R]) =
       FiniteSetsArrow(leftArrow.source, product, { x => (leftArrow.function(x), rightArrow.function(x))} )
-  }
+  } // TODO: ^ can make arrow act on X directly?
 
   class FiniteSetsExponential[S, T](source: FiniteSetsDot[S], target: FiniteSetsDot[T])
     extends Exponential[S, T] {
@@ -89,8 +106,8 @@ object FiniteSets extends Topos {
       }))
 
     override def transpose[W](multiArrow: BiArrow[W, S, T]) =
-      new FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
-        w => FunctionWithEquality[S, T](multiArrow.right, { s => multiArrow.arrow.function((w, s)) })
+      FiniteSetsArrow[W, S => T](multiArrow.left, exponentDot,
+        (w: W) => FunctionWithEquality[S, T](multiArrow.right, { s => multiArrow.arrow.function((w, s)) })
       )
   }
 
@@ -106,13 +123,13 @@ object FiniteSets extends Topos {
       equalizerSource, source, identity
     )
 
-    override def factorize[S](equalizingArrow: FiniteSetsArrow[S, M]) = new FiniteSetsArrow[S, M](
+    override def restrict[S](equalizingArrow: FiniteSetsArrow[S, M]) = new FiniteSetsArrow[S, M](
       equalizingArrow.source, equalizerSource, equalizingArrow.function
     )
   }
 
   object FiniteSetsDot {
-    def apply[T](elements: T*) = new FiniteSetsDot(elements.toSet)
+    def apply[T](elements: T*) = new FiniteSetsDot(elements)
   }
 
   object FiniteSetsBiArrow {
@@ -136,21 +153,6 @@ object FiniteSets extends Topos {
           for (h <- head; sequence <- cartesian[A](tail))
                 yield(h +: sequence)
       }
-
-//    def cartesian[A](factors: Seq[A]*): Traversable[Seq[A]] = {
-//      case Seq() =>  Traversable(Seq())
-//      case Seq(head, tail @ _*) =>
-//        new Traversable[Seq[A]]() {
-//          override def foreach[U](f: (Seq[A]) => U): Unit = {
-//            for (s:Seq[A] <- cartesian(tail toSeq);
-//                 h:A <- head
-//                 ) {
-//                f(h +: s)
-//            }
-//
-//          }
-//        }
-//    }
 
       def allMaps[A, B](source: Traversable[A], target: Traversable[B]): Traversable[A=>B] =
       new Traversable[A=>B] {
