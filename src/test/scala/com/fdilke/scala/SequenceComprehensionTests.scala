@@ -1,8 +1,7 @@
 package com.fdilke.scala
 
 import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
-import ShouldMatchers._
+import org.scalatest.Matchers._
 
 // User: Felix Date: 23/04/2014 Time: 21:20
 

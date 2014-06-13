@@ -1,8 +1,9 @@
 package com.fdilke.dihedrality
 
-import org.scalatest.{ShouldMatchers, FunSpec}
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
 
-class GroupTest extends FunSpec with ShouldMatchers {
+class GroupTest extends FunSpec {
   describe("Generating groups") {
     it("should work even with the empty set as a basis") {
       Group.generate().set should be (

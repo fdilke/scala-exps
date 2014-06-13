@@ -1,9 +1,10 @@
 package com.fdilke.dihedrality
 
-import org.scalatest.{ShouldMatchers, FunSpec}
-import org.scalatest.Assertions._
+import org.scalatest.FunSpec
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
 
-class PermutationTest extends FunSpec with ShouldMatchers {
+class PermutationTest extends FunSpec {
   describe("Permutation") {
     it("should have a left and right identity") {
       val id = Permutation.identity

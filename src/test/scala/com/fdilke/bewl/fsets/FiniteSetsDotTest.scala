@@ -12,7 +12,7 @@ class FiniteSetsDotTest extends FunSpec {
       val doodah = dot[String]("a", "b", "c")
 
       aDot shouldBe aDot
-      aDot should not be dash
+      aDot shouldBe dash
       aDot should not be doodah
     }
 

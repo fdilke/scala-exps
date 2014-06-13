@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest._
-import org.junit.Assert
-import Assert._
+import org.junit.Assert._
+import org.scalatest.FunSpec
+import org.scalatest.Matchers._
 
-class PartialFunctionTests extends FunSpec with ShouldMatchers {
+class PartialFunctionTests extends FunSpec {
 
   describe("A partial function") {
     it("can be used to collect values from a list") {

@@ -1,6 +1,7 @@
 package com.fdilke.scala
 
-import org.scalatest._
+import org.scalatest.FunSpec
+import org.scalatest.Matchers._
 
 case class Foo(name: String)
 object FooHelpers {
@@ -9,7 +10,7 @@ object FooHelpers {
   }
 }
 
-class StringInterpolationTests extends FunSpec with ShouldMatchers {
+class StringInterpolationTests extends FunSpec {
 
   describe("String interpolation") {
     it("can use direct substitution with expressions") {
@@ -34,7 +35,7 @@ class StringInterpolationTests extends FunSpec with ShouldMatchers {
     }
 
     it("can work with user-defined prefixes") {
-      import FooHelpers._
+      import com.fdilke.scala.FooHelpers._
       val myFoo = foo"Felix"
       assert(myFoo.isInstanceOf[Foo])
       myFoo.name should be("Felix")

@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import org.scalatest.matchers.ShouldMatchers
-import Matchers._
-import scala.xml._
+import org.scalatest.FunSpec
+import org.scalatest.Matchers._
+
 import scala.collection.mutable.ArrayBuffer
+import scala.xml._
 
 // User: Felix Date: 08/05/2014 Time: 18:03
 
