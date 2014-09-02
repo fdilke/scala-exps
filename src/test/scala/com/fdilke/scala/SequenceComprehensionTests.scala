@@ -3,8 +3,6 @@ package com.fdilke.scala
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
-// User: Felix Date: 23/04/2014 Time: 21:20
-
 class SequenceComprehensionTests extends FunSpec {
   describe("The built-in monadic logic of 'for'") {
     it("should express 'map' implicitly") {
@@ -86,6 +84,24 @@ class SequenceComprehensionTests extends FunSpec {
 
       val combined = for(x <- foo ; y <- bar) yield x+y
       combined should be (Bar(5))
+    }
+
+    it("can combine inputs to build an algebraic operator") {
+      class Context[T] {
+        def map[V](f: T => V): (Seq[Any]) => V = {
+          case s: Seq[T] => f(s.head)
+        }
+        def flatMap[V](g: T => Seq[Any] => V): (Seq[Any]) => V =
+          s => g(s.head.asInstanceOf[T])(s.tail)
+      }
+
+      val operator = for (x <- new Context[Int]) yield (x*x)
+      operator(Seq(3)) shouldBe 9
+
+      val operator2 =
+        for (x <- new Context[Int] ; y <- new Context[String])
+          yield ( x + y )
+      operator2(Seq(2, "baz")) shouldBe "2baz"
     }
   }
 }
