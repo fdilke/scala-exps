@@ -6,7 +6,7 @@ import scala.reflect.ClassTag
 
 object FelixMatchers {
   def anInstanceOf[T](implicit manifest: Manifest[T]) = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
+    val clazz = manifest.runtimeClass
     new BeMatcher[AnyRef] {
       def apply(left: AnyRef) =
         MatchResult(clazz.isAssignableFrom(left.getClass),

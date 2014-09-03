@@ -1,10 +1,7 @@
 package com.fdilke.scala
 
 import Element.elem
-
-/**
- * Author: fdilke
- */
+import scala.language.postfixOps
 
 object Element {
   private class ArrayElement(val contents : Array[String]) extends Element {}

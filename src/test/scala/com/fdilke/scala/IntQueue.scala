@@ -1,13 +1,10 @@
 package com.fdilke.scala
 
-/**
- * Author: fdilke
- */
-
 import scala.collection.mutable.ArrayBuffer
 import org.junit.{Assert, Test}
 import Assert._
 import IntQueueTestHelper._
+import scala.language.postfixOps
 
 abstract class IntQueue {
   def get : Int

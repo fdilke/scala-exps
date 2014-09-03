@@ -4,10 +4,8 @@ import org.scalatest.FunSuite
 import org.scalamock.scalatest.MockFactory
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.collection.mutable
+import scala.language.postfixOps
 
-/**
- * Author: fdilke
- */
 class UsingCollections extends FunSuite with MockFactory {
     test("iterables") {
       val it : Iterable[String] = new Iterable[String]() {

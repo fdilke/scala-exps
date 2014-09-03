@@ -1,6 +1,7 @@
 package com.fdilke.dihedrality
 
 import scala.math.max
+import scala.language.postfixOps
 
 object Permutation {
   val identity = new Permutation(Seq[Int]())

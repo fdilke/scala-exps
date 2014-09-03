@@ -3,10 +3,8 @@ package com.fdilke.scala
 import org.junit.{Assert, Test}
 import Assert._
 import PeanoNum._
+import scala.language.postfixOps
 
-/**
- * Author: fdilke
- */
 object PeanoNum {
   val ZERO = new PeanoNum {
     def apply[A](f: (A) => A)(a: A) = a
