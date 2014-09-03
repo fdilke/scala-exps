@@ -76,7 +76,7 @@ class MyScalaTestTests extends FunSuite with MockFactory {
 
     t.penUp _ when()
     (t.getPosition _ when()).returns(2.0,3.0)
-    (t.setPosition _).when(2.0, 3.0).returns()
+//    (t.setPosition _).when(2.0, 3.0).returns()
 
     driveTheTurtle(t)
     t.penUp _ verify()

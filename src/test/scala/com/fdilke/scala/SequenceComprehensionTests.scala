@@ -26,7 +26,7 @@ class SequenceComprehensionTests extends FunSpec {
     it("can apply filters") {
       class Foo {
         def map(f: Int => Int) = ""
-        def filter(f: Int => Boolean) = this
+        def withFilter(f: Int => Boolean) = this
       }
       val foo = new Foo
       val bar = for (x <- foo ; if x > 7) yield x
@@ -37,7 +37,7 @@ class SequenceComprehensionTests extends FunSpec {
       class Foo {
         def map(f: Int => Int) = ""
         def map(f: String => String) = 7
-        def filter(f: Int => Boolean) = this
+        def withFilter(f: Int => Boolean) = this
       }
       val bar = for (x : Int <- new Foo) yield x
       bar should be("")

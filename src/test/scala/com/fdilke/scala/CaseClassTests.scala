@@ -6,6 +6,8 @@ import org.junit.Assert
 import Assert._
 import Matchers._
 import FelixMatchers._
+import scala.language.implicitConversions
+import scala.language.postfixOps
 
 object Expression {
   implicit def numberAsExpression(x : Double) = Number(x)

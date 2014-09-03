@@ -3,10 +3,7 @@ package com.fdilke.scala
 import org.junit.Test
 import org.junit.Assert._
 import Element.elem
-
-/**
- * Author: fdilke
- */
+import scala.language.postfixOps
 
 class ElementTests {
   @Test

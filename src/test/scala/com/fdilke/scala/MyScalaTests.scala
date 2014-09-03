@@ -2,6 +2,7 @@ package com.fdilke.scala
 
 import org.junit._
 import Assert._
+import scala.language.postfixOps
 
 class MyScalaTests {
   @Test def testSomething() {

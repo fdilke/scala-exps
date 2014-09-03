@@ -5,10 +5,7 @@ import org.junit.Assert
 import Assert._
 import Titanic._
 import scala.collection.mutable
-
-/**
- * Author: fdilke
- */
+import scala.language.postfixOps
 
 class Grid(gridSize: Int) {
 
@@ -190,8 +187,8 @@ object Titanic {
       print("T(" + n + ") = ")
       val now = System.currentTimeMillis()
       print(Titanic.T2(n))
-      val then = System.currentTimeMillis()
-      val timeDiff = then - now
+      val past = System.currentTimeMillis()
+      val timeDiff = past - now
       println("\t\t" + timeDiff + "msec")
     }
   }

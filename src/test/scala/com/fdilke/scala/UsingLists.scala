@@ -2,10 +2,7 @@ package com.fdilke.scala
 
 import org.scalatest.FunSuite
 import org.scalamock.scalatest.MockFactory
-
-/**
- * Author: fdilke
- */
+import scala.language.postfixOps
 
 object InsertionSort {
   def sort : List[Int] => List[Int] = {

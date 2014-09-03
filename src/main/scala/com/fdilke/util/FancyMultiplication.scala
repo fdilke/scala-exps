@@ -1,5 +1,7 @@
 package com.fdilke.util
 
+import scala.language.implicitConversions
+
 object FancyMultiplicationImplicits {
   implicit def Int2SpecialMult(value : Int) =
     new FancyMultiplicationWrapper(value)

@@ -2,10 +2,8 @@ package com.fdilke.scala
 
 import org.junit.Test
 import org.junit.Assert._
+import scala.language.postfixOps
 
-/**
- * Author: fdilke
- */
 class Wrapped2DArrayTest {
   @Test def wrapsArraySafely() {
     val array : Array[Array[Int]] = Array(

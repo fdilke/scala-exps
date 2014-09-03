@@ -1,6 +1,7 @@
 package com.fdilke.scala
 
 import org.scalatest.FunSpec
+import scala.language.higherKinds
 
 // User: Felix Date: 29/05/2014 Time: 19:18
 

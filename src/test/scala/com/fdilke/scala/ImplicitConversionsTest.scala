@@ -2,6 +2,7 @@ package com.fdilke.scala
 
 import org.scalatest.{Matchers, FunSpec}
 import Matchers._
+import scala.language.implicitConversions
 
 class ImplicitConversionsTest extends FunSpec {
   describe("Implicit conversions") {

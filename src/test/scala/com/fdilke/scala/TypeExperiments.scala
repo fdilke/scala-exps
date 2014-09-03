@@ -1,6 +1,6 @@
 package com.fdilke.scala
 
-// User: Felix Date: 29/05/2014 Time: 18:30
+import scala.language.higherKinds
 
 trait Terminal
 
