@@ -53,3 +53,29 @@ object MyOption extends Monad[MyOption] {
     new MyOption[X](optOptX.option.map(optX => optX.option).flatten)
   }
 }
+
+object BootstrapMethod { // Failed experiment in trying to use a method before the object's been constructed
+
+  trait BootstrapBase[A] {
+    def method(): A = ???
+  }
+
+  class BootstrapSubclass[A](member: A) extends BootstrapBase[A]
+
+  def bootstrap = new BootstrapSubclass[Any](
+    // BootstrapMethod.BootstrapSubclass.this.method(None)
+    null.asInstanceOf[Any]
+  )
+}
+
+object FancyMethodNames extends App {
+  def ∀(n: Int) = println("How cool is that")
+  ∀(0)
+
+  try {
+    1/0
+  } catch {
+    case π: Exception =>
+      π.printStackTrace()
+  }
+}

@@ -3,8 +3,6 @@ package com.fdilke.scala
 import org.scalatest.{Matchers, FunSpec}
 import Matchers._
 
-// User: Felix Date: 11/05/2014 Time: 10:31
-
 class ExtractorTest extends FunSpec {
   describe("extractors") {
     it("can be invoked from regexes") {
@@ -20,13 +18,13 @@ class ExtractorTest extends FunSpec {
       object Even {
         def unapply(n: Int):Boolean =
           n % 2 == 0
-        intercept[MatchError] {
-          3 match {
-            case Even() =>
-          }
-        }
-        2 match { case Even() => }
       }
+      intercept[MatchError] {
+        3 match {
+          case Even() =>
+        }
+      }
+      2 match { case Even() => }
     }
 
     it("can extract a single value") {
