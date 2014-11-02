@@ -2,7 +2,7 @@ package com.fdilke.scala
 
 object FunWithFunctions extends App {
 
-  object Foo extends Function[Int, String] {
+  object Foo extends (Int => String) {
     override def apply(v1: Int): String = s"Hello $v1"
   }
 
@@ -10,7 +10,7 @@ object FunWithFunctions extends App {
 
   println(s"f(2) = ${f(2)}")
 
-  object Bar extends Tuple2[Int, String](2, "xx") with Function[Boolean, Double] {
+  object Bar extends (Int, String)(2, "xx") with Function[Boolean, Double] {
     override def apply(v1: Boolean): Double = 3.2
   }
 
@@ -22,4 +22,11 @@ object FunWithFunctions extends App {
   println(s"l, r = $l, $r")
   println(s"Bar = $Bar")
   println(s"Bar(true) = ${Bar(true)}")
+
+  val g: (Boolean => Double) with (Int, String) = Bar
+  println(s"g(false) = ${g(false)}")
+
+  val d = new (Int, Int)(2, 3) with Function[Boolean, Boolean] {
+    override def apply(v1: Boolean): Boolean = v1
+  }
 }
