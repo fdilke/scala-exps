@@ -18,10 +18,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.2",
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
   "org.scala-lang" % "scala-compiler" % "2.11.3",
-//  "org.scala-lang" % "jline" % "2.11.0",
   "org.scala-lang" % "scala-library" % "2.9.0-1"
-  //  "org.scala-lang" % "scala-compiler" % "2.10.2",
-//  "org.scala-lang" % "jline" % "2.10.2"
 ).map { _.withSources().withJavadoc() }
 
 lazy val felixtask = taskKey[Unit]("Test user-defined task")
