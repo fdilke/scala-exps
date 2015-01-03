@@ -79,3 +79,19 @@ object FancyMethodNames extends App {
       π.printStackTrace()
   }
 }
+
+object WrappingQuandary {
+  trait ToyTopos {
+    type ELEMENT
+  }
+  trait Wrappings { self: ToyTopos =>
+    type BASE
+    type WRAPPER[X <: BASE] <: ELEMENT
+  }
+
+  class ConcreteToyTopos extends ToyTopos with Wrappings {
+    override type ELEMENT = Int
+    override type BASE = ELEMENT
+    override type WRAPPER[T <: Int] = T
+  }
+}
