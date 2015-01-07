@@ -126,3 +126,20 @@ object OverridingObsession {
     val topos : ToyTopos with Wrappings = toyTopos
   }
 }
+
+// lazy object LazyObject {}
+// no such thing!
+
+object CurriedConstructor {
+  class Widget(n: Int, text: String) {
+    def this(text: String)(n: Int) = this(n, text)
+  }
+
+  class UberWidget extends Widget("thingy")(2)
+
+  class Doodad(func: Int => Int, n: Int) {
+    def this(n: Int)(func: Int => Int) = this(func, n)
+  }
+
+  class UberDoodad extends Doodad(2)({ (n: Int) => n + 1 })
+}
