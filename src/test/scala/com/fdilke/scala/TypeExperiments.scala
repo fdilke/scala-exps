@@ -84,14 +84,45 @@ object WrappingQuandary {
   trait ToyTopos {
     type ELEMENT
   }
-  trait Wrappings { self: ToyTopos =>
-    type BASE
-    type WRAPPER[X <: BASE] <: ELEMENT
+
+  object FiniteSets extends ToyTopos {
+    override type ELEMENT = Int
   }
 
-  class ConcreteToyTopos extends ToyTopos with Wrappings {
+  class DerivedToyTopos(val topos: ToyTopos) extends ToyTopos {
+    override type ELEMENT = topos.ELEMENT
+  }
+
+  abstract class ToyToposWithFixtures {
+    val topos: ToyTopos
+    type FOO <: topos.ELEMENT
+  }
+
+  new ToyToposWithFixtures {
+//    override val topos = new DerivedToyTopos(FiniteSets)
+    override val topos = FiniteSets
+    override type FOO = Int
+  }
+}
+
+object OverridingObsession {
+  trait Wrappings {
+
+  }
+
+  trait ToyTopos {
+    type ELEMENT
+  }
+
+  trait Fixtures {
+    val topos: ToyTopos
+  }
+
+  val toyTopos = new ToyTopos with Wrappings {
     override type ELEMENT = Int
-    override type BASE = ELEMENT
-    override type WRAPPER[T <: Int] = T
+  }
+
+  new Fixtures {
+    val topos : ToyTopos with Wrappings = toyTopos
   }
 }
