@@ -143,3 +143,17 @@ object CurriedConstructor {
 
   class UberDoodad extends Doodad(2)({ (n: Int) => n + 1 })
 }
+
+object OverridingAbstractTypes {
+  trait WidgetFun {
+    type WIDGET = String
+    type CONTAINER[X] <: Traversable[X]
+  }
+
+  class NewWidgets extends WidgetFun {
+// can't! "Incompatible"
+//    override type WIDGET = Int
+// but can tighten the bounds:
+    override type CONTAINER[X] = List[X]
+  }
+}
