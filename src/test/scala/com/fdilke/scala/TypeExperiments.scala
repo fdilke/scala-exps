@@ -157,3 +157,9 @@ object OverridingAbstractTypes {
     override type CONTAINER[X] = List[X]
   }
 }
+
+trait ExistentialTypes {
+  trait ElementProxy[T]
+  type STAR[ElementProxy[T]] = Array[String]
+}
+
