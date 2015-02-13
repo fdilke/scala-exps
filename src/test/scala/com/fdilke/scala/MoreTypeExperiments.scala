@@ -1,5 +1,7 @@
 package com.fdilke.scala
 
+import com.fdilke.scala.MoreTypeExperiments.TypeProjectionHell.Ɛ
+import com.fdilke.scala.MoreTypeExperiments.TypeProjectionHell.Ɛ.ElementWrapper
 import org.scalatest.FunSpec
 import scala.language.higherKinds
 
@@ -43,6 +45,98 @@ object MoreTypeExperiments {
 //
 //        val i = fixtures.foo.identity
 //        f2b.apply[fixtures.type#FOO](i)
+      }
+    }
+  }
+
+  object TypeProjectionHell {
+
+    trait ToposLite {
+      type ELEMENT
+      type *[SS <: ELEMENT] <: (SS, SS) with ELEMENT
+    }
+
+    object Ɛ extends ToposLite {
+      override type ELEMENT = Any
+      override type *[SS <: ELEMENT] = (SS, SS) with ELEMENT
+
+      trait ElementWrapper[A <: ELEMENT, AA <: ElementWrapper[A, AA]] {
+        wrapper =>
+        final type BASE = A
+        val element: A
+
+        def apply[F, G](f: F, g: G): (F, G) with ElementWrapper[A, AA] =
+          new (F, G)(f, g) with ElementWrapper[A, AA] {
+            override val element = wrapper.element
+          }
+
+        def apply[F, G](f2g: F => G): (F => G) with ElementWrapper[A, AA] =
+          new (F => G) with ElementWrapper[A, AA] {
+            def apply(f: F): G = f2g(f)
+
+            override val element = wrapper.element
+          }
+
+        def humdrum(aa: AA, starA: Ɛ.*[A]): (AA, AA) with Ɛ.ElementWrapper[Ɛ.*[BASE], H] forSome {
+            type H <: Ɛ.ElementWrapper[Ɛ.*[BASE], H]
+        } = {
+          class RecursiveStar[A <: ELEMENT](starA: Ɛ.*[A]) extends (AA, AA)(aa, aa) with ElementWrapper[Ɛ.*[A], RecursiveStar[A]] {
+            override val element = starA
+          }
+          new RecursiveStar[A](starA)
+        }
+      }
+
+      object ElementWrapper {
+        class ELementWrapperRecursive[A <: ELEMENT](a: A) extends
+          ElementWrapper[A, ELementWrapperRecursive[A]] {
+          override val element = a
+        }
+
+        def apply[A <: ELEMENT](a: A) = new ELementWrapperRecursive[A](a)
+      }
+    }
+
+    object DarkLabyrinth extends ToposLite {
+
+      override type ELEMENT = Ɛ.ElementWrapper[A, AA] forSome {
+        type A <: Ɛ.ELEMENT
+        type AA <: Ɛ.ElementWrapper[A, AA]
+      }
+
+//      type *![SS <: ELEMENT] = **[_, SS, _]
+
+//      type KKK[T[M]] = { type λ = Array[T] }#λ
+
+//      type *![SS <: ELEMENT] = **[SS#BASE, SS, H] forSome {
+////        type S <: Ɛ.ELEMENT
+//        type H <: Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
+//      }
+      override type *[SS <: ELEMENT] = (SS, SS) with ELEMENT
+
+//      type ***[
+//        SS <: Ɛ.ElementWrapper[_, SS],
+//        H <: Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
+//      ] = (SS, SS) with Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
+
+      type **[
+        S <: Ɛ.ELEMENT,
+        SS <: Ɛ.ElementWrapper[S, SS],
+        H <: Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
+      ] = (SS, SS) with Ɛ.ElementWrapper[Ɛ.*[S], H]
+
+      def onAPlate[
+        S <: Ɛ.ELEMENT,
+        SS <: Ɛ.ElementWrapper[S, SS],
+        H <: Ɛ.ElementWrapper[Ɛ.*[S], H]
+      ] (
+        star: (SS, SS) with Ɛ.ElementWrapper[Ɛ.*[S], H]
+      ) : **[S, SS, H] = star
+
+      def `try*`[
+        Z <: Ɛ.ELEMENT, ZZ <: Ɛ.ElementWrapper[Z, ZZ]
+      ](zz: ZZ, starZ: Ɛ.*[Z]): **[Z, ZZ, _] = {
+        zz.humdrum(zz, starZ)
       }
     }
   }
