@@ -170,9 +170,18 @@ object MoreTypeExperiments {
         trait MonoidLite[M <: ELEMENT]
 
         class ActionsLite[M <: ELEMENT](monoid: MonoidLite[M]) extends ToposLite {
-          type ELEMENT = Ɛ.ElementWrapper[_]
+          type ELEMENT = Ɛ.ElementWrapper[_ <: Ɛ.ELEMENT]
           type ANITA
-          type x[T <: ELEMENT, U <: ELEMENT] = (T, U) with Ɛ.ElementWrapper[Ɛ.x[T#BASE, U#BASE]]
+          override type x[T <: ELEMENT, U <: ELEMENT] = (T, U) with Ɛ.ElementWrapper[Ɛ.x[T#BASE, U#BASE]]
+
+          def wouldBeProduct[T <: ELEMENT, U <: ELEMENT](t: T, u: U): Int = {
+            type X = t.BASE
+            type Y = u.BASE
+//            val x:X = t.element
+//            (T, U) with Ɛ.ElementWrapper[Ɛ.x[T#BASE, U#BASE]] = {
+            7
+          }
+
 
           def makeProduct[
             Z <: Ɛ.ELEMENT,
