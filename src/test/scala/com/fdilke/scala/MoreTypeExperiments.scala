@@ -108,20 +108,7 @@ object MoreTypeExperiments {
         type AA <: Ɛ.ElementWrapper[A, AA]
       }
 
-      //      type *![SS <: ELEMENT] = **[_, SS, _]
-
-      //      type KKK[T[M]] = { type λ = Array[T] }#λ
-
-      //      type *![SS <: ELEMENT] = **[SS#BASE, SS, H] forSome {
-      ////        type S <: Ɛ.ELEMENT
-      //        type H <: Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
-      //      }
       override type *[SS <: ELEMENT] = (SS, SS) with ELEMENT
-
-      //      type ***[
-      //        SS <: Ɛ.ElementWrapper[_, SS],
-      //        H <: Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
-      //      ] = (SS, SS) with Ɛ.ElementWrapper[Ɛ.*[SS#BASE], H]
 
       type **[
       S <: Ɛ.ELEMENT,
@@ -152,17 +139,22 @@ object MoreTypeExperiments {
       type ELEMENT
       type x[T <: ELEMENT, U <: ELEMENT] <: (T, U) with ELEMENT
 
-      trait ElementWrapper[A <: ELEMENT] { wrapper =>
+      trait VeiledElementWrapper[AA <: VeiledElementWrapper[AA]] {
+        type BASE <: ELEMENT
+      }
+
+      trait ElementWrapper[A <: ELEMENT, AA <: ElementWrapper[A, AA]] extends
+        VeiledElementWrapper[AA] { wrapper =>
         final type BASE = A
         val element: A
 
-        def apply[F, G](f: F, g: G): (F, G) with ElementWrapper[A] =
-          new (F, G)(f, g) with ElementWrapper[A] {
+        def apply[F, G](f: F, g: G): (F, G) with ElementWrapper[A, AA] =
+          new (F, G)(f, g) with ElementWrapper[A, AA] {
             override val element = wrapper.element
           }
 
-        def apply[F, G](f2g: F => G): (F => G) with ElementWrapper[A] =
-          new (F => G) with ElementWrapper[A] {
+        def apply[F, G](f2g: F => G): (F => G) with ElementWrapper[A, AA] =
+          new (F => G) with ElementWrapper[A, AA] {
             def apply(f: F): G = f2g(f)
             override val element = wrapper.element
           }
@@ -170,39 +162,92 @@ object MoreTypeExperiments {
         trait MonoidLite[M <: ELEMENT]
 
         class ActionsLite[M <: ELEMENT](monoid: MonoidLite[M]) extends ToposLite {
-          type ELEMENT = Ɛ.ElementWrapper[_ <: Ɛ.ELEMENT]
-          type ANITA
-          override type x[T <: ELEMENT, U <: ELEMENT] = (T, U) with Ɛ.ElementWrapper[Ɛ.x[T#BASE, U#BASE]]
 
-          def wouldBeProduct[T <: ELEMENT, U <: ELEMENT](t: T, u: U): Int = {
-            type X = t.BASE
-            type Y = u.BASE
-//            val x:X = t.element
-//            (T, U) with Ɛ.ElementWrapper[Ɛ.x[T#BASE, U#BASE]] = {
-            7
+          // type ELEMENT = AA forSome {
+          //   type AA <: Ɛ.VeiledElementWrapper[AA]
+          // }
+          type ELEMENT = AA forSome {
+            type A <: Ɛ.ELEMENT
+            type AA <: Ɛ.ElementWrapper[A, AA]
           }
 
+          trait VeiledProductElementWrapper[
+            ZZ <: Ɛ.VeiledElementWrapper[ZZ],
+            AA <: Ɛ.VeiledElementWrapper[AA],
+            H <: Ɛ.ElementWrapper[Ɛ.x[ZZ#BASE, AA#BASE], H]
+          ] extends Ɛ.ElementWrapper[
+            Ɛ.x[ZZ#BASE, AA#BASE], H
+          ] {
+            type PRODUCT = (ZZ, AA) with Ɛ.ElementWrapper[
+              Ɛ.x[ZZ#BASE, AA#BASE], H
+            ]            
+            val finalProduct: PRODUCT
+          }
 
+          class ProductElementWrapper[
+            Z <: Ɛ.ELEMENT,
+            ZZ <: Ɛ.ElementWrapper[Z, ZZ],
+            A <: Ɛ.ELEMENT,
+            AA <: Ɛ.ElementWrapper[A, AA]
+          ] (
+            zxa: Ɛ.x[Z, A],
+            zz: ZZ,
+            aa: AA
+          ) extends (ZZ, AA)(zz, aa) with Ɛ.ElementWrapper[
+            Ɛ.x[Z, A], 
+            ProductElementWrapper[Z, ZZ, A, AA]
+          ] with VeiledProductElementWrapper[ZZ, AA, ProductElementWrapper[Z, ZZ, A, AA]] {
+            override val element = zxa
+
+            override val finalProduct: (ZZ, AA) with Ɛ.ElementWrapper[
+              Ɛ.x[Z, A], 
+              ProductElementWrapper[Z, ZZ, A, AA]
+            ] = this
+          }
+
+          override type x[T <: ELEMENT, U <: ELEMENT] <: (T, U) with ELEMENT
+          
+          // override type x[ZZ <: ELEMENT, AA <: ELEMENT] = 
+          //   VeiledProductElementWrapper[ZZ, AA, H]#PRODUCT forSome {
+          //     type H <: Ɛ.ElementWrapper[Ɛ.x[ZZ#BASE, AA#BASE], H]
+          //   }
+
+
+/*
           def makeProduct[
             Z <: Ɛ.ELEMENT,
-            ZZ <: Ɛ.ElementWrapper[Z],
+            ZZ <: Ɛ.ElementWrapper[Z, ZZ],
             A <: Ɛ.ELEMENT,
-            AA <: Ɛ.ElementWrapper[A]
+            AA <: Ɛ.ElementWrapper[A, AA]
           ](zxa: Ɛ.x[Z, A], pre : Z => ZZ, star: A => AA): ZZ x AA =
             zxa match {
               case (z, a) =>
                 val zz: ZZ = pre(z)
                 val aa: AA = star(a)
-//                val zxaWrapped: Ɛ.ElementWrapper[Ɛ.x[zz.BASE, aa.BASE]] = Ɛ.ElementWrapper(zxa)
-//                zxaWrapped(zz, aa).asInstanceOf[ZZ x AA]
-                null.asInstanceOf[ZZ x AA]
-            }
-        }
 
-        object Junkyard {
-          type M = ELEMENT
-          val myMonoid: MonoidLite[M] = null
-          val actions: ActionsLite[M] = new ActionsLite[M](myMonoid)
+                // val zxaWrapped: Ɛ.ElementWrapper[Ɛ.x[zz.BASE, aa.BASE]] = Ɛ.ElementWrapper(zxa)
+                // zxaWrapped(zz, aa).asInstanceOf[ZZ x AA]
+
+              class ProductElementWrapper[
+                Z <: Ɛ.ELEMENT,
+                ZZ <: Ɛ.ElementWrapper[Z, ZZ],
+                A <: Ɛ.ELEMENT,
+                AA <: Ɛ.ElementWrapper[A, AA]
+                ] (
+                  zxa: Ɛ.x[Z, A],
+                  zz: ZZ,
+                  aa: AA
+                ) extends (ZZ, AA)(zz, aa) with Ɛ.ElementWrapper[
+                  Ɛ.x[Z, A], 
+                  ProductElementWrapper[Z, ZZ, A, AA]
+                ] {
+                override val element = wrapper.element
+              }
+
+              // new ProductElementWrapper[Z, ZZ, A, AA](zxa, zz, aa)
+              null
+            }
+*/
         }
       }
     }
