@@ -250,40 +250,57 @@ object DeeperTypeProjectionHell {
 
 object UnivariateTypeProjectionHell {
   trait ToposLite { Ɛ =>
-    type ELEMENT
-    type *[T <: ELEMENT] <: (T => T) with ELEMENT
+    type ELEMENTARY[T]
+    type ELEMENT[T <: ELEMENTARY[T]] <: ELEMENTARY[T]
+    type *[T <: ELEMENT[T]] <: (T => T) with ELEMENT[*[T]]
 
-    trait VeiledElementWrapper[AA <: VeiledElementWrapper[AA]] {
-      type BASE <: ELEMENT
-    }
-
-    trait ElementWrapper[A <: ELEMENT, AA <: ElementWrapper[A, AA]] extends
-      VeiledElementWrapper[AA] { wrapper =>
-      final type BASE = A
+    trait ElementWrapper[A <: ELEMENT[A]] { wrapper =>
+      type BASE = A
       val element: A
 
-      def apply[F <: ELEMENT, G <: ELEMENT](fun: F => G): (F => G) with ElementWrapper[A, AA] =
-        new (F => G) with ElementWrapper[A, AA] {
+      def apply[F <: ELEMENT[F], G <: ELEMENT[G]](fun: F => G): (F => G) with ElementWrapper[A] =
+        new (F => G) with ElementWrapper[A] {
           override val element = wrapper.element
           def apply(f : F): G = fun(f)
         }
     }
 
     class ActionsLite extends ToposLite {
-      type ELEMENT = AA forSome {
-          type AA <: Ɛ.ElementWrapper[_ <: Ɛ.ELEMENT, AA]
-        }
-      // type *[T <: ELEMENT] <: (T => T) with ELEMENT
-// X <: Ɛ.*[T#BASE]
-      def widget[T <: ELEMENT, H <: Ɛ.ElementWrapper[_ <: Ɛ.ELEMENT, H]](
-        h: H
-      ): ELEMENT = h 
+      type ELEMENTARY[TT] = Ɛ.ElementWrapper[T] forSome {
+        type T <: Ɛ.ELEMENT[T]
+      }
+      type ELEMENT[TT <: ELEMENTARY[TT]] = Ɛ.ElementWrapper[TT#BASE] 
 
-      override type *[T <: ELEMENT] <: (T => T) with H forSome {
-        type H <: Ɛ.ElementWrapper[Ɛ.*[T#BASE], H]
+      override type *[TT <: ELEMENT[TT]] <: (TT => TT) with ELEMENT[*[TT]] with Ɛ.ElementWrapper[Ɛ.*[TT#BASE]]
+      // that's with Ɛ.ElementWrapper[*[TT]#BASE]
+      // but we want:
+      //        with Ɛ.ElementWrapper[Ɛ.*[TT#BASE]]
+      // can have both???!
+      // so the double "with" sort of forces *[TT]#BASE ::== Ɛ.*[TT#BASE]
+
+      class Star[
+        TT <: ELEMENT[TT]
+      ] (
+        innerStar: Ɛ.*[TT#BASE]
+      ) extends (TT => TT) /* with ELEMENT[*[TT]] */ with Ɛ.ElementWrapper[Ɛ.*[TT#BASE]] {
+        override type BASE = Ɛ.*[TT#BASE]
+        override val element = innerStar : BASE
+        def apply(tt: TT): TT = tt
       }
 
-      // type **[T <: Ɛ.ElementWrapper[A <: Ɛ.ELEMENT, AA <: Ɛ.ElementWrapper[A]]] = Int
+      // override type *[T <: ELEMENT[T]] <: (T => T) with ELEMENT[TT] forSome {
+      //   type TT <: Ɛ.ElementWrapper[Ɛ.*[T#BASE], H]
+      // }
+
+      // class MindFuck[T <: ELEMENT](tStar: Ɛ.*[T#BASE]) extends (T => T) with 
+      //   Ɛ.ElementWrapper[Ɛ.*[T#BASE], MindFuck[T]] {
+
+      //   }
+
+      // def star[T <: ELEMENT](tStar: Ɛ.*[T#BASE]): *[T] = {
+      //   val mf: (T => T) with  = new MindFuck[T](t)
+      //   mf
+      // }
     }
   }          
 }
