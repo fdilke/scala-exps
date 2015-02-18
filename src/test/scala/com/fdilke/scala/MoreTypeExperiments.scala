@@ -302,5 +302,139 @@ object UnivariateTypeProjectionHell {
       //   mf
       // }
     }
-  }          
+  }
 }
+
+object UnivariateTypeProjectionHell2 {
+  trait ToposLite { Ɛ =>
+    type ELEMENTARY[+T]
+    type ELEMENT[+T <: ELEMENTARY[T]] <: ELEMENTARY[T]
+    type *[T <: ELEMENT[T]] <: (() => T) with ELEMENT[*[T]]
+
+    trait ElementWrapper[A <: ELEMENT[A]] { wrapper =>
+      type BASE = A
+      val element: A
+
+      def apply[F <: ELEMENT[F], G <: ELEMENT[G]](fun: F => G): (F => G) with ElementWrapper[A] =
+        new (F => G) with ElementWrapper[A] {
+          override val element = wrapper.element
+          def apply(f : F): G = fun(f)
+        }
+    }
+
+    class ActionsLite extends ToposLite {
+      override type ELEMENTARY[+TT] = Ɛ.ElementWrapper[T] forSome {
+        type T <: Ɛ.ELEMENT[T]
+      }
+      override type ELEMENT[+TT <: ELEMENTARY[TT]] = Ɛ.ElementWrapper[TT#BASE] 
+
+      override type *[TT <: ELEMENT[TT]] <: (() => TT) with ELEMENT[*[TT]] // with Ɛ.ElementWrapper[Ɛ.*[TT#BASE]]
+
+// ELEMENT[*[TT]] ::== Ɛ.ElementWrapper[*[TT]#BASE]
+// but: *[TT] <: 
+//
+// ...
+// To have Star[TT] <: *[TT], we need:
+// Star[TT] <: (() => TT) with ELEMENT[Star[TT]]
+// and rhsrhs is
+// Ɛ.ElementWrapper[Star[TT]#BASE]
+// so, need:
+// Star[TT] < (() => TT) with Ɛ.ElementWrapper[Star[TT]#BASE]
+
+      class Star1[
+        TT <: ELEMENT[TT]
+      ] (
+        tt: TT,
+        innerStar: Ɛ.*[TT#BASE]
+      ) extends (() => TT) /* with ELEMENT[*[TT]] */ with Ɛ.ElementWrapper[Ɛ.*[TT#BASE]] {
+        override type BASE = Ɛ.*[TT#BASE]
+        override val element = innerStar : BASE
+        def apply(): TT = tt
+      }
+
+      
+      // trait Star2Base1[
+      //   TT <: ELEMENT[TT],
+      //   TTT
+      // ] { self: Ɛ.ELEMENTARY[TTT] => 
+      // }
+
+      // trait Star2Base2[
+      //   TT <: ELEMENT[TT]
+      // ] extends Star2Base1[TT, Star2Base2[TT]] { self: Ɛ.ELEMENT[Star2Base2[TT]] =>
+      // }
+
+      // class Star2[
+      //   TT <: ELEMENT[TT]
+      // ] (
+      //   tt: TT,
+      //   starBase : Star2Base[TT]
+      // ) extends (() => TT) with Ɛ.ElementWrapper[Star2Base[TT]] {
+      //   override type BASE = Star2Base[TT]
+      //   override val element = starBase : Star2Base[TT]
+      //   def apply(): TT = tt
+      // }
+
+    }
+  }
+}          
+
+object UnivariateTypeProjectionHell3 {
+  trait ToposLite { Ɛ =>
+    type ELEMENTARY[T]
+    type ELEMENT[T <: ELEMENTARY[T]] <: ELEMENTARY[T]
+    type *[T <: ELEMENT[T]] <: (() => T) with ELEMENT[*[T]]
+
+    trait ElementWrapper[A <: ELEMENT[A]] { wrapper =>
+      type BASE = A
+      val element: A
+
+      def apply[F <: ELEMENT[F], G <: ELEMENT[G]](fun: F => G): (F => G) with ElementWrapper[A] =
+        new (F => G) with ElementWrapper[A] {
+          override val element = wrapper.element
+          def apply(f : F): G = fun(f)
+        }
+    }
+
+    class ActionsLite extends ToposLite {
+      type ELEMENTARY[TT] = Ɛ.ElementWrapper[T] forSome {
+        type T <: Ɛ.ELEMENT[T]
+      }
+      type ELEMENT[TT <: ELEMENTARY[TT]] = Ɛ.ElementWrapper[TT#BASE] 
+
+      private type **[TT <: ELEMENT[TT], H <: ELEMENTARY[H]] = (() => TT) with ELEMENT[H] 
+      override type *[TT <: ELEMENT[TT]] = H forSome { type H <: **[TT, H] }
+
+      class Star[
+        TT <: ELEMENT[TT],
+        B <: Ɛ.ELEMENT[B]
+      ](
+        tt: TT,
+        b: B
+      ) extends (() => TT) with Ɛ.ElementWrapper[B] {
+        override val element = b
+        override def apply(): TT = tt
+      }
+
+      class StarBase[TT <: ELEMENT[TT]](
+        tt: TT
+      )
+
+      class StarStar[TT <: ELEMENT[TT]](
+        tt: TT
+      ) extends (() => TT) { // with Ɛ.ElementWrapper[StarBase[TT]] { self: **[TT, StarStar[TT]] =>
+        override def apply(): TT = tt
+        // override val element = /* tt.element */ null.asInstanceOf[StarBase[TT]]
+      }
+
+      // def star[
+      //   TT <: ELEMENT[TT]
+      // ](
+      //   tt: TT
+      // ): *[TT] =
+      //   new StarStar[TT](tt)
+
+    }
+  }
+}
+
