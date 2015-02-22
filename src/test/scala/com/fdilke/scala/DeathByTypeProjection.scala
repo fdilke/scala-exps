@@ -103,3 +103,29 @@ So under 'tightening' we have:
  Looks like they are to me. What's the problem????
 */
 
+object CompilerBeingSillyAboutUnit {
+	trait ToposLite { Ɛ =>
+		type ~
+		type UNIT <: ~
+
+		class ActionsLite extends ToposLite {
+			trait ~~[T <: Ɛ.~, TT <: ~~[T, TT]] {
+				val element: T
+			}
+
+			// type ~ = ~~[T] forSome { type T <: Ɛ.~ }
+
+	      	override type ~ = TT forSome {
+		        // type T <: Ɛ.~
+		        type TT <: ~~[_ <: Ɛ.~, TT]
+		     }
+
+			class VanillaWrapper[A <: Ɛ.~](a: A) extends
+		    	~~[A, VanillaWrapper[A]] {
+		        override val element = a
+		  	}
+
+			override type UNIT = VanillaWrapper[Ɛ.UNIT]
+		}
+	}
+}
