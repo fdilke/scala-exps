@@ -113,10 +113,9 @@ object CompilerBeingSillyAboutUnit {
 				val element: T
 			}
 
-			// type ~ = ~~[T] forSome { type T <: Ɛ.~ }
-
 	      	override type ~ = TT forSome {
 		        // type T <: Ɛ.~
+		        // type TT <: ~~[T, TT]
 		        type TT <: ~~[_ <: Ɛ.~, TT]
 		     }
 
@@ -129,3 +128,60 @@ object CompilerBeingSillyAboutUnit {
 		}
 	}
 }
+
+object CompilerBeingSillyAboutBiproducts {
+	trait ToposLite { Ɛ =>
+		type ~
+		type x[S <: ~, T <: ~] <: (S, T) with ~
+
+		class ActionsLite extends ToposLite {
+			trait ~~[T <: Ɛ.~, TT <: ~~[T, TT]] {
+				val element: T
+
+				type PREBIPRODUCT[SS <: ~] = SS#POSTBIPRODUCT[T, TT] 
+				type POSTBIPRODUCT[U <: Ɛ.~, UU <: ~~[T, TT]] = H forSome {
+					type H <: ~~[Ɛ.x[T, U], H]
+				}
+			}
+
+	      	override type ~ = TT forSome {
+		        type TT <: ~~[_ <: Ɛ.~, TT]
+		     }
+
+		    override type x[SS <: ~, TT <: ~] = (SS, TT) with TT#PREBIPRODUCT[SS]
+
+			class VanillaWrapper[A <: Ɛ.~](a: A) extends
+		    	~~[A, VanillaWrapper[A]] {
+		        override val element = a
+		  	}
+
+		}
+	}
+}
+
+object AvoidingRevealAndReceive {
+	type ~
+	trait ~~[T <: ~, TT <: ~~[T, TT]] 
+
+  	type Doubleton = TT forSome {
+        type TT <: ~~[_ <: ~, TT]
+     }
+
+	trait InnerStar[TT <: Doubleton] {
+		def preProduct[S <: ~, SS <: ~~[S, SS]](pre: Star[S, SS]): BiproductStar[SS, TT]
+	}
+
+	trait BiproductStar[SS <: Doubleton, TT <: Doubleton] 
+
+	trait Star[T <: ~, TT <: ~~[T, TT]] extends InnerStar[TT] {
+		def product[U <: ~, UU <: ~~[U, UU]](that: Star[U, UU]): BiproductStar[TT, UU]
+
+		def preProduct[S <: ~, SS <: ~~[S, SS]](pre: Star[S, SS]): BiproductStar[SS, TT] =
+			pre.product(this)
+
+		def product[UU <: Doubleton](that: InnerStar[UU]): BiproductStar[TT, UU] =
+			that.preProduct(this)
+	}
+}
+
+
