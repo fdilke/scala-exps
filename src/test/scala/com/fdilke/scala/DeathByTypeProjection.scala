@@ -184,4 +184,96 @@ object AvoidingRevealAndReceive {
 	}
 }
 
+object CompilerStillBeingSillyAboutBiproducts {
+	trait ToposLite { Ɛ =>
+		type ~
+		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type STAR[S <: ~]
+		type BIPRODUCT[L <: ~, R <: ~] = BiproductStar[L, R] with STAR[L x R]
+		trait BiproductStar[L <: ~, R <: ~] { star: STAR[L x R] =>
+		}
+
+		class ActionsLite extends ToposLite {
+			trait ~~[T <: Ɛ.~, TT <: ~~[T, TT]] {
+				val element: T
+
+				// def preBiproduct[SS <: ~](bogusSS: SS, bogusTT: TT): BIPRODUCT[SS, TT] = 
+				// 	null
+					// bogusSS.postBiproduct[T, TT](bogusTT, bogusSS)
+
+				// def postBiproduct[U <: Ɛ.~, UU <: ~~[U, UU]](bogusTT: TT, bogusUU: UU): BIPRODUCT[TT, UU] =
+				// 	null
+
+					// new Star[Ɛ.x[T, U], x[TT, UU]] with BiproductStar[TT, UU] {
+					// 	def ^(sXt: Ɛ.x[T, U]): x[TT, UU] = null
+					// }
+
+					// new Star[Ɛ.x[S, T], x[SS, TT]] with BiproductStar[SS, TT] {
+					// 	def ^(sXt: Ɛ.x[S, T]): x[SS, TT] = null
+					// }
+
+					// new Star[S <: Ɛ.~, SS <: ~~[S, SS]r[]
+			}
+
+			class BiproductWrapper[
+		        A <: Ɛ.~,
+		        AA <: ~~[A, AA],
+		        B <: Ɛ.~,
+		    	BB <: ~~[B, BB]
+		    ] (
+		        aa: AA,
+		        bb: BB,
+		        aXb: Ɛ.x[A, B]
+		    ) extends (AA, BB)(aa, bb) with ~~[
+		        Ɛ.x[A, B],
+		        BiproductWrapper[A, AA, B, BB]
+		    ] {
+		        override val element = aXb
+		    }
+
+	      	override type ~ = TT forSome {
+		        type TT <: ~~[_ <: Ɛ.~, TT]
+		    }
+
+			trait DoubleLinkContextFacade[SS <: ~, TT <: ~] {
+				type LINKBIPRODUCT <: (SS, TT) with ~ 
+				// type PREBIPRODUCT[SS <: ~] = SS#POSTBIPRODUCT[T, TT] 
+				// type POSTBIPRODUCT[U <: Ɛ.~, UU <: ~~[U, UU]] = BiproductWrapper[T, TT, U, UU]
+			}
+
+			class DoubleLinkContext[
+				S <: Ɛ.~,
+				SS <: ~~[S, SS],
+				T <: Ɛ.~,
+				TT <: ~~[T, TT]
+			](left: Star[S, SS], right: Star[T, TT]) extends DoubleLinkContextFacade[SS, TT] {
+				override type LINKBIPRODUCT = BiproductWrapper[S, SS, T, TT]
+
+				lazy val biproduct: BIPRODUCT[SS, TT] =
+					null
+			}
+
+		    override type x[SS <: ~, TT <: ~] = DoubleLinkContextFacade[SS, TT]#LINKBIPRODUCT
+			type STAR[S <: ~] = StarFacade[S]
+
+			class VanillaWrapper[A <: Ɛ.~](a: A) extends
+		    	~~[A, VanillaWrapper[A]] {
+		        override val element = a
+		  	}
+
+		  	trait StarFacade[SS <: ~]
+		  	trait Star[S <: Ɛ.~, SS <: ~~[S, SS]] extends StarFacade[SS] {
+		  		def ^(s: S) : SS
+		  		def biproduct[T <: Ɛ.~, TT <: ~~[T, TT]](that: Star[T, TT]): BIPRODUCT[SS, TT] = {
+		  			// val bogusSS = this.^(null.asInstanceOf[S])
+		  			// val bogusTT = that.^(null.asInstanceOf[T])
+		  			// bogusTT.preBiproduct(bogusSS, bogusTT)
+		  			new DoubleLinkContext[S, SS, T, TT](this, that).biproduct
+		  		}
+		  	}
+		}
+	}
+}
+
+
 
