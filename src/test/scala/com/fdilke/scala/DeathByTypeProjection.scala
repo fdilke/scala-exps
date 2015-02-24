@@ -278,5 +278,72 @@ object CompilerStillBeingSillyAboutBiproducts {
 	}
 }
 
+object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
+	trait ToposLite { Ɛ =>
+		type ~
+		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type STAR[S <: ~]
+		type BIPRODUCT[L <: ~, R <: ~, LXR <: ~] = BiproductStar[L, R, _ <: ~] with STAR[LXR]
+		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] =>
+		}
+
+		class ActionsLite extends ToposLite {
+			trait ~~[T <: Ɛ.~] {
+				val element: T
+			}
+
+			class BiproductWrapper[
+		        A <: Ɛ.~,
+		        AA <: ~~[A],
+		        B <: Ɛ.~,
+		    	BB <: ~~[B]
+		    ] (
+		        aa: AA,
+		        bb: BB,
+		        aXb: Ɛ.x[A, B]
+		    ) extends (AA, BB)(aa, bb) with ~~[
+		        Ɛ.x[A, B]
+		    ] {
+		        override val element = aXb
+		    }
+
+	      	override type ~ = ~~[_ <: Ɛ.~]
+
+			trait DoubleLinkContextFacade[SS <: ~, TT <: ~] {
+				type LINKBIPRODUCT <: (SS, TT) with ~ 
+			}
+
+			class DoubleLinkContext[
+				S <: Ɛ.~,
+				SS <: ~~[S],
+				T <: Ɛ.~,
+				TT <: ~~[T]
+			](left: Star[S, SS], right: Star[T, TT]) extends DoubleLinkContextFacade[SS, TT] {
+				override type LINKBIPRODUCT = BiproductWrapper[S, SS, T, TT]
+
+				lazy val biproduct: BIPRODUCT[SS, TT, LINKBIPRODUCT] =
+					new Star[Ɛ.x[S, T], LINKBIPRODUCT ] with BiproductStar[SS, TT, LINKBIPRODUCT ] {
+						def ^(sXt: Ɛ.x[S, T]): LINKBIPRODUCT = null.asInstanceOf[LINKBIPRODUCT]
+					}.asInstanceOf[BIPRODUCT[SS, TT, LINKBIPRODUCT]]
+			}
+
+		    override type x[SS <: ~, TT <: ~] = DoubleLinkContextFacade[SS, TT]#LINKBIPRODUCT
+			type STAR[S <: ~] = StarFacade[S]
+
+			class VanillaWrapper[A <: Ɛ.~](a: A) extends
+		    	~~[A] {
+		        override val element = a
+		  	}
+
+		  	trait StarFacade[SS <: ~]
+		  	trait Star[S <: Ɛ.~, SS <: ~~[S]] extends StarFacade[SS] {
+		  		def ^(s: S) : SS
+		  		def biproduct[T <: Ɛ.~, TT <: ~~[T]](that: Star[T, TT]): BIPRODUCT[SS, TT, _ <: ~] = {
+		  			new DoubleLinkContext[S, SS, T, TT](this, that).biproduct
+		  		}
+		  	}
+		}
+	}
+}
 
 
