@@ -251,6 +251,9 @@ object CompilerStillBeingSillyAboutBiproducts {
 
 				lazy val biproduct: BIPRODUCT[SS, TT] =
 					null
+					// new Star[Ɛ.x[S, T], x[SS, TT] /* LINKBIPRODUCT */] with BiproductStar[SS, TT] {
+					// 	def ^(sXt: Ɛ.x[S, T]): x[SS, TT] = null.asInstanceOf[x[SS, TT]]
+					// }.asInstanceOf[BIPRODUCT[SS, TT]]
 			}
 
 		    override type x[SS <: ~, TT <: ~] = DoubleLinkContextFacade[SS, TT]#LINKBIPRODUCT
