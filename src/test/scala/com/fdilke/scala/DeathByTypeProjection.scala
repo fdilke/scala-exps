@@ -365,7 +365,7 @@ object LinkagesUnbound {
 		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] => }
 
 		trait Star[S <: ~] {
-		    def xUncached[T <: ~](that: STAR[T]): BIPRODUCT[S, T]
+		    def x[T <: ~](that: STAR[T]): BIPRODUCT[S, T]
 		}
 
 		class ActionsLite extends ToposLite {
@@ -375,15 +375,21 @@ object LinkagesUnbound {
 			}
 
 			trait Linkage[T <: Ɛ.~, TT <: ~~~] extends ↔[T, TT] {
-				type BASE = T
-				type BASEBASE = TT
+				// type STAR = Ɛ.STAR[T]
+				val star: Ɛ.STAR[T]
 
-				type BIPRODUCT_LINKAGE[U <: ~] = U#PRE_BIPRODUCT_LINKAGE[T, TT]
+				type BIPRODUCT_LINKAGE[UUU <: ~] = UUU#PRE_BIPRODUCT_LINKAGE[T, TT]
 				type PRE_BIPRODUCT_LINKAGE[S <: Ɛ.~, SS <: ~~~] =
 					Linkage[
 						Ɛ.x[S, T], 
 						BiproductWrapper[S, SS, T, TT]
 					]
+
+				// def x[UUU <: ~](that: UUU): Linkage[T, TT] x UUU = // BIPRODUCT_LINKAGE[UUU] =
+				// 	null.asInstanceOf[Linkage[T, TT] x UUU] 
+					// that.preBiproduct(this)
+
+				// def preBiproduct[SSS <: ~](that: SSS) = null // : BIPRODUCT_LINKAGE[U] =
 			}
 
 			class BiproductWrapper[
@@ -405,9 +411,12 @@ object LinkagesUnbound {
 			override type x[S <: ~, T <: ~] <: (S, T) with S#BIPRODUCT_LINKAGE[T]
 			override type STAR[S <: ~] = ActionStar[S]
 
-			class ActionStar[S <: ~] extends Star[S] {
-			    override def xUncached[T <: ~](that: STAR[T]): BIPRODUCT[S, T] =
-			    	new ActionStar[S x T] with BiproductStar[S, T, S x T]
+			class ActionStar[S <: ~](val linkage: S) extends Star[S] {
+			    override def x[T <: ~](that: STAR[T]): BIPRODUCT[S, T] = {
+			    	val productLinkage: S x T = null.asInstanceOf[S x T]
+			    		// linkage x that.linkage
+			    	new ActionStar[S x T](productLinkage) with BiproductStar[S, T, S x T]
+			    }
 			}
 		}
 	}
