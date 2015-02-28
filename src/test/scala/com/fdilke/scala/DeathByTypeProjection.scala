@@ -283,7 +283,7 @@ object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 		type ~
 		type x[S <: ~, T <: ~] <: (S, T) with ~
 		type STAR[S <: ~]
-		type BIPRODUCT[L <: ~, R <: ~, LXR <: ~] = BiproductStar[L, R, _ <: ~] with STAR[LXR]
+		type BIPRODUCT[L <: ~, R <: ~, LXR <: ~] = BiproductStar[L, R, LXR] with STAR[LXR]
 		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] =>
 		}
 
@@ -324,7 +324,7 @@ object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 				lazy val biproduct: BIPRODUCT[SS, TT, LINKBIPRODUCT] =
 					new Star[Ɛ.x[S, T], LINKBIPRODUCT ] with BiproductStar[SS, TT, LINKBIPRODUCT ] {
 						def ^(sXt: Ɛ.x[S, T]): LINKBIPRODUCT = null.asInstanceOf[LINKBIPRODUCT]
-					}.asInstanceOf[BIPRODUCT[SS, TT, LINKBIPRODUCT]]
+					}
 			}
 
 		    override type x[SS <: ~, TT <: ~] = DoubleLinkContextFacade[SS, TT]#LINKBIPRODUCT
