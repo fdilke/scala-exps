@@ -346,4 +346,71 @@ object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 	}
 }
 
+case class ↔[A, B] (
+  / : A => B,
+  \ : B => A
+) {
+  // def o[C](Δ: B ↔ C) = 
+  // 	 new ↔[A, C](/ andThen Δ./, Δ.\ andThen \)
+  // def unary_~() =
+  //   new ↔[B, A](\, /)
+}
+
+object LinkagesUnbound {
+	trait ToposLite { Ɛ =>
+		type ~
+		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type STAR[S <: ~] <: Star[S]
+		type BIPRODUCT[L <: ~, R <: ~] = BiproductStar[L, R, L x R] with STAR[L x R]
+		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] => }
+
+		trait Star[S <: ~] {
+		    def xUncached[T <: ~](that: STAR[T]): BIPRODUCT[S, T]
+		}
+
+		class ActionsLite extends ToposLite {
+			trait ~~~ // can be a type?
+			trait ~~[T <: Ɛ.~] extends ~~~ {
+				val element: T
+			}
+
+			trait Linkage[T <: Ɛ.~, TT <: ~~~] extends ↔[T, TT] {
+				type BASE = T
+				type BASEBASE = TT
+
+				type BIPRODUCT_LINKAGE[U <: ~] = U#PRE_BIPRODUCT_LINKAGE[T, TT]
+				type PRE_BIPRODUCT_LINKAGE[S <: Ɛ.~, SS <: ~~~] =
+					Linkage[
+						Ɛ.x[S, T], 
+						BiproductWrapper[S, SS, T, TT]
+					]
+			}
+
+			class BiproductWrapper[
+		        A <: Ɛ.~,
+		        AA <: ~~~,
+		        B <: Ɛ.~,
+		    	BB <: ~~~
+		    ] (
+		        aa: AA,
+		        bb: BB,
+		        aXb: Ɛ.x[A, B]
+		    ) extends (AA, BB)(aa, bb) with ~~[
+		        Ɛ.x[A, B]
+		    ] {
+		        override val element = aXb
+		    }
+
+	      	override type ~ = Linkage[_ <: Ɛ.~, _ <: ~~[_ <: Ɛ.~]]
+			override type x[S <: ~, T <: ~] <: (S, T) with S#BIPRODUCT_LINKAGE[T]
+			override type STAR[S <: ~] = ActionStar[S]
+
+			class ActionStar[S <: ~] extends Star[S] {
+			    override def xUncached[T <: ~](that: STAR[T]): BIPRODUCT[S, T] =
+			    	new ActionStar[S x T] with BiproductStar[S, T, S x T]
+			}
+		}
+	}
+}
+
 
