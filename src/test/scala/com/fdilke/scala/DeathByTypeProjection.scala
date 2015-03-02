@@ -457,14 +457,16 @@ object LinkagesUnbound {
 			}
 
 			trait Link { link =>
-				type THIS <: Link { type THIS = link.THIS }
+				type THIS >: link.type <: (Link { type THIS = link.THIS }) 
 				type BASE <: Ɛ.~
 				type LIFT <: ~~~
 				val ↔ : ↔[BASE, LIFT]
 
 				class ActionStar(val star: Ɛ.STAR[BASE]) extends Star[THIS] {
+					val uplink = link : THIS
 				    override def x[THAT <: ~](that: STAR[THAT]): BIPRODUCT[THIS, THAT] = {
-				    	val productLinkage: THIS x THAT = null.asInstanceOf[THIS x THAT]
+				    	val productLink: THIS x THAT = new BiproductLink(link, that.uplink)
+				    	// null.asInstanceOf[THIS x THAT]
 				    		// linkage x that.linkage
 				    	// productLinkage.biproductStar(star, that.star)
 				    	null
@@ -503,7 +505,7 @@ object LinkagesUnbound {
 
 			override type x[S <: ~, T <: ~] = BiproductLink[S, T]
 
-			override type STAR[S <: ~] = (Link { type THIS = S })#ActionStar // with Star[S]
+			override type STAR[S <: ~] = (Link { type THIS = S })#ActionStar 
 		}
 	}
 }
