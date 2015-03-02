@@ -462,15 +462,12 @@ object LinkagesUnbound {
 				type LIFT <: ~~~
 				val ↔ : ↔[BASE, LIFT]
 
-				class ActionStar(val star: Ɛ.STAR[BASE]) extends Star[THIS] {
+				class ActionStar(val star: Ɛ.STAR[BASE]) extends Star[THIS] { actionStar =>
 					val uplink = link : THIS
 				    override def x[THAT <: ~](that: STAR[THAT]): BIPRODUCT[THIS, THAT] = {
-				    	val productLink: THIS x THAT = new BiproductLink(link, that.uplink)
-				    	// null.asInstanceOf[THIS x THAT]
-				    		// linkage x that.linkage
-				    	// productLinkage.biproductStar(star, that.star)
+				    	val productLink = new BiproductLink(uplink, that.uplink)
+				    	// productLink(star, that.star)
 				    	null
-				    	// new ActionStar[T x U](productLinkage) with BiproductStar[T, U, T x U]
 				    }
 				}
 			}
@@ -484,6 +481,12 @@ object LinkagesUnbound {
 				override type BASE = Ɛ.x[left.BASE, right.BASE]
 				override type LIFT = (left.LIFT, right.LIFT) with ~~~
 				val ↔ = null
+
+				def apply(
+					leftStar: Ɛ.STAR[left.BASE], 
+					rightStar: Ɛ.STAR[right.BASE]
+				) =
+					new ActionStar(leftStar x rightStar) with BiproductStar[L, R, BiproductLink[L, R]]
 			}
 
 			class BiproductWrapper[
