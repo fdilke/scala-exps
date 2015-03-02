@@ -356,6 +356,88 @@ case class ↔[A, B] (
   //   new ↔[B, A](\, /)
 }
 
+/*
+object SelfDescribingElements {
+	trait ToposLite { Ɛ =>
+		type ~[S]
+		type x[S <: ~[S], T <: ~[T]] = SxT forSome { 
+			type SxT <: ~[SxT]
+		}
+		type BIPRODUCT[L <: ~[L], R <: ~[R]] = BiproductStar[L, R, L x R] 
+		trait BiproductStar[L <: ~[L], R <: ~[R], LXR <: ~[LXR]] 
+	}
+}
+*/
+
+/*
+object LinkagesUnbound {
+	trait ToposLite { Ɛ =>
+		type ~[S]
+		type x[S <: ~[S], T <: ~[T]] <: (S, T) with ~[x[S, T]]
+		type STAR[S <: ~[S]] <: Star[S]
+		type BIPRODUCT[L <: ~[L], R <: ~[R]] = BiproductStar[L, R, L x R] with STAR[L x R]
+		trait BiproductStar[L <: ~[L], R <: ~[R], LXR <: ~[LXR]] { star: STAR[LXR] => }
+
+		trait Star[S <: ~[S]] {
+		    def x[T <: ~[T]](that: STAR[T]): BIPRODUCT[S, T]
+		}
+
+		class ActionsLite extends ToposLite {
+			trait ~~~ // can be a type?
+			trait ~~[T <: Ɛ.~[T]] extends ~~~ {
+				val element: T
+			}
+
+			trait Link[THIS <: Link[THIS]] { link =>
+				// type THIS <: Link { type THIS = link.THIS }
+				type BASE <: Ɛ.~[BASE]
+				type LIFT <: ~~~
+				val ↔ : ↔[BASE, LIFT]
+
+				class ActionStar(val star: Ɛ.STAR[BASE]) extends Star[THIS] {
+				    override def x[THAT <: ~[THAT]](that: STAR[THAT]): BIPRODUCT[THIS, THAT] = {
+				    	val productLinkage: THIS x THAT = null.asInstanceOf[THIS x THAT]
+				    		// linkage x that.linkage
+				    	// productLinkage.biproductStar(star, that.star)
+				    	null
+				    	// new ActionStar[T x U](productLinkage) with BiproductStar[T, U, T x U]
+				    }
+				}
+			}
+
+			case class BiproductLink[
+				L <: Link[L], 
+				R <: Link[R]
+			] (left: L, right: R) extends Link[BiproductLink[L, R]] {
+				// override type THIS = 
+				override type BASE = Ɛ.x[left.BASE, right.BASE]
+				override type LIFT = (left.LIFT, right.LIFT) with ~~~
+				val ↔ = null
+			}
+
+			class BiproductWrapper[
+		        A <: Ɛ.~[A],
+		        AA <: ~~~,
+		        B <: Ɛ.~[B],
+		    	BB <: ~~~
+		    ] (
+		        aa: AA,
+		        bb: BB,
+		        aXb: Ɛ.x[A, B]
+		    ) extends (AA, BB)(aa, bb) with ~~[
+		        Ɛ.x[A, B]
+		    ] {
+		        override val element = aXb
+		    }
+
+	      	override type ~[S] = Link[S]
+			override type x[S <: ~[S], T <: ~[T]] = (S, T) with ~[x[S, T]] // BiproductLink[S, T]#LIFT // TODO amalgamate?
+			override type STAR[S <: ~[S]] = S#ActionStar
+		}
+	}
+}
+*/
+
 object LinkagesUnbound {
 	trait ToposLite { Ɛ =>
 		type ~
@@ -374,22 +456,32 @@ object LinkagesUnbound {
 				val element: T
 			}
 
-			trait Linkage[T <: Ɛ.~, TT <: ~~~] extends ↔[T, TT] {
-				// type STAR = Ɛ.STAR[T]
-				val star: Ɛ.STAR[T]
+			trait Link { link =>
+				type THIS <: Link { type THIS = link.THIS }
+				type BASE <: Ɛ.~
+				type LIFT <: ~~~
+				val ↔ : ↔[BASE, LIFT]
 
-				type BIPRODUCT_LINKAGE[UUU <: ~] = UUU#PRE_BIPRODUCT_LINKAGE[T, TT]
-				type PRE_BIPRODUCT_LINKAGE[S <: Ɛ.~, SS <: ~~~] =
-					Linkage[
-						Ɛ.x[S, T], 
-						BiproductWrapper[S, SS, T, TT]
-					]
+				class ActionStar(val star: Ɛ.STAR[BASE]) extends Star[THIS] {
+				    override def x[THAT <: ~](that: STAR[THAT]): BIPRODUCT[THIS, THAT] = {
+				    	val productLinkage: THIS x THAT = null.asInstanceOf[THIS x THAT]
+				    		// linkage x that.linkage
+				    	// productLinkage.biproductStar(star, that.star)
+				    	null
+				    	// new ActionStar[T x U](productLinkage) with BiproductStar[T, U, T x U]
+				    }
+				}
+			}
 
-				// def x[UUU <: ~](that: UUU): Linkage[T, TT] x UUU = // BIPRODUCT_LINKAGE[UUU] =
-				// 	null.asInstanceOf[Linkage[T, TT] x UUU] 
-					// that.preBiproduct(this)
-
-				// def preBiproduct[SSS <: ~](that: SSS) = null // : BIPRODUCT_LINKAGE[U] =
+			class BiproductLink[
+				L <: Link, 
+				R <: Link
+			] (val left: L, val right: R) extends 
+			(L, R)(left, right) with Link {
+				override type THIS = BiproductLink[L, R]
+				override type BASE = Ɛ.x[left.BASE, right.BASE]
+				override type LIFT = (left.LIFT, right.LIFT) with ~~~
+				val ↔ = null
 			}
 
 			class BiproductWrapper[
@@ -407,19 +499,12 @@ object LinkagesUnbound {
 		        override val element = aXb
 		    }
 
-	      	override type ~ = Linkage[_ <: Ɛ.~, _ <: ~~[_ <: Ɛ.~]]
-			override type x[S <: ~, T <: ~] <: (S, T) with S#BIPRODUCT_LINKAGE[T]
-			override type STAR[S <: ~] = ActionStar[S]
+	      	override type ~ = Link
 
-			class ActionStar[S <: ~](val linkage: S) extends Star[S] {
-			    override def x[T <: ~](that: STAR[T]): BIPRODUCT[S, T] = {
-			    	val productLinkage: S x T = null.asInstanceOf[S x T]
-			    		// linkage x that.linkage
-			    	new ActionStar[S x T](productLinkage) with BiproductStar[S, T, S x T]
-			    }
-			}
+			override type x[S <: ~, T <: ~] = BiproductLink[S, T]
+
+			override type STAR[S <: ~] = (Link { type THIS = S })#ActionStar // with Star[S]
 		}
 	}
 }
-
 
