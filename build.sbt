@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
   "com.google.http-client" % "google-http-client" % "1.20.0",
   "com.googlecode.objectify" % "objectify" % "5.1.5",
   "com.google.oauth-client" % "google-oauth-client-servlet" % "1.20.0",
-  "com.google.oauth-client" % "google-oauth-client-appengine" % "1.20",
+  "com.google.oauth-client" % "google-oauth-client-appengine" % "1.20.0",
   "com.google.apis" % "google-api-services-drive" % "v2-rev171-1.19.0",
   "com.google.api-client" % "google-api-client" % "1.20.0",
   "com.google.http-client" % "google-http-client-jackson" % "1.20.0",
