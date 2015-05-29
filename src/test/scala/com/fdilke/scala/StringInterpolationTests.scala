@@ -4,6 +4,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
 case class Foo(name: String)
+
 object FooHelpers {
   implicit class FooHelper(val sc: StringContext) extends AnyVal {
     def foo(args: Any*): Foo = Foo(sc.parts.mkString)
