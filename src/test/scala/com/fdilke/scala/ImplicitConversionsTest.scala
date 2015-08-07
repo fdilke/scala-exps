@@ -5,6 +5,7 @@ import Matchers._
 import scala.language.implicitConversions
 
 class ImplicitConversionsTest extends FunSpec {
+
   describe("Implicit conversions") {
     it("work by importing an object converting values to a wrapper") {
 
@@ -22,6 +23,20 @@ class ImplicitConversionsTest extends FunSpec {
       import SpecialMultImplicits._
 
       2 ** 3 shouldBe 8
+    }
+
+    it("can add function methods to strings") {
+
+      object FunctionalStrings {
+        case class Widget(n: Int)
+
+        implicit class FunctionalString(value: String) {
+          def law(position: Widget) = value.substring(position.n, position.n + 1)
+        }
+      }
+
+      import FunctionalStrings._
+      ("Hello" law (Widget(3))) shouldBe "l"
     }
   }
 }
