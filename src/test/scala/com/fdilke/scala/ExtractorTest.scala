@@ -65,5 +65,16 @@ class ExtractorTest extends FunSpec {
       val PossibleTriplet(a,b,c) = List(4,5,6)
       (a, b, c) shouldBe (4,5,6)
     }
+
+    it("can implicitly extract members from a case class with generics") {
+      case class Pair[T <: Comparable[T]](left: T, right: T)
+      Pair("a", "b") match {
+        case Pair(x, y) =>
+          x shouldBe "a"
+          y shouldBe "b"
+        case _ =>
+          fail("can't apply extractor")
+      }
+    }
   }
 }
