@@ -9,7 +9,7 @@ class ImplicitParametersTest extends FunSpec {
       def foo(n: Int)(implicit prefix: String) = prefix + n
 
       implicit val useThisString: String = "DefaultPrefix"
-      foo(2) shouldBe "DefaultPrefix"
+      foo(2) shouldBe "DefaultPrefix2"
       // note, Ctrl-Shift-P inside the () will show the implicit parameter
     }
 
