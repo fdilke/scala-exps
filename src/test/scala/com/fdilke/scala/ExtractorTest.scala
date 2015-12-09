@@ -14,6 +14,20 @@ class ExtractorTest extends FunSpec {
       value shouldBe "5"
     }
 
+    it("can be invoked from fancier regexes") {
+      val fileRegex = ".*/(\\w*)\\.jar".r
+      val fileRegex(prefix) = "path/to/a/snapshot.jar"
+
+      prefix shouldBe "snapshot"
+    }
+
+    it("can be invoked from even fancier regexes") {
+      val fileRegex = "file:[/\\w\\-]*?(scala-[\\.\\w]+)[/\\w\\-]*?".r
+      val fileRegex(prefix) = getClass.getProtectionDomain.getCodeSource.getLocation.toString
+
+      prefix shouldBe "scala-2.11"
+    }
+
     it("can perform a boolean test") {
       object Even {
         def unapply(n: Int):Boolean =
