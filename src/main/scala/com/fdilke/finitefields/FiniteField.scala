@@ -1,6 +1,7 @@
 package com.fdilke.finitefields
 
 import scala.tools.nsc.interpreter.InputStream
+import scala.language.postfixOps
 
 case class NontrivialPrimePower(p: Int, n: Int) {
   val power = Seq.fill(n)(p)./:(1)(_ * _)

@@ -1,5 +1,7 @@
 package com.fdilke.scala
 
+import scala.language.higherKinds
+
 object BewlPedagogical {
 
   trait Category {

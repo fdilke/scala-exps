@@ -2,6 +2,7 @@ package com.fdilke.scala
 
 import org.scalatest.FunSpec
 import scala.language.higherKinds
+import scala.language.existentials
 
 object DeathByTypeProjection {
 	trait ToposLite { Ɛ =>
