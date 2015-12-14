@@ -28,6 +28,14 @@ class ExtractorTest extends FunSpec {
       prefix shouldBe "scala-2.11"
     }
 
+    it("can be invoked from yet fancier regexes") {
+      val url = "file:/opt/springer/bw-streamer/bw-streamer-0.170/lib/bw-streamer-no-dependencies-0.170.jar"
+      val fileRegex = "file:[/\\.\\w\\-]*?bw-streamer-no-dependencies-([\\.\\w]+)[/\\w\\-].jar".r
+      val fileRegex(prefix) = url
+
+      prefix shouldBe "0.17"
+    }
+
     it("can perform a boolean test") {
       object Even {
         def unapply(n: Int):Boolean =
