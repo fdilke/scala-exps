@@ -10,6 +10,8 @@ object FunWithMonads extends App {
   abstract class Monad[M[X]] {
     def eta[X](x: X): M[X]
     def mu[X](mmx: M[M[X]]): M[X]
+
+    type Algebra[X] = M[X] => X
   }
 
   class ContextOf[H] {
@@ -24,6 +26,9 @@ object FunWithMonads extends App {
         mmx: SingleExponential[SingleExponential[X]]
       ) =
         h => mmx(h)(h)
+
+      def sectionAlgebra[X](xh: X => H): Algebra[H => X] =
+        hhx => h => hhx(h)(h)
     }
 
     type DoubleExponential[X] = (X => H) => H
@@ -36,6 +41,9 @@ object FunWithMonads extends App {
         mmx: DoubleExponential[DoubleExponential[X]]
       ) =
         xh => mmx(_(xh))
+
+      val baseAlgebra: Algebra[H] =
+        _({ h => h })
     }
   }
 }
