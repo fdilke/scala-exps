@@ -7,6 +7,25 @@ object FunWithMonads extends App {
   def mu[X, H]: ((((X => H) => H) => H) => H) => ((X => H) => H) =
     xhhhh => xh => xhhhh(_(xh))
 
+  trait AContextOf[X, H] {
+    type XH  = X => H
+    type XHH = XH => H
+    type XHHH = XHH => H
+    type XHHHH = XHHH => H
+
+    def mu: XHHHH => XHH =
+      (xhhhh: XHHHH) => {
+        val xhh: XHH =
+          (xh: XH) => {
+          val xhhh: XHHH =
+            (xhh: XHH) => xhh (xh)
+          val h:H = xhhhh(xhhh)
+          h
+        }
+        xhh
+      }
+  }
+
   // Formula for exponentiating an algebra over the double-exponential monad
   def em[X, H, A]: (
     ((X => H) => H) => X
