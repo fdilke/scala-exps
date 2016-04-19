@@ -7,6 +7,19 @@ object FunWithMonads extends App {
   def mu[X, H]: ((((X => H) => H) => H) => H) => ((X => H) => H) =
     xhhhh => xh => xhhhh(_(xh))
 
+  // Formula for exponentiating an algebra over the double-exponential monad
+  def em[X, H, A]: (
+    ((X => H) => H) => X
+  ) => (
+    (((A => X) => H) => H) => (A => X)
+  ) =
+    xhhx => axhh => a =>
+      xhhx(xh =>
+        axhh(ax =>
+          xh(ax(a))
+        )
+      )
+
   abstract class Monad[M[X]] {
     def eta[X](x: X): M[X]
     def mu[X](mmx: M[M[X]]): M[X]
