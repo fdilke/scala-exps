@@ -10,7 +10,7 @@ class ImplicitConversionsTest extends FunSpec {
     it("work by importing an object converting values to a wrapper") {
 
       object SpecialMultImplicits {
-        implicit def Int2SpecialMult(value : Int) =
+        implicit def Int2SpecialMult(value : Int): SpecialMult =
           new SpecialMult(value)
       }
 
