@@ -1,19 +1,19 @@
 package com.fdilke.functional_sudoku
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.Matchers._
+import org.scalatest.{FunSpec, Matchers}
 
-import Node.Implicits._
 import scala.language.implicitConversions
+import Node._
 
 class FunctionalSudokuTest extends FunSpec {
   private val Seq(x, y, z) = Seq('x, 'y, 'z)
 
-  describe("Trees") {
-    it("can be built up from tuples") {
+  describe("The :> operator") {
+    it("can be used to build trees") {
       (x : Node[Symbol]) shouldBe LeafNode(x)
-      (x -> y : Node[Symbol]) shouldBe BranchNode(LeafNode(x), LeafNode(y))
-//      (((x -> (y -> z)) : Node[Symbol]) shouldBe BranchNode(LeafNode(x), LeafNode(y))
+      (x :> y) shouldBe BranchNode(LeafNode(x), LeafNode(y))
+      x :> (y :> z) shouldBe BranchNode(LeafNode(x), BranchNode(LeafNode(y), LeafNode(z)))
     }
   }
 }
