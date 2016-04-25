@@ -3,8 +3,8 @@ package com.fdilke.functional_sudoku
 import scala.language.implicitConversions
 
 sealed trait Node[X] {
-  def :>(that: Node[X]) =
-    BranchNode(this, that)
+  def -:(that: Node[X]) =
+    BranchNode(that, this)
 }
 
 case class BranchNode[X](
@@ -20,4 +20,5 @@ object Node {
   implicit def asLeaf[X](x: X): Node[X] =
     LeafNode(x)
 }
-class FunctionalSudoku
+
+class FunctionalMottoes
