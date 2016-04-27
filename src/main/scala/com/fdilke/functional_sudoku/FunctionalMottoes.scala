@@ -45,7 +45,29 @@ case class FunctionalExpression[X](
     value.freeVariables.filterNot(_ == argSort)
 }
 
+case class HungryFunctionExpression[X](
+  function: BranchNode[X]
+) extends Expression[X] {
+  override val sort: Node[X] =
+    function
+
+  override val freeVariables: Seq[Node[X]] =
+    Seq(function)
+
+  def apply(expression: Expression[X]) =
+//    if (expression.sort == function.left) TODO: justify
+    ExpressionOfSort(function.right)
+}
+
 object Expressions {
   implicit def asExpression[X](x : X): Expression[X] =
     ExpressionOfSort(LeafNode(x))
+
+  implicit def asFunctionalExpression[X](
+    branch: BranchNode[X]
+  ): HungryFunctionExpression[X] =
+      HungryFunctionExpression(branch)
+
+  def sortOf[X](x: X) =
+    x : Node[X]
 }

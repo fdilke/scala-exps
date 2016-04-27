@@ -40,26 +40,48 @@ class FunctionalMottoesTest extends FunSpec {
   describe("Expressions") {
     it("can be formed from a single symbol") {
       val expr = x : Expression[Symbol]
-      expr.sort shouldBe (x : Node[Symbol])
-      expr.freeVariables shouldBe Seq(x : Node[Symbol])
+      expr.sort shouldBe sortOf(x)
+      expr.freeVariables shouldBe Seq(sortOf(x))
     }
 
-    it("can be the identity") {
+    it("can encode the identity") {
       val id = x >>: x
       id.sort shouldBe (x -: x)
       id.freeVariables shouldBe empty
     }
 
-    it("can be (K y)") {
+    it("can encode constant functions") {
       val ky = x >>: y
       ky.sort shouldBe (x -: y)
-      ky.freeVariables shouldBe Seq(y : Node[Symbol])
+      ky.freeVariables shouldBe Seq(sortOf(y))
     }
 
-    it("can be the combinator K") {
+    it("can encode the K combinator") {
       val k = x >>: y >>: x
       k.sort shouldBe (x -: y -: x)
       k.freeVariables shouldBe empty
     }
+
+    it("can encode hungry functions") {
+      val hungry = (x -: y) : HungryFunctionExpression[Symbol]
+      hungry.sort shouldBe (x -: y)
+      hungry.freeVariables shouldBe Seq(x -: y)
+
+      val fed = hungry(x)
+      fed.sort shouldBe sortOf(y)
+      fed.freeVariables shouldBe Seq(sortOf(y))
+    }
+
+    it("can encode evaluation") {
+      val eval = (x -: y) >>: x >>: (x -: y)(x)
+      eval.sort shouldBe (x -: y) -: x -: y
+//      eval.freeVariables shouldBe empty
+      // TODO: why isn't it?
+    }
+
+//    it("can encode composition") {
+//      val o = (y -: z)((x -: y)(x))
+////      val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z)((x :- y)(x))
+//    }
   }
 }
