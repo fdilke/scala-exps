@@ -21,4 +21,31 @@ object Node {
     LeafNode(x)
 }
 
-class FunctionalMottoes
+sealed trait Expression[X] {
+  val sort: Node[X]
+  val freeVariables: Seq[Node[X]]
+
+  def >>:(sort: Node[X]) =
+    FunctionalExpression(sort, this)
+}
+
+case class ExpressionOfSort[X](
+  override val sort: Node[X]
+) extends Expression[X] {
+  override val freeVariables = Seq(sort)
+}
+
+case class FunctionalExpression[X](
+  argSort: Node[X],
+  value: Expression[X]
+) extends Expression[X] {
+  override val sort =
+    argSort -: value.sort
+  override val freeVariables =
+    value.freeVariables.filterNot(_ == argSort)
+}
+
+object Expressions {
+  implicit def asExpression[X](x : X): Expression[X] =
+    ExpressionOfSort(LeafNode(x))
+}
