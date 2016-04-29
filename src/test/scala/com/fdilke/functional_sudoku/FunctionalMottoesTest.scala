@@ -44,7 +44,7 @@ class FunctionalMottoesTest extends FunSpec {
       expr.freeVariables shouldBe Seq(sortOf(x))
     }
 
-    it("can encode the identity") {
+    it("can encode the identity motto") {
       val id = x >>: x
       id.sort shouldBe (x -: x)
       id.freeVariables shouldBe empty
@@ -62,13 +62,13 @@ class FunctionalMottoesTest extends FunSpec {
       k.freeVariables shouldBe empty
     }
 
-    it("can encode function applications") {
+    it("can encode function application") {
       val app = (x -: y)(x)
       app.sort shouldBe sortOf(y)
       app.freeVariables shouldBe Seq(x -: y, sortOf(x))
     }
 
-    it("cannot encode invalid function applications") {
+    it("cannot encode an invalid function application") {
       intercept[IllegalArgumentException] {
         (x -: y)(y)
       }
@@ -80,9 +80,10 @@ class FunctionalMottoesTest extends FunSpec {
       eval.freeVariables shouldBe empty
     }
 
-//    it("can encode composition") {
-//      val o = (y -: z)((x -: y)(x))
-////      val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z)((x :- y)(x))
-//    }
+    it("can encode the composition motto") {
+      val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z)((x -: y)(x))
+      o.freeVariables shouldBe empty
+      o.sort shouldBe (x -: y) -: (y -: z) -: (x -: z)
+    }
   }
 }
