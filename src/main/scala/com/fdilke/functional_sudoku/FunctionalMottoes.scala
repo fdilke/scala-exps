@@ -26,7 +26,7 @@ sealed trait Expression[X] {
   val freeVariables: Seq[Node[X]]
 
   def >>:(sort: Node[X]) =
-    FunctionalExpression(sort, this)
+    LambdaExpression(sort, this)
 }
 
 case class ExpressionOfSort[X](
@@ -35,7 +35,7 @@ case class ExpressionOfSort[X](
   override val freeVariables = Seq(sort)
 }
 
-case class FunctionalExpression[X](
+case class LambdaExpression[X](
   argSort: Node[X],
   value: Expression[X]
 ) extends Expression[X] {
@@ -45,6 +45,7 @@ case class FunctionalExpression[X](
     value.freeVariables.filterNot(_ == argSort)
 }
 
+// TODO: can abolish this? Fold its apply methods into BranchNode?
 case class HungryFunctionExpression[X](
   function: BranchNode[X]
 ) extends Expression[X] {
@@ -56,7 +57,19 @@ case class HungryFunctionExpression[X](
 
   def apply(expression: Expression[X]) =
 //    if (expression.sort == function.left) TODO: justify
-    ExpressionOfSort(function.right)
+    FedFunctionExpression(this, expression)
+}
+
+case class FedFunctionExpression[X](
+  hungry: HungryFunctionExpression[X],
+  food: Expression[X]
+) extends Expression[X] {
+  // TODO: sanity test that food is appropriate
+  override val sort: Node[X] =
+    hungry.function.right
+
+  override val freeVariables: Seq[Node[X]] =
+    hungry.freeVariables ++ food.freeVariables
 }
 
 object Expressions {

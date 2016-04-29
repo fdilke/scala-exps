@@ -69,14 +69,13 @@ class FunctionalMottoesTest extends FunSpec {
 
       val fed = hungry(x)
       fed.sort shouldBe sortOf(y)
-      fed.freeVariables shouldBe Seq(sortOf(y))
+      fed.freeVariables shouldBe Seq(x -: y, sortOf(x))
     }
 
     it("can encode evaluation") {
       val eval = (x -: y) >>: x >>: (x -: y)(x)
       eval.sort shouldBe (x -: y) -: x -: y
-//      eval.freeVariables shouldBe empty
-      // TODO: why isn't it?
+      eval.freeVariables shouldBe empty
     }
 
 //    it("can encode composition") {
