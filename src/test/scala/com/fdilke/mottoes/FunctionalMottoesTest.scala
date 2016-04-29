@@ -1,4 +1,4 @@
-package com.fdilke.functional_sudoku
+package com.fdilke.mottoes
 
 import org.scalatest.Matchers._
 import org.scalatest.{FunSpec, Matchers}
