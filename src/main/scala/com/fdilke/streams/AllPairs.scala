@@ -1,20 +1,19 @@
 package com.fdilke.streams
 
 import scala.Function.tupled
+import scala.collection.Iterator.iterate
 
 object AllPairs {
 
   // Note, this only works for infinite streams
 
+  private val N = iterate(0)(_ + 1).toStream
+
   val indices =
-    indicesFrom(0)
-
-  private def indicesFrom(n: Int): Stream[(Int, Int)] =
-    indicesSub(n) #::: indicesFrom(n + 1)
-
-  private def indicesSub(n: Int) =
-    (0 to n).toStream.map { i =>
-      i -> (n - i)
+    N flatMap { n =>
+      (0 to n).toStream map { i =>
+        i -> (n - i)
+      }
     }
 
   def apply[X](stream: Stream[X]): Stream[(X, X)] =
