@@ -44,6 +44,7 @@ class FunctionalMottoesTest extends FreeSpec {
       val expr = x: Expression[Symbol]
       expr.sort shouldBe sortOf(x)
       expr.freeVariables shouldBe Seq(sortOf(x))
+      expr.boundVariables shouldBe empty
     }
 
     "have sane equality semantics" in {
@@ -56,18 +57,21 @@ class FunctionalMottoesTest extends FreeSpec {
       val ky = x >>: y
       ky.sort shouldBe (x -: y)
       ky.freeVariables shouldBe Seq(sortOf(y))
+      ky.boundVariables shouldBe Seq(sortOf(x))
     }
 
     "can encode the K combinator" in {
       val k = x >>: y >>: x
       k.sort shouldBe (x -: y -: x)
       k.freeVariables shouldBe empty
+      k.boundVariables shouldBe Seq(sortOf(x), sortOf(y))
     }
 
     "can encode function application" in {
       val app = (x -: y) (x)
       app.sort shouldBe sortOf(y)
       app.freeVariables shouldBe Seq(x -: y, sortOf(x))
+      app.boundVariables shouldBe empty
     }
 
     "cannot encode a function application with the wrong argument sort" in {
@@ -76,16 +80,17 @@ class FunctionalMottoesTest extends FreeSpec {
       }
     }
 
-//    "cannot encode a function with repeated argument sorts" in {
-//      intercept[IllegalArgumentException] {
-//        x >>: x >>: y
-//      }
-//    }
+    "cannot encode a function with repeated argument sorts" in {
+      intercept[IllegalArgumentException] {
+        x >>: x >>: y
+      }
+    }
 
     "can encode the evaluation sub-motto" in {
       val eval = (x -: y) >>: x >>: (x -: y) (x)
       eval.sort shouldBe (x -: y) -: x -: y
       eval.freeVariables shouldBe empty
+      eval.boundVariables shouldBe Seq(x -: y, sortOf(x))
     }
 
     "encode mottoes" - {

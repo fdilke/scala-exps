@@ -24,6 +24,7 @@ object Node {
 sealed trait Expression[X] {
   val sort: Node[X]
   val freeVariables: Seq[Node[X]]
+  val boundVariables: Seq[Node[X]]
 
   def >>:(sort: Node[X]) =
     LambdaExpression(sort, this)
@@ -33,16 +34,21 @@ case class ExpressionOfSort[X](
   override val sort: Node[X]
 ) extends Expression[X] {
   override val freeVariables = Seq(sort)
+  override val boundVariables = Seq()
 }
 
 case class LambdaExpression[X](
   argSort: Node[X],
   value: Expression[X]
 ) extends Expression[X] {
+  require(!value.boundVariables.contains(argSort))
+
   override val sort =
     argSort -: value.sort
   override val freeVariables =
     value.freeVariables.filterNot(_ == argSort)
+  override val boundVariables =
+    argSort +: value.boundVariables
 }
 
 case class FunctionApplicationExpression[X](
@@ -56,6 +62,9 @@ case class FunctionApplicationExpression[X](
 
   override val freeVariables: Seq[Node[X]] =
     function +: argument.freeVariables
+
+  override val boundVariables =
+    argument.boundVariables
 }
 
 object Expressions {
@@ -76,7 +85,7 @@ object Expressions {
         if (inputs.contains(node))
           Seq(ExpressionOfSort(node))
         else
-          Seq.empty
+          Seq()
       ) ++ (
       node match {
         case LeafNode(_) => Seq()
