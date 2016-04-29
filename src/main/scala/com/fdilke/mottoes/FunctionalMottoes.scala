@@ -1,46 +1,64 @@
 package com.fdilke.mottoes
 
+import com.fdilke.streams.AllPairs
+
+import scala.Function.tupled
 import scala.language.implicitConversions
 
-sealed trait Sort[X] {
-  def -:(that: Sort[X]) =
+sealed trait Sort {
+  def -:(that: Sort) =
     FunctionSort(that, this)
+  def name: String
+  def isBase: Boolean
+  def optionallyBracketedName =
+    if (isBase)
+      name
+    else
+      s"($name)"
 }
 
-case class FunctionSort[X](
-  argSort: Sort[X],
-  returnSort: Sort[X]
-) extends Sort[X]
+case class BaseSort(
+  leaf: Symbol
+) extends Sort {
+  override def isBase = true
+  override def name: String =
+    leaf.name
+}
 
-case class BaseSort[X](
-  leaf: X
-) extends Sort[X]
+case class FunctionSort(
+  argSort: Sort,
+  returnSort: Sort
+) extends Sort {
+  override def isBase = false
+  override def name: String =
+    argSort.optionallyBracketedName + " => " + returnSort.name
+}
 
 object Sort {
-  implicit def asLeaf[X](x: X): Sort[X] =
+  implicit def asLeaf(x: Symbol): Sort =
     BaseSort(x)
 }
 
-sealed trait Expression[X] {
-  val sort: Sort[X]
-  val freeVariables: Seq[Sort[X]]
-  val boundVariables: Seq[Sort[X]]
+sealed trait Expression {
+  val sort: Sort
+  val freeVariables: Seq[Sort]
+  val boundVariables: Seq[Sort]
 
-  def >>:(sort: Sort[X]) =
+  def >>:(sort: Sort) =
     LambdaExpression(sort, this)
 }
 
-case class ExpressionOfSort[X](
-  override val sort: Sort[X]
-) extends Expression[X] {
+case class ExpressionOfSort(
+  override val sort: Sort
+) extends Expression {
   override val freeVariables = Seq(sort)
   override val boundVariables = Seq()
 }
 
-case class LambdaExpression[X](
-  argSort: Sort[X],
-  value: Expression[X]
-) extends Expression[X] {
+case class LambdaExpression(
+  argSort: Sort,
+  value: Expression
+) extends Expression {
   require(!value.boundVariables.contains(argSort))
 
   override val sort =
@@ -51,16 +69,16 @@ case class LambdaExpression[X](
     argSort +: value.boundVariables
 }
 
-case class FunctionApplicationExpression[X](
-  function: FunctionSort[X],
-  argument: Expression[X]
-) extends Expression[X] {
+case class FunctionApplicationExpression(
+  function: FunctionSort,
+  argument: Expression
+) extends Expression {
   require(argument.sort == function.argSort)
 
-  override val sort: Sort[X] =
+  override val sort: Sort =
     function.returnSort
 
-  override val freeVariables: Seq[Sort[X]] =
+  override val freeVariables: Seq[Sort] =
     function +: argument.freeVariables
 
   override val boundVariables =
@@ -68,21 +86,21 @@ case class FunctionApplicationExpression[X](
 }
 
 object Expressions {
-  implicit def asExpression[X](x : X): Expression[X] =
+  implicit def asExpression(x : Symbol): Expression =
     ExpressionOfSort(BaseSort(x))
 
-  implicit def asExpression[X](sort : Sort[X]): Expression[X] =
+  implicit def asExpression(sort : Sort): Expression =
     ExpressionOfSort(sort)
 
-  implicit class RichSort[X](
-    sort: Sort[X]
+  implicit class RichSort(
+    sort: Sort
   ) {
-    def mottoes: Seq[Expression[X]] =
+    def mottoes: Seq[Expression] =
       formulaeGiven()
 
     def formulaeGiven(
-      inputs: Sort[X]*
-    ): Seq[Expression[X]] =
+      inputs: Sort*
+    ): Seq[Expression] =
       (
         if (inputs.contains(sort))
           Seq(ExpressionOfSort(sort))
@@ -101,13 +119,26 @@ object Expressions {
       )
   }
 
-  implicit class RichFunctionSort[X](
-    fnSort: FunctionSort[X]
+  implicit class RichFunctionSort(
+    fnSort: FunctionSort
   ) {
-    def apply(expression: Expression[X]) =
+    def apply(expression: Expression) =
       FunctionApplicationExpression(fnSort, expression)
   }
 
-  def sortOf[X](x: X) =
-    x : Sort[X]
+  def sortOf(x: Symbol) =
+    x : Sort
+
+  def allSorts(symbols: Symbol*): Stream[Sort] = {
+    val baseSorts: Stream[Sort] = symbols.map(sortOf).toStream
+
+    def all: Stream[Sort] =
+      baseSorts #::: AllPairs(all).map {
+        tupled {
+          (x, y) =>
+            x -: y: Sort
+        }
+      }
+    all
+  }
 }

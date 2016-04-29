@@ -10,11 +10,11 @@ import Expressions._
 import ExpressionMatching._
 
 class FunctionalMottoesTest extends FreeSpec {
-  private val Seq(a, h, x, y, z) = Seq('a, 'h, 'x, 'y, 'z)
+  private val Seq(a, h, x, y, z, w) = Seq('a, 'h, 'x, 'y, 'z, 'w)
 
   "The -: operator" - {
     "can be used to build compound sorts" in {
-      (x: Sort[Symbol]) shouldBe BaseSort(x)
+      (x: Sort) shouldBe BaseSort(x)
       (x -: y) shouldBe FunctionSort(BaseSort(x), BaseSort(y))
       x -: (y -: z) shouldBe FunctionSort(
         BaseSort(x),
@@ -26,8 +26,8 @@ class FunctionalMottoesTest extends FreeSpec {
     }
 
     "has sane equality semantics" in {
-      (x: Expression[Symbol]) should be (x: Expression[Symbol])
-      (x: Expression[Symbol]) should not be (y : Expression[Symbol])
+      (x: Expression) should be (x: Expression)
+      (x: Expression) should not be (y : Expression)
       x should not be (x -: y)
     }
 
@@ -47,16 +47,16 @@ class FunctionalMottoesTest extends FreeSpec {
 
   "Expressions" - {
     "can be formed from a single symbol" in {
-      val expr = x: Expression[Symbol]
+      val expr = x: Expression
       expr.sort shouldBe sortOf(x)
       expr.freeVariables shouldBe Seq(sortOf(x))
       expr.boundVariables shouldBe empty
     }
 
     "have sane equality semantics" in {
-      (x: Expression[Symbol]) shouldBe (x: Expression[Symbol])
-      (x -: y)(x) should not be (x: Expression[Symbol])
-      (x: Expression[Symbol]) should not be (x -: y)(x)
+      (x: Expression) shouldBe (x: Expression)
+      (x -: y)(x) should not be (x: Expression)
+      (x: Expression) should not be (x -: y)(x)
     }
 
     "can encode constant functions" in {
@@ -166,14 +166,57 @@ class FunctionalMottoesTest extends FreeSpec {
     }
   }
 
-  private def checkMottoes[X](
-    sort: Sort[X],
-    expectedMottoes: Expression[X]*
+  private def checkMottoes(
+    sort: Sort,
+    expectedMottoes: Expression*
   ) {
     for (motto <- expectedMottoes) {
       motto should mottoize(sort)
     }
     sort.mottoes shouldBe expectedMottoes
+  }
+
+  "Naming sorts" - {
+    "works for base sorts" in {
+      (x : Sort).name shouldBe "x"
+    }
+    "works for function sorts" in {
+      (x -: y).name shouldBe "x => y"
+    }
+    "works for compound sorts, which are bracketed appropriately" in {
+      (x -: y -: z).name shouldBe "x => y => z"
+      ((x -: y) -: z).name shouldBe "(x => y) => z"
+
+      (((x -: y) -: z) -: w).name shouldBe "((x => y) => z) => w"
+      ((x -: y) -: (z -: w)).name shouldBe "(x => y) => z => w"
+      (x -: ((y -: z) -: w)).name shouldBe "x => (y => z) => w"
+      (x -: (y -: (z -: w))).name shouldBe "x => y => z => w"
+      ((x -: (y -: z)) -: w).name shouldBe "(x => y => z) => w"
+    }
+  }
+
+  "We can enumerate sorts" - {
+    "of degree 1" in {
+      allSorts(x).take(4).toSeq shouldBe Seq[Sort](
+        x,
+        x -: x,
+        x -: (x -: x),
+        (x -: x) -: x
+      )
+    }
+    "of degree 2" in {
+      allSorts(x, y).take(9).toSeq shouldBe Seq[Sort](
+        x,
+        y,
+        x -: x,
+        x -: y,
+        y -: x,
+        x -: x -: x,
+        y -: y,
+        (x -: x) -: x,
+        x -: x -: y
+      )
+    }
   }
 }
 

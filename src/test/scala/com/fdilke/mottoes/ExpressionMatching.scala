@@ -6,9 +6,9 @@ import Matchers._
 
 object ExpressionMatching {
   val free =
-    new BeMatcher[Expression[_]] {
+    new BeMatcher[Expression] {
       override def apply(
-        expression: Expression[_]
+        expression: Expression
       ) =
         MatchResult(
           expression.freeVariables.isEmpty,
@@ -17,12 +17,12 @@ object ExpressionMatching {
         )
     }
 
-  def haveSort[X](
-    sort: Sort[X]
+  def haveSort(
+    sort: Sort
   ) =
-      new Matcher[Expression[X]] {
+      new Matcher[Expression] {
         override def apply(
-          expression: Expression[X]
+          expression: Expression
         ) =
           MatchResult(
             expression.sort == sort,
@@ -31,8 +31,8 @@ object ExpressionMatching {
           )
       }
 
-  def mottoize[X](
-    sort: Sort[X]
-  ): Matcher[Expression[X]] =
+  def mottoize(
+    sort: Sort
+  ): Matcher[Expression] =
     be(free) and haveSort(sort)
 }
