@@ -95,5 +95,16 @@ class FunctionalMottoesTest extends FunSpec {
       mu.freeVariables shouldBe empty
       mu.sort shouldBe (xhhhh -: xhh)
     }
+
+    it("can encode the strength of the double exponential") {
+      val xh = x -: h
+      val yh = y -: h
+      val xy = x -: y
+      val xhh = xh -: h
+      val yhh = yh -: h
+      val strength = xy >>: xhh >>: yh >>: xhh(x >>: yh(xy(x)))
+      strength.freeVariables shouldBe empty
+      strength.sort shouldBe xy -: (xhh -: yhh)
+    }
   }
 }

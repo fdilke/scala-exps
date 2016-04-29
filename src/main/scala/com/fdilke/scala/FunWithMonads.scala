@@ -46,6 +46,14 @@ object FunWithMonads extends App {
         )
       )
 
+  // Strength of the double exponential
+  def strength[X, Y, H]: (
+      X => Y
+    ) => (
+      ((X => H) => H) => ((Y => H) => H)
+    ) =
+    xy => xhh => yh => xhh(x => yh(xy(x)))
+
   abstract class Monad[M[X]] {
     def eta[X](x: X): M[X]
     def mu[X](mmx: M[M[X]]): M[X]
