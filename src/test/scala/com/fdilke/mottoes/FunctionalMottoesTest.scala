@@ -10,7 +10,7 @@ import Expressions._
 import ExpressionMatching._
 
 class FunctionalMottoesTest extends FreeSpec {
-  private val Seq(h, x, y, z) = Seq('h, 'x, 'y, 'z)
+  private val Seq(a, h, x, y, z) = Seq('a, 'h, 'x, 'y, 'z)
 
   "The -: operator" - {
     "can be used to build trees" in {
@@ -104,6 +104,18 @@ class FunctionalMottoesTest extends FreeSpec {
         val yhh = yh -: h
         val strength = xy >>: xhh >>: yh >>: xhh(x >>: yh(xy(x)))
         strength should mottoize(xy -: (xhh -: yhh))
+      }
+
+      "power continuation algebras" in {
+        val xh = x -: h
+        val ax = a -: x
+        val axh = ax -: h
+        val xhh = xh -: h
+        val axhh = axh -: h
+        val xhhx = xhh -: x
+        val axhhax = axhh -: ax
+        def em = xhhx >>: axhh >>: a >>: xhhx(xh >>: axhh(ax >>: xh(ax(a))))
+        em should mottoize(xhhx -: axhhax)
       }
     }
   }
