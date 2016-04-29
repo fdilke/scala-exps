@@ -4,6 +4,13 @@ import scala.languageFeature.higherKinds
 
 object FunWithMonads extends App {
 
+  def identity[X]: X => X =
+    x => x
+
+  def composition[X, Y, Z]:
+    (X => Y) => (Y => Z) => (X => Z) =
+    xy => yz => x => yz(xy(x))
+
   def mu[X, H]: ((((X => H) => H) => H) => H) => ((X => H) => H) =
     xhhhh => xh => xhhhh(_(xh))
 
