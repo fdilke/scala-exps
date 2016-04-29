@@ -76,36 +76,35 @@ class FunctionalMottoesTest extends FreeSpec {
       eval.freeVariables shouldBe empty
     }
 
-  }
+    "encode mottoes" - {
+      "identity" in {
+        val id = x >>: x
+        id should mottoize(x -: x)
+      }
 
-  "Expressions encode mottoes" - {
-    "identity" in {
-      val id = x >>: x
-      id should mottoize(x -: x)
-    }
+      "composition" in {
+        val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z) ((x -: y) (x))
+        o should mottoize((x -: y) -: (y -: z) -: (x -: z))
+      }
 
-    "composition" in {
-      val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z)((x -: y)(x))
-      o should mottoize((x -: y) -: (y -: z) -: (x -: z))
-    }
+      "double-exponential multiplication" in {
+        val xh = x -: h
+        val xhh = xh -: h
+        val xhhh = xhh -: h
+        val xhhhh = xhhh -: h
+        val mu = xhhhh >>: xh >>: xhhhh(xhh >>: xhh(xh))
+        mu should mottoize(xhhhh -: xhh)
+      }
 
-    "double-exponential multiplication" in {
-      val xh = x -: h
-      val xhh = xh -: h
-      val xhhh = xhh -: h
-      val xhhhh = xhhh -: h
-      val mu = xhhhh >>: xh >>: xhhhh(xhh >>: xhh(xh))
-      mu should mottoize(xhhhh -: xhh)
-    }
-
-    "strength of the double exponential" in {
-      val xh = x -: h
-      val yh = y -: h
-      val xy = x -: y
-      val xhh = xh -: h
-      val yhh = yh -: h
-      val strength = xy >>: xhh >>: yh >>: xhh(x >>: yh(xy(x)))
-      strength should mottoize(xy -: (xhh -: yhh))
+      "strength of the double exponential" in {
+        val xh = x -: h
+        val yh = y -: h
+        val xy = x -: y
+        val xhh = xh -: h
+        val yhh = yh -: h
+        val strength = xy >>: xhh >>: yh >>: xhh(x >>: yh(xy(x)))
+        strength should mottoize(xy -: (xhh -: yhh))
+      }
     }
   }
 }
