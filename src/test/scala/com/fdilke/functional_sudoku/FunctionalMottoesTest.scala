@@ -8,7 +8,7 @@ import Node._
 import Expressions._
 
 class FunctionalMottoesTest extends FunSpec {
-  private val Seq(x, y, z) = Seq('x, 'y, 'z)
+  private val Seq(h, x, y, z) = Seq('h, 'x, 'y, 'z)
 
   describe("The -: operator") {
     it("can be used to build trees") {
@@ -84,6 +84,16 @@ class FunctionalMottoesTest extends FunSpec {
       val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z)((x -: y)(x))
       o.freeVariables shouldBe empty
       o.sort shouldBe (x -: y) -: (y -: z) -: (x -: z)
+    }
+
+    it("can encode the double-exponential multiplication motto") {
+      val xh = x -: h
+      val xhh = xh -: h
+      val xhhh = xhh -: h
+      val xhhhh = xhhh -: h
+      val mu = xhhhh >>: xh >>: xhhhh(xhh >>: xhh(xh))
+      mu.freeVariables shouldBe empty
+      mu.sort shouldBe (xhhhh -: xhh)
     }
   }
 }

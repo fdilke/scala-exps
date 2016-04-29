@@ -62,6 +62,9 @@ object Expressions {
   implicit def asExpression[X](x : X): Expression[X] =
     ExpressionOfSort(LeafNode(x))
 
+  implicit def asExpression[X](sort : Node[X]): Expression[X] =
+    ExpressionOfSort(sort)
+
   implicit class RichBranchNode[X](
     branchNode: BranchNode[X]
   ) {
