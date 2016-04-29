@@ -46,6 +46,12 @@ class FunctionalMottoesTest extends FreeSpec {
       expr.freeVariables shouldBe Seq(sortOf(x))
     }
 
+    "have sane equality semantics" in {
+      (x: Expression[Symbol]) shouldBe (x: Expression[Symbol])
+      (x -: y)(x) should not be (x: Expression[Symbol])
+      (x: Expression[Symbol]) should not be (x -: y)(x)
+    }
+
     "can encode constant functions" in {
       val ky = x >>: y
       ky.sort shouldBe (x -: y)
@@ -64,11 +70,17 @@ class FunctionalMottoesTest extends FreeSpec {
       app.freeVariables shouldBe Seq(x -: y, sortOf(x))
     }
 
-    "cannot encode an invalid function application" in {
+    "cannot encode a function application with the wrong argument sort" in {
       intercept[IllegalArgumentException] {
         (x -: y) (y)
       }
     }
+
+//    "cannot encode a function with repeated argument sorts" in {
+//      intercept[IllegalArgumentException] {
+//        x >>: x >>: y
+//      }
+//    }
 
     "can encode the evaluation sub-motto" in {
       val eval = (x -: y) >>: x >>: (x -: y) (x)
@@ -114,8 +126,24 @@ class FunctionalMottoesTest extends FreeSpec {
         val axhh = axh -: h
         val xhhx = xhh -: x
         val axhhax = axhh -: ax
-        def em = xhhx >>: axhh >>: a >>: xhhx(xh >>: axhh(ax >>: xh(ax(a))))
+        def em = xhhx >>: axhh >>: a >>: xhhx(
+          xh >>: axhh(
+            ax >>: xh(ax(a))
+          )
+        )
         em should mottoize(xhhx -: axhhax)
+      }
+    }
+
+    "can be queried for mottoes" - {
+      "when there are none" in {
+        (x: Node[Symbol]).mottoes shouldBe empty
+      }
+
+      "when there is only one" in {
+        (x -: x).mottoes shouldBe Seq(
+          x >>: x
+        )
       }
     }
   }

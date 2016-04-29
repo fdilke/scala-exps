@@ -65,6 +65,31 @@ object Expressions {
   implicit def asExpression[X](sort : Node[X]): Expression[X] =
     ExpressionOfSort(sort)
 
+  implicit class RichNode[X](
+    node: Node[X]
+  ) {
+    def mottoes: Seq[Expression[X]] =
+      formulaeGiven()
+
+    def formulaeGiven(inputs: Node[X]*): Seq[Expression[X]] =
+      (
+        if (inputs.contains(node))
+          Seq(ExpressionOfSort(node))
+        else
+          Seq.empty
+      ) ++ (
+      node match {
+        case LeafNode(_) => Seq()
+        case BranchNode(arg, fnExp) =>
+          fnExp.formulaeGiven(
+            inputs :+ arg :_*
+          ) map { expr =>
+            arg >>: expr
+          }
+        }
+      )
+  }
+
   implicit class RichBranchNode[X](
     branchNode: BranchNode[X]
   ) {
