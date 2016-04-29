@@ -62,14 +62,16 @@ class FunctionalMottoesTest extends FunSpec {
       k.freeVariables shouldBe empty
     }
 
-    it("can encode hungry functions") {
-      val hungry = (x -: y) : HungryFunctionExpression[Symbol]
-      hungry.sort shouldBe (x -: y)
-      hungry.freeVariables shouldBe Seq(x -: y)
+    it("can encode function applications") {
+      val app = (x -: y)(x)
+      app.sort shouldBe sortOf(y)
+      app.freeVariables shouldBe Seq(x -: y, sortOf(x))
+    }
 
-      val fed = hungry(x)
-      fed.sort shouldBe sortOf(y)
-      fed.freeVariables shouldBe Seq(x -: y, sortOf(x))
+    it("cannot encode invalid function applications") {
+      intercept[IllegalArgumentException] {
+        (x -: y)(y)
+      }
     }
 
     it("can encode evaluation") {

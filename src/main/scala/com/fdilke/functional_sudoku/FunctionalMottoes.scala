@@ -45,41 +45,29 @@ case class LambdaExpression[X](
     value.freeVariables.filterNot(_ == argSort)
 }
 
-// TODO: can abolish this? Fold its apply methods into BranchNode?
-case class HungryFunctionExpression[X](
-  function: BranchNode[X]
+case class FunctionApplicationExpression[X](
+  function: BranchNode[X],
+  argument: Expression[X]
 ) extends Expression[X] {
+  require(argument.sort == function.left)
+
   override val sort: Node[X] =
-    function
+    function.right
 
   override val freeVariables: Seq[Node[X]] =
-    Seq(function)
-
-  def apply(expression: Expression[X]) =
-//    if (expression.sort == function.left) TODO: justify
-    FedFunctionExpression(this, expression)
-}
-
-case class FedFunctionExpression[X](
-  hungry: HungryFunctionExpression[X],
-  food: Expression[X]
-) extends Expression[X] {
-  // TODO: sanity test that food is appropriate
-  override val sort: Node[X] =
-    hungry.function.right
-
-  override val freeVariables: Seq[Node[X]] =
-    hungry.freeVariables ++ food.freeVariables
+    function +: argument.freeVariables
 }
 
 object Expressions {
   implicit def asExpression[X](x : X): Expression[X] =
     ExpressionOfSort(LeafNode(x))
 
-  implicit def asFunctionalExpression[X](
-    branch: BranchNode[X]
-  ): HungryFunctionExpression[X] =
-      HungryFunctionExpression(branch)
+  implicit class RichBranchNode[X](
+    branchNode: BranchNode[X]
+  ) {
+    def apply(expression: Expression[X]) =
+      FunctionApplicationExpression(branchNode, expression)
+  }
 
   def sortOf[X](x: X) =
     x : Node[X]
