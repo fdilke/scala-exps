@@ -142,14 +142,32 @@ class FunctionalMottoesTest extends FreeSpec {
 
     "can be queried for mottoes" - {
       "when there are none" in {
-        (x: Node[Symbol]).mottoes shouldBe empty
+        checkMottoes(x)
       }
 
       "when there is only one" in {
-        (x -: x).mottoes shouldBe Seq(
+        checkMottoes(x -: x,
           x >>: x
+        )
+      }
+
+      "when there are multiple solutions" in {
+        checkMottoes((x -: x) -: (x -: x),
+          (x -: x) >>: (x -: x),
+          (x -: x) >>: x >>: x
         )
       }
     }
   }
+
+  private def checkMottoes[X](
+    sort: Node[X],
+    expectedMottoes: Expression[X]*
+  ) {
+    for (motto <- expectedMottoes) {
+      motto should mottoize(sort)
+    }
+    sort.mottoes shouldBe expectedMottoes
+  }
 }
+
