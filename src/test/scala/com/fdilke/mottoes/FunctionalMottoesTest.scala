@@ -1,13 +1,12 @@
 package com.fdilke.mottoes
 
+import com.fdilke.mottoes.ExpressionMatching._
+import com.fdilke.mottoes.Expressions._
+import com.fdilke.mottoes.Sort._
+import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
-import org.scalatest.matchers.{MatchResult, Matcher}
-import org.scalatest.{FreeSpec, FunSpec, Matchers}
 
 import scala.language.implicitConversions
-import Sort._
-import Expressions._
-import ExpressionMatching._
 
 class FunctionalMottoesTest extends FreeSpec {
   private val Seq(a, h, x, y, z, w) = Seq('a, 'h, 'x, 'y, 'z, 'w)
