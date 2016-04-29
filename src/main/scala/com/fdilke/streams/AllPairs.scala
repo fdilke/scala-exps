@@ -4,6 +4,8 @@ import scala.Function.tupled
 
 object AllPairs {
 
+  // Note, this only works for infinite streams
+
   val indices =
     indicesFrom(0)
 
