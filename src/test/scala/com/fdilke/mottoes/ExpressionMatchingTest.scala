@@ -2,7 +2,7 @@ package com.fdilke.mottoes
 
 import com.fdilke.mottoes.ExpressionMatching._
 import com.fdilke.mottoes.Expressions._
-import com.fdilke.mottoes.Node._
+import com.fdilke.mottoes.Sort._
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
 

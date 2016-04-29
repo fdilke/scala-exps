@@ -5,7 +5,7 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 import org.scalatest.{FreeSpec, FunSpec, Matchers}
 
 import scala.language.implicitConversions
-import Node._
+import Sort._
 import Expressions._
 import ExpressionMatching._
 
@@ -13,16 +13,22 @@ class FunctionalMottoesTest extends FreeSpec {
   private val Seq(a, h, x, y, z) = Seq('a, 'h, 'x, 'y, 'z)
 
   "The -: operator" - {
-    "can be used to build trees" in {
-      (x: Node[Symbol]) shouldBe LeafNode(x)
-      (x -: y) shouldBe BranchNode(LeafNode(x), LeafNode(y))
-      x -: (y -: z) shouldBe BranchNode(
-        LeafNode(x),
-        BranchNode(
-          LeafNode(y),
-          LeafNode(z)
+    "can be used to build compound sorts" in {
+      (x: Sort[Symbol]) shouldBe BaseSort(x)
+      (x -: y) shouldBe FunctionSort(BaseSort(x), BaseSort(y))
+      x -: (y -: z) shouldBe FunctionSort(
+        BaseSort(x),
+        FunctionSort(
+          BaseSort(y),
+          BaseSort(z)
         )
       )
+    }
+
+    "has sane equality semantics" in {
+      (x: Expression[Symbol]) should be (x: Expression[Symbol])
+      (x: Expression[Symbol]) should not be (y : Expression[Symbol])
+      x should not be (x -: y)
     }
 
     "is not idempotent" in {
@@ -161,7 +167,7 @@ class FunctionalMottoesTest extends FreeSpec {
   }
 
   private def checkMottoes[X](
-    sort: Node[X],
+    sort: Sort[X],
     expectedMottoes: Expression[X]*
   ) {
     for (motto <- expectedMottoes) {

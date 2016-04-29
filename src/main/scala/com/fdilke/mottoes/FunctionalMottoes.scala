@@ -2,43 +2,43 @@ package com.fdilke.mottoes
 
 import scala.language.implicitConversions
 
-sealed trait Node[X] {
-  def -:(that: Node[X]) =
-    BranchNode(that, this)
+sealed trait Sort[X] {
+  def -:(that: Sort[X]) =
+    FunctionSort(that, this)
 }
 
-case class BranchNode[X](
-  left: Node[X],
-  right: Node[X]
-) extends Node[X]
+case class FunctionSort[X](
+  argSort: Sort[X],
+  returnSort: Sort[X]
+) extends Sort[X]
 
-case class LeafNode[X](
+case class BaseSort[X](
   leaf: X
-) extends Node[X]
+) extends Sort[X]
 
-object Node {
-  implicit def asLeaf[X](x: X): Node[X] =
-    LeafNode(x)
+object Sort {
+  implicit def asLeaf[X](x: X): Sort[X] =
+    BaseSort(x)
 }
 
 sealed trait Expression[X] {
-  val sort: Node[X]
-  val freeVariables: Seq[Node[X]]
-  val boundVariables: Seq[Node[X]]
+  val sort: Sort[X]
+  val freeVariables: Seq[Sort[X]]
+  val boundVariables: Seq[Sort[X]]
 
-  def >>:(sort: Node[X]) =
+  def >>:(sort: Sort[X]) =
     LambdaExpression(sort, this)
 }
 
 case class ExpressionOfSort[X](
-  override val sort: Node[X]
+  override val sort: Sort[X]
 ) extends Expression[X] {
   override val freeVariables = Seq(sort)
   override val boundVariables = Seq()
 }
 
 case class LambdaExpression[X](
-  argSort: Node[X],
+  argSort: Sort[X],
   value: Expression[X]
 ) extends Expression[X] {
   require(!value.boundVariables.contains(argSort))
@@ -52,15 +52,15 @@ case class LambdaExpression[X](
 }
 
 case class FunctionApplicationExpression[X](
-  function: BranchNode[X],
+  function: FunctionSort[X],
   argument: Expression[X]
 ) extends Expression[X] {
-  require(argument.sort == function.left)
+  require(argument.sort == function.argSort)
 
-  override val sort: Node[X] =
-    function.right
+  override val sort: Sort[X] =
+    function.returnSort
 
-  override val freeVariables: Seq[Node[X]] =
+  override val freeVariables: Seq[Sort[X]] =
     function +: argument.freeVariables
 
   override val boundVariables =
@@ -69,43 +69,45 @@ case class FunctionApplicationExpression[X](
 
 object Expressions {
   implicit def asExpression[X](x : X): Expression[X] =
-    ExpressionOfSort(LeafNode(x))
+    ExpressionOfSort(BaseSort(x))
 
-  implicit def asExpression[X](sort : Node[X]): Expression[X] =
+  implicit def asExpression[X](sort : Sort[X]): Expression[X] =
     ExpressionOfSort(sort)
 
-  implicit class RichNode[X](
-    node: Node[X]
+  implicit class RichSort[X](
+    sort: Sort[X]
   ) {
     def mottoes: Seq[Expression[X]] =
       formulaeGiven()
 
-    def formulaeGiven(inputs: Node[X]*): Seq[Expression[X]] =
+    def formulaeGiven(
+      inputs: Sort[X]*
+    ): Seq[Expression[X]] =
       (
-        if (inputs.contains(node))
-          Seq(ExpressionOfSort(node))
+        if (inputs.contains(sort))
+          Seq(ExpressionOfSort(sort))
         else
           Seq()
       ) ++ (
-      node match {
-        case LeafNode(_) => Seq()
-        case BranchNode(arg, fnExp) =>
+      sort match {
+        case BaseSort(_) => Seq()
+        case FunctionSort(arg, fnExp) =>
           fnExp.formulaeGiven(
             inputs :+ arg :_*
-          ) map { expr =>
-            arg >>: expr
+          ) map {
+            arg >>: _
           }
         }
       )
   }
 
-  implicit class RichBranchNode[X](
-    branchNode: BranchNode[X]
+  implicit class RichFunctionSort[X](
+    fnSort: FunctionSort[X]
   ) {
     def apply(expression: Expression[X]) =
-      FunctionApplicationExpression(branchNode, expression)
+      FunctionApplicationExpression(fnSort, expression)
   }
 
   def sortOf[X](x: X) =
-    x : Node[X]
+    x : Sort[X]
 }
