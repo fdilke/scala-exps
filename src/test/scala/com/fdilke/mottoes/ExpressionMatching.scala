@@ -17,7 +17,9 @@ object ExpressionMatching {
         )
     }
 
-  def haveSort[X](sort: Sort[X]): Matcher[Expression[X]] =
+  def haveSort[X](
+    sort: Sort[X]
+  ) =
       new Matcher[Expression[X]] {
         override def apply(
           expression: Expression[X]
@@ -29,6 +31,8 @@ object ExpressionMatching {
           )
       }
 
-  def mottoize[X](sort: Sort[X]): Matcher[Expression[X]] =
+  def mottoize[X](
+    sort: Sort[X]
+  ): Matcher[Expression[X]] =
     be(free) and haveSort(sort)
 }
