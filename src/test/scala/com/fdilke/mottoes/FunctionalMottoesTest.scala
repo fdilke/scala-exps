@@ -175,7 +175,7 @@ class FunctionalMottoesTest extends FreeSpec {
     sort.mottoes shouldBe expectedMottoes
   }
 
-  "Naming sorts" - {
+  "toString on sorts" - {
     "works for base sorts" in {
       (x : Sort).toString shouldBe "x"
     }
@@ -191,6 +191,25 @@ class FunctionalMottoesTest extends FreeSpec {
       (x -: ((y -: z) -: w)).toString shouldBe "x => (y => z) => w"
       (x -: (y -: (z -: w))).toString shouldBe "x => y => z => w"
       ((x -: (y -: z)) -: w).toString shouldBe "(x => y => z) => w"
+    }
+  }
+
+  "name on sorts" - {
+    "works for base sorts" in {
+      (x : Sort).name shouldBe "x"
+    }
+    "works for function sorts" in {
+      (x -: y).name shouldBe "xy"
+    }
+    "works for compound sorts, which are bracketed appropriately" in {
+      (x -: y -: z).name shouldBe "xyz"
+      ((x -: y) -: z).name shouldBe "XYz"
+
+      (((x -: y) -: z) -: w).name shouldBe "xyZw"
+      ((x -: y) -: (z -: w)).name shouldBe "XYzw"
+      (x -: ((y -: z) -: w)).name shouldBe "xYZw"
+      (x -: (y -: (z -: w))).name shouldBe "xyzw"
+      ((x -: (y -: z)) -: w).name shouldBe "XYZw"
     }
   }
 

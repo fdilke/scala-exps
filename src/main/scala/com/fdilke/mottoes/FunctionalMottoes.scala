@@ -1,5 +1,6 @@
 package com.fdilke.mottoes
 
+import com.fdilke.mottoes.Sort.flip
 import com.fdilke.streams.AllPairs
 
 import scala.Function.tupled
@@ -9,12 +10,18 @@ sealed trait Sort {
   def -:(that: Sort) =
     FunctionSort(that, this)
   def toString: String
+  def name: String
   def isBase: Boolean
   def optionallyBracketedName =
     if (isBase)
       toString
     else
       s"($toString)"
+  def optionallyFlippedName =
+    if (isBase)
+      name
+    else
+      flip(name)
 }
 
 case class BaseSort(
@@ -22,6 +29,8 @@ case class BaseSort(
 ) extends Sort {
   override def isBase = true
   override def toString: String =
+    leaf.name
+  override def name: String =
     leaf.name
 }
 
@@ -32,11 +41,22 @@ case class FunctionSort(
   override def isBase = false
   override def toString: String =
     argSort.optionallyBracketedName + " => " + returnSort.toString
+  override def name: String =
+    argSort.optionallyFlippedName + returnSort.name
 }
 
 object Sort {
   implicit def asLeaf(x: Symbol): Sort =
     BaseSort(x)
+
+  def flip(text: String): String =
+    text map flip
+
+  def flip(ch: Char): Char =
+    if (ch.isUpper)
+      ch.toLower
+    else
+      ch.toUpper
 }
 
 sealed trait Expression {
