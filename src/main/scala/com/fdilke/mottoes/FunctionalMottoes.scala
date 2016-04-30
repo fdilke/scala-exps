@@ -132,8 +132,11 @@ object Expressions {
         case FunctionSort(arg, fnExp) =>
           fnExp.formulaeGiven(
             inputs :+ arg :_*
-          ) map {
-            arg >>: _
+          ) flatMap { f =>
+            if (!f.boundVariables.contains(arg))
+              Seq(arg >>: f)
+            else
+              Seq()
           }
         }
       )
