@@ -1,10 +1,6 @@
 package com.fdilke.mottoes
 
-import scala.language.implicitConversions
-import Sort._
-import Expressions._
-import ExpressionMatching._
-import scala.language.implicitConversions
+import com.fdilke.mottoes.Expressions._
 
 object EnumerateMottoes extends App {
   private val Seq(a, h, x, y, z, w) = Seq('a, 'h, 'x, 'y, 'z, 'w)
