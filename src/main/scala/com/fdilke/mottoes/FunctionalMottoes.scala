@@ -8,20 +8,20 @@ import scala.language.implicitConversions
 sealed trait Sort {
   def -:(that: Sort) =
     FunctionSort(that, this)
-  def name: String
+  def toString: String
   def isBase: Boolean
   def optionallyBracketedName =
     if (isBase)
-      name
+      toString
     else
-      s"($name)"
+      s"($toString)"
 }
 
 case class BaseSort(
   leaf: Symbol
 ) extends Sort {
   override def isBase = true
-  override def name: String =
+  override def toString: String =
     leaf.name
 }
 
@@ -30,8 +30,8 @@ case class FunctionSort(
   returnSort: Sort
 ) extends Sort {
   override def isBase = false
-  override def name: String =
-    argSort.optionallyBracketedName + " => " + returnSort.name
+  override def toString: String =
+    argSort.optionallyBracketedName + " => " + returnSort.toString
 }
 
 object Sort {

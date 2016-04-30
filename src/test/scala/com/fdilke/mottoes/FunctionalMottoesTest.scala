@@ -177,20 +177,20 @@ class FunctionalMottoesTest extends FreeSpec {
 
   "Naming sorts" - {
     "works for base sorts" in {
-      (x : Sort).name shouldBe "x"
+      (x : Sort).toString shouldBe "x"
     }
     "works for function sorts" in {
-      (x -: y).name shouldBe "x => y"
+      (x -: y).toString shouldBe "x => y"
     }
     "works for compound sorts, which are bracketed appropriately" in {
-      (x -: y -: z).name shouldBe "x => y => z"
-      ((x -: y) -: z).name shouldBe "(x => y) => z"
+      (x -: y -: z).toString shouldBe "x => y => z"
+      ((x -: y) -: z).toString shouldBe "(x => y) => z"
 
-      (((x -: y) -: z) -: w).name shouldBe "((x => y) => z) => w"
-      ((x -: y) -: (z -: w)).name shouldBe "(x => y) => z => w"
-      (x -: ((y -: z) -: w)).name shouldBe "x => (y => z) => w"
-      (x -: (y -: (z -: w))).name shouldBe "x => y => z => w"
-      ((x -: (y -: z)) -: w).name shouldBe "(x => y => z) => w"
+      (((x -: y) -: z) -: w).toString shouldBe "((x => y) => z) => w"
+      ((x -: y) -: (z -: w)).toString shouldBe "(x => y) => z => w"
+      (x -: ((y -: z) -: w)).toString shouldBe "x => (y => z) => w"
+      (x -: (y -: (z -: w))).toString shouldBe "x => y => z => w"
+      ((x -: (y -: z)) -: w).toString shouldBe "(x => y => z) => w"
     }
   }
 
