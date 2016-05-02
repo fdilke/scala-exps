@@ -91,6 +91,13 @@ class FunctionalMottoesTest extends FreeSpec {
       }
     }
 
+    "can encode a double function application of the right sort" in {
+      val doubleApp = (x -: y -: z)(x)(y)
+      doubleApp.sort shouldBe sortOf(z)
+      doubleApp.freeVariables shouldBe Seq[Sort](x -: y -: z, x, y)
+      doubleApp.boundVariables shouldBe Seq()
+    }
+
     "can encode the evaluation sub-motto" in {
       val eval = (x -: y) >>: x >>: (x -: y) (x)
       eval.sort shouldBe (x -: y) -: x -: y

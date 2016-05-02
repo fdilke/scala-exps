@@ -67,6 +67,9 @@ sealed trait Expression {
 
   def >>:(sort: Sort) =
     LambdaExpression(sort, this)
+
+  def apply(expression: Expression) =
+    FunctionApplicationExpression(this, expression)
 }
 
 case class ExpressionOfSort(
@@ -95,22 +98,26 @@ case class LambdaExpression(
 }
 
 case class FunctionApplicationExpression(
-  function: FunctionSort,
+  function: Expression,
   argument: Expression
 ) extends Expression {
-  require(argument.sort == function.argSort)
-
   override val sort: Sort =
-    function.returnSort
+    function.sort match {
+      case FunctionSort(argSort, returnSort) =>
+        require (argument.sort == argSort)
+        returnSort
+      case _ =>
+        throw new IllegalArgumentException
+    }
 
   override val freeVariables: Seq[Sort] =
-    function +: argument.freeVariables
+    function.freeVariables ++ argument.freeVariables
 
   override val boundVariables =
-    argument.boundVariables
+    function.boundVariables ++ argument.boundVariables
 
   override def useCount(sort: Sort) =
-    argument.useCount(sort)
+    function.useCount(sort) + argument.useCount(sort)
 }
 
 object Expressions {
