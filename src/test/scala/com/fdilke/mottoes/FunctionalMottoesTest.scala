@@ -185,9 +185,9 @@ class FunctionalMottoesTest extends FreeSpec {
       "when the usecount is 1" in {
         (x >>: x).useCount(x) shouldBe 1
       }
-//      "when the usecount is > 1" in {
-//        ((s -: s-: x) >>: s >>; (s -: s-: x)(x)(x)).useCount(x) shouldBe 2
-//      }
+      "when the usecount is > 1" in {
+        ((s -: s-: x) >>: s >>: (s -: s-: x)(s)(s)).useCount(s) shouldBe 2
+      }
     }
   }
 
