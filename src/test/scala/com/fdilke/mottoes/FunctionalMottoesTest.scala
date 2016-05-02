@@ -151,12 +151,12 @@ class FunctionalMottoesTest extends FreeSpec {
         em should mottoize(xhhx -: axhhax)
       }
 
-//      "reader monad multiplication" in {
-//        val sx = s -: x
-//        val ssx = s -: sx
-//        val rm = ssx >>: s >>: ssx(s)(s)
-//        rm should mottoize(ssx -: sx)
-//      }
+      "reader monad multiplication" in {
+        val sx = s -: x
+        val ssx = s -: sx
+        val rm = ssx >>: s >>: ssx(s)(s)
+        rm should mottoize(ssx -: sx)
+      }
     }
 
     "can be queried for mottoes" - {
@@ -176,6 +176,15 @@ class FunctionalMottoesTest extends FreeSpec {
           (x -: x) >>: x >>: x
         )
       }
+
+// TODO: can't quite calculate this itself
+//      "when double application is required" in {
+//        val sx = s -: x
+//        val ssx = s -: sx
+//        checkMottoes(ssx -: sx,
+//          ssx >>: s >>: ssx(s)(s)
+//        )
+//      }
     }
 
     "can be queried for usecounts" - {
