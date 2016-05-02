@@ -14,6 +14,38 @@ object FunWithMonads extends App {
   def mu[X, H]: ((((X => H) => H) => H) => H) => ((X => H) => H) =
     xhhhh => xh => xhhhh(_(xh))
 
+  // Strength of the double exponential
+  def strength[X, Y, H]: (
+    X => Y
+    ) => (
+    ((X => H) => H) => ((Y => H) => H)
+    ) =
+    xy => xhh => yh => xhh(x => yh(xy(x)))
+
+  // Formula for exponentiating an algebra over the double-exponential monad
+  def em[X, H, A]: (
+    ((X => H) => H) => X
+    ) => (
+    (((A => X) => H) => H) => (A => X)
+    ) =
+    xhhx => axhh => a =>
+      xhhx(xh =>
+        axhh(ax =>
+          xh(ax(a))
+        )
+      )
+
+  // Multiplication for the reader monad
+  def rm[X, S]: (S => S => X) => S => X =
+    ssx => s => ssx(s)(s)
+
+  abstract class Monad[M[X]] {
+    def eta[X](x: X): M[X]
+    def mu[X](mmx: M[M[X]]): M[X]
+
+    type Algebra[X] = M[X] => X
+  }
+
   trait AContextOf[X, H] {
     type XH  = X => H
     type XHH = XH => H
@@ -31,34 +63,6 @@ object FunWithMonads extends App {
         }
         xhh
       }
-  }
-
-  // Formula for exponentiating an algebra over the double-exponential monad
-  def em[X, H, A]: (
-    ((X => H) => H) => X
-  ) => (
-    (((A => X) => H) => H) => (A => X)
-  ) =
-    xhhx => axhh => a =>
-      xhhx(xh =>
-        axhh(ax =>
-          xh(ax(a))
-        )
-      )
-
-  // Strength of the double exponential
-  def strength[X, Y, H]: (
-      X => Y
-    ) => (
-      ((X => H) => H) => ((Y => H) => H)
-    ) =
-    xy => xhh => yh => xhh(x => yh(xy(x)))
-
-  abstract class Monad[M[X]] {
-    def eta[X](x: X): M[X]
-    def mu[X](mmx: M[M[X]]): M[X]
-
-    type Algebra[X] = M[X] => X
   }
 
   class ContextOf[H] {
