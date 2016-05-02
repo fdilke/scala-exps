@@ -163,6 +163,18 @@ class FunctionalMottoesTest extends FreeSpec {
         )
       }
     }
+
+    "can be queried for usecounts" - {
+      "when the usecount is 0" in {
+        (x >>: x).useCount(y) shouldBe 0
+      }
+      "when the usecount is 1" in {
+        (x >>: x).useCount(x) shouldBe 1
+      }
+//      "when the usecount is > 1" in {
+//        ((s -: s-: x) >>: s >>; (s -: s-: x)(x)(x)).useCount(x) shouldBe 2
+//      }
+    }
   }
 
   private def checkMottoes(

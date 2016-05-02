@@ -63,6 +63,7 @@ sealed trait Expression {
   val sort: Sort
   val freeVariables: Seq[Sort]
   val boundVariables: Seq[Sort]
+  def useCount(sort: Sort): Int
 
   def >>:(sort: Sort) =
     LambdaExpression(sort, this)
@@ -73,6 +74,8 @@ case class ExpressionOfSort(
 ) extends Expression {
   override val freeVariables = Seq(sort)
   override val boundVariables = Seq()
+  override def useCount(aSort: Sort) =
+    if (aSort == sort) 1 else 0
 }
 
 case class LambdaExpression(
@@ -87,6 +90,8 @@ case class LambdaExpression(
     value.freeVariables.filterNot(_ == argSort)
   override val boundVariables =
     argSort +: value.boundVariables
+  override def useCount(aSort: Sort) =
+    value.useCount(aSort)
 }
 
 case class FunctionApplicationExpression(
@@ -103,6 +108,9 @@ case class FunctionApplicationExpression(
 
   override val boundVariables =
     argument.boundVariables
+
+  override def useCount(sort: Sort) =
+    argument.useCount(sort)
 }
 
 object Expressions {
