@@ -9,7 +9,7 @@ import org.scalatest.Matchers._
 import scala.language.implicitConversions
 
 class FunctionalMottoesTest extends FreeSpec {
-  private val Seq(a, h, x, y, z, w) = Seq('a, 'h, 'x, 'y, 'z, 'w)
+  private val Seq(a, h, x, y, z, w, s) = Seq('a, 'h, 'x, 'y, 'z, 'w, 's)
 
   "The -: operator" - {
     "can be used to build compound sorts" in {
@@ -143,6 +143,13 @@ class FunctionalMottoesTest extends FreeSpec {
         )
         em should mottoize(xhhx -: axhhax)
       }
+
+//      "reader monad multiplication" in {
+//        val sx = s -: x
+//        val ssx = s -: sx
+//        val rm = ssx >>: s >>: ssx(s)(s)
+//        rm should mottoize(ssx -: sx)
+//      }
     }
 
     "can be queried for mottoes" - {
