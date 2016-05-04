@@ -177,6 +177,16 @@ class FunctionalMottoesTest extends FreeSpec {
         )
       }
 
+// TODO: fix simpler version...
+//      "when single application is required" in {
+//        val sx = s -: x
+//        checkMottoes(sx -: s -: x,
+//          sx >>: s >>: sx(s),
+//          sx >>: sx,
+//          (x -: x) >>: x >>: (x -: x)(x)
+//        )
+//      }
+
 // TODO: can't quite calculate this itself
 //      "when double application is required" in {
 //        val sx = s -: x

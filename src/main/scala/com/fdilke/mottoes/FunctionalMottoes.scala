@@ -141,7 +141,17 @@ object Expressions {
           Seq(ExpressionOfSort(sort))
         else
           Seq()
-      ) ++ (
+      ) ++ /* inputs.collect {
+        case fn @ FunctionSort(arg, fnExp) =>
+          if (inputs.contains(arg) && sort == fnExp) {
+//            val tt: Seq[Expression] =
+//              sort.formulaeGiven(inputs :+ fnExp :_*) map {
+//                h => h
+//              }
+            Seq(fn(arg))
+          } else
+            Seq()
+      }.flatten ++ */ (
       sort match {
         case BaseSort(_) => Seq()
         case FunctionSort(arg, fnExp) =>
