@@ -21,5 +21,20 @@ class MottoesTest extends FreeSpec {
       x should not be (x -: y)
       (x: Expression) should not be (x -: y: Expression)
     }
+
+    "is not idempotent" in {
+      x should not be (x -: x)
+    }
+
+    "is not symmetric" in {
+      (x -: y) should not be (y -: x)
+    }
+
+    "associates to the right and NOT the left" in {
+      (x -: (y -: z)) should not be ((x -: y) -: z)
+      (x -: y -: z) shouldBe (x -: (y -: z))
+    }
   }
+
+  // TODO: continue conversion of tests from old motto code
 }
