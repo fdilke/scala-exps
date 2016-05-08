@@ -1,8 +1,8 @@
-package com.fdilke.mottoes
+package com.fdilke.oldmottoes
 
-import com.fdilke.mottoes.ExpressionMatching._
-import com.fdilke.mottoes.Expressions._
-import com.fdilke.mottoes.Sort._
+import com.fdilke.oldmottoes.ExpressionMatching._
+import com.fdilke.oldmottoes.Expressions._
+import com.fdilke.oldmottoes.Sort._
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
 

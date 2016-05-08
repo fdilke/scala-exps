@@ -1,6 +1,6 @@
-package com.fdilke.mottoes
+package com.fdilke.oldmottoes
 
-import com.fdilke.mottoes.Expressions._
+import com.fdilke.oldmottoes.Expressions._
 
 object EnumerateMottoes extends App {
   private val Seq(a, h, x, y, z, w) = Seq('a, 'h, 'x, 'y, 'z, 'w)

@@ -1,6 +1,6 @@
-package com.fdilke.mottoes
+package com.fdilke.oldmottoes
 
-import com.fdilke.mottoes.Sort.flip
+import com.fdilke.oldmottoes.Sort.flip
 import com.fdilke.streams.AllPairs
 
 import scala.Function.tupled
