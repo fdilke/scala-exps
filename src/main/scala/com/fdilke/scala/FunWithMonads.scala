@@ -35,6 +35,21 @@ object FunWithMonads extends App {
         )
       )
 
+  // Applicative strength of continuation (aka double-exponential)
+  def as[H, A, B]: (
+    ((A => B) => H) => H
+  ) => (
+    (A => H) => H
+  ) => (
+    (B => H) => H
+  ) =
+    abhh => ahh => bh =>
+      abhh(ab =>
+        ahh(a =>
+          bh(ab(a))
+        )
+      )
+
   // Multiplication for the reader monad
   def rm[X, S]: (S => S => X) => S => X =
     ssx => s => ssx(s)(s)
