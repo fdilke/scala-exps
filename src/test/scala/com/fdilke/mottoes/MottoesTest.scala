@@ -44,11 +44,11 @@ class MottoesTest extends FreeSpec {
       expr.boundVariables shouldBe empty
     }
 
-//    "have sane equality semantics" in {
-//      (x: Expression) shouldBe (x: Expression)
-//      (x -: y)(x) should not be (x: Expression)
-//      (x: Expression) should not be (x -: y)(x)
-//    }
+    "have sane equality semantics" in {
+      (x: Expression) shouldBe (x: Expression)
+      (x -: y)(x) should not be (x: Expression)
+      (x: Expression) should not be (x -: y)(x)
+    }
   }
 
   // TODO: continue conversion of tests from old motto code
