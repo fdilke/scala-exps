@@ -21,7 +21,7 @@ object Sort {
   ): Sort =
     Sort(args, returns)
 
-  implicit def toSort(
+  implicit def sortOf(
     x: Symbol
   ): Sort =
     λ()(x)
