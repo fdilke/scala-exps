@@ -1,9 +1,10 @@
 package com.fdilke.mottoes
 
+import com.fdilke.mottoes.Expression._
+import com.fdilke.mottoes.ExpressionMatching._
+import com.fdilke.mottoes.Sort._
+import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
-import org.scalatest.{FreeSpec, Matchers}
-import Sort._
-import Expression._
 
 class MottoesTest extends FreeSpec {
   private val Seq(a, h, x, y, z, w, s) = Seq('a, 'h, 'x, 'y, 'z, 'w, 's)
@@ -105,7 +106,61 @@ class MottoesTest extends FreeSpec {
       eval.freeVariables shouldBe empty
       eval.boundVariables shouldBe Seq(x -: y, sortOf(x))
     }
+
+    "encode mottoes" - {
+      "identity" in {
+        val id = x >>: x
+        id should mottoize(x -: x)
+      }
+
+      "composition" in {
+        val o = (x -: y) >>: (y -: z) >>: x >>: (y -: z) ((x -: y) (x))
+        o should mottoize((x -: y) -: (y -: z) -: (x -: z))
+      }
+
+      "double-exponential multiplication" in {
+        val xh = x -: h
+        val xhh = xh -: h
+        val xhhh = xhh -: h
+        val xhhhh = xhhh -: h
+        val mu = xhhhh >>: xh >>: xhhhh(xhh >>: xhh(xh))
+        mu should mottoize(xhhhh -: xhh)
+      }
+
+      "strength of the double exponential" in {
+        val xh = x -: h
+        val yh = y -: h
+        val xy = x -: y
+        val xhh = xh -: h
+        val yhh = yh -: h
+        val strength = xy >>: xhh >>: yh >>: xhh(x >>: yh(xy(x)))
+        strength should mottoize(xy -: (xhh -: yhh))
+      }
+
+      "power continuation algebras" in {
+        val xh = x -: h
+        val ax = a -: x
+        val axh = ax -: h
+        val xhh = xh -: h
+        val axhh = axh -: h
+        val xhhx = xhh -: x
+        val axhhax = axhh -: ax
+        def em = xhhx >>: axhh >>: a >>: xhhx(
+          xh >>: axhh(
+            ax >>: xh(ax(a))
+          )
+        )
+        em should mottoize(xhhx -: axhhax)
+      }
+
+      "reader monad multiplication" in {
+        val sx = s -: x
+        val ssx = s -: sx
+        val rm = ssx >>: s >>: ssx(s)(s)
+        rm should mottoize(ssx -: sx)
+      }
+    }
   }
 
-  // TODO: continue conversion of tests from old motto code from 'encode mottoes'
+  // TODO: continue conversion of tests from old motto code from 'can be queried for mottoes'
 }
