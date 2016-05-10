@@ -1,7 +1,6 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.Sort.λ
-import com.fdilke.oldmottoes.LambdaExpression
 
 import scala.language.implicitConversions
 
@@ -12,6 +11,12 @@ sealed trait Expression {
 
   def >>:(arg: Sort) =
     new LambdaExpression(arg, this)
+
+  def apply(arg: Expression) =
+    FunctionApplicationExpression(
+      this,
+      arg
+    )
 }
 
 case class ExpressionOfSort(
@@ -27,6 +32,9 @@ case class FunctionApplicationExpression(
   fn: Expression,
   arg: Expression
 ) extends Expression {
+  require(
+    fn.sort.args.headOption contains arg.sort
+  )
   override val sort =
     Sort(fn.sort.args.tail, fn.sort.returns)
   override val freeVariables =
@@ -62,16 +70,16 @@ object Expression {
   ): Expression =
     ExpressionOfSort(sort)
 
-  implicit class RichFunctionSort(
-    sort: Sort
-  ) {
-    def apply(arg: Sort) =
-      if (!sort.args.headOption.contains(arg))
-        throw new IllegalArgumentException
-      else
-        FunctionApplicationExpression(
-          sort,
-          arg
-        )
-  }
+//  implicit class RichFunctionSort(
+//    sort: Sort
+//  ) {
+//    def apply(arg: Sort) =
+//      if (!sort.args.headOption.contains(arg))
+//        throw new IllegalArgumentException
+//      else
+//        FunctionApplicationExpression(
+//          sort,
+//          arg
+//        )
+//  }
 }
