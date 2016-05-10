@@ -1,11 +1,17 @@
 package com.fdilke.mottoes
 
+import com.fdilke.mottoes.Sort.λ
+import com.fdilke.oldmottoes.LambdaExpression
+
 import scala.language.implicitConversions
 
 sealed trait Expression {
   val sort: Sort
   val freeVariables: Seq[Sort]
   val boundVariables: Seq[Sort]
+
+  def >>:(arg: Sort) =
+    new LambdaExpression(arg, this)
 }
 
 case class ExpressionOfSort(
@@ -22,11 +28,25 @@ case class FunctionApplicationExpression(
   arg: Expression
 ) extends Expression {
   override val sort =
-    Sort(fn.args.tail, fn.returns)
+    Sort(fn.sort.args.tail, fn.sort.returns)
   override val freeVariables =
-    fn.free
+    fn.freeVariables ++ arg.freeVariables
   override val boundVariables =
-    Seq()
+    fn.boundVariables ++ arg.boundVariables
+}
+
+case class LambdaExpression(
+  arg: Sort,
+  expr: Expression
+) extends Expression {
+  override val sort: Sort =
+    λ(arg +: expr.sort.args :_*)(expr.sort.returns)
+
+  override val freeVariables: Seq[Sort] =
+    expr.freeVariables.filterNot { _ == arg }
+
+  override val boundVariables: Seq[Sort] =
+    arg +: expr.boundVariables
 }
 
 object Expression {

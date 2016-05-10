@@ -49,6 +49,20 @@ class MottoesTest extends FreeSpec {
       (x -: y)(x) should not be (x: Expression)
       (x: Expression) should not be (x -: y)(x)
     }
+
+    "can encode constant functions" in {
+      val ky = x >>: y
+      ky.sort shouldBe (x -: y)
+      ky.freeVariables shouldBe Seq(sortOf(y))
+      ky.boundVariables shouldBe Seq(sortOf(x))
+    }
+
+    "can encode the K combinator" in {
+      val k = x >>: y >>: x
+      k.sort shouldBe (x -: y -: x)
+      k.freeVariables shouldBe empty
+      k.boundVariables shouldBe Seq(sortOf(x), sortOf(y))
+    }
   }
 
   // TODO: continue conversion of tests from old motto code
