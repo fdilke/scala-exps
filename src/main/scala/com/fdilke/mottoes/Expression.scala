@@ -39,6 +39,8 @@ case class LambdaExpression(
   arg: Sort,
   expr: Expression
 ) extends Expression {
+  require(!expr.boundVariables.contains(arg))
+
   override val sort: Sort =
     λ(arg +: expr.sort.args :_*)(expr.sort.returns)
 

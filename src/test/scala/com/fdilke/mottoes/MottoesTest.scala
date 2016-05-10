@@ -63,7 +63,40 @@ class MottoesTest extends FreeSpec {
       k.freeVariables shouldBe empty
       k.boundVariables shouldBe Seq(sortOf(x), sortOf(y))
     }
+
+    "can encode function application" in {
+      val app = (x -: y) (x)
+      app.sort shouldBe sortOf(y)
+      app.freeVariables shouldBe Seq(x -: y, sortOf(x))
+      app.boundVariables shouldBe empty
+    }
+
+    "cannot encode a function application with the wrong argument sort" in {
+      intercept[IllegalArgumentException] {
+        (x -: y) (y)
+      }
+    }
+
+    "cannot encode a function with repeated argument sorts" in {
+      intercept[IllegalArgumentException] {
+        x >>: x >>: y
+      }
+    }
+
+//    "can encode a double function application of the right sort" in {
+//      val doubleApp = (x -: y -: z)(x)(y)
+//      doubleApp.sort shouldBe sortOf(z)
+//      doubleApp.freeVariables shouldBe Seq[Sort](x -: y -: z, x, y)
+//      doubleApp.boundVariables shouldBe Seq()
+//    }
+//
+//    "can encode the evaluation sub-motto" in {
+//      val eval = (x -: y) >>: x >>: (x -: y) (x)
+//      eval.sort shouldBe (x -: y) -: x -: y
+//      eval.freeVariables shouldBe empty
+//      eval.boundVariables shouldBe Seq(x -: y, sortOf(x))
+//    }
   }
 
-  // TODO: continue conversion of tests from old motto code
+  // TODO: continue conversion of tests from old motto code from 'encode mottoes'
 }
