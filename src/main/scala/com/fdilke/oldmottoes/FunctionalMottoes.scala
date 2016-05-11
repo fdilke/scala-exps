@@ -1,7 +1,7 @@
 package com.fdilke.oldmottoes
 
 import com.fdilke.oldmottoes.Sort.flip
-import com.fdilke.streams.AllPairs
+import com.fdilke.streams.StreamUtilities
 
 import scala.Function.tupled
 import scala.language.implicitConversions
@@ -181,7 +181,7 @@ object Expressions {
     val baseSorts: Stream[Sort] = symbols.map(sortOf).toStream
 
     def all: Stream[Sort] =
-      baseSorts #::: AllPairs(all).map {
+      baseSorts #::: StreamUtilities.pairs(all, all).map {
         tupled {
           (x, y) =>
             x -: y: Sort
