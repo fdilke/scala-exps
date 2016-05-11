@@ -56,6 +56,25 @@ class MottoesTest extends FreeSpec {
     }
   }
 
+  "toString on sorts" - {
+    "works for base sorts" in {
+      (x : Sort).toString shouldBe "x"
+    }
+    "works for function sorts" in {
+      (x -: y).toString shouldBe "x => y"
+    }
+    "works for compound sorts, which are bracketed appropriately" in {
+      (x -: y -: z).toString shouldBe "x => y => z"
+      ((x -: y) -: z).toString shouldBe "(x => y) => z"
+
+      (((x -: y) -: z) -: w).toString shouldBe "((x => y) => z) => w"
+      ((x -: y) -: (z -: w)).toString shouldBe "(x => y) => z => w"
+      (x -: ((y -: z) -: w)).toString shouldBe "x => (y => z) => w"
+      (x -: (y -: (z -: w))).toString shouldBe "x => y => z => w"
+      ((x -: (y -: z)) -: w).toString shouldBe "(x => y => z) => w"
+    }
+  }
+
   "Expressions" - {
     "can be formed from a single symbol" in {
       val expr = x: Expression

@@ -29,6 +29,19 @@ case class Sort(
       name
     else
       flip(name)
+
+  override def toString: String =
+    if (simple)
+      name
+    else
+      args.head.altToString + " => " +
+        Sort(args.tail, returns).toString
+
+  private def altToString: String =
+    if (simple)
+      toString
+    else
+      "(" + toString + ")"
 }
 
 object Sort {
