@@ -36,7 +36,27 @@ class ImplicitConversionsTest extends FunSpec {
       }
 
       import FunctionalStrings._
-      ("Hello" law (Widget(3))) shouldBe "l"
+      ("Hello" law Widget(3)) shouldBe "l"
+    }
+
+    it("can use implicit parameters, too") {
+      case class Widget[T](payload: T)
+      object FancyImplicits {
+        implicit class RichWidget[T](
+          widget: Widget[T]
+        ) (
+          implicit toInt: T => Int
+        ) {
+          def measure: Int =
+            toInt(widget.payload)
+        }
+      }
+      import FancyImplicits._
+
+      implicit val shoeSize: String => Int =
+        _ => 6
+
+      Widget("Felix").measure shouldBe 6
     }
   }
 }
