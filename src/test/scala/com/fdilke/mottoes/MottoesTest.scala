@@ -1,8 +1,8 @@
 package com.fdilke.mottoes
 
-import com.fdilke.mottoes.Expression._
-import com.fdilke.mottoes.ExpressionMatching._
-import com.fdilke.mottoes.Sort._
+import Expression._
+import ExpressionMatching._
+import Sort._
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
 
@@ -212,6 +212,29 @@ class MottoesTest extends FreeSpec {
     }
 }
 
+  "can be queried to find formulae given inputs" - {
+    "insufficient to calculate the (simple) target" in {
+      x.formulaeGiven(Seq(y)) shouldBe Seq.empty
+    }
+
+    "insufficient to calculate the (complex) target" in {
+      x.formulaeGiven(Seq(y -: y)) shouldBe Seq.empty
+    }
+
+    "including the (simple) target" in {
+      x.formulaeGiven(Seq(x)) shouldBe Seq[Expression](
+        x
+      )
+    }
+
+    "including the (complex) target" in {
+      val xx = x -: x
+      xx.formulaeGiven(Seq(xx)) shouldBe Seq[Expression](
+        xx
+      )
+    }
+  }
+
   "can be queried for mottoes" - {
     "when there are none" in {
       checkMottoes(x)
@@ -222,17 +245,44 @@ class MottoesTest extends FreeSpec {
         x >>: x
       )
     }
+
+//    "when there are multiple solutions" in {
+//      checkMottoes((x -: x) -: (x -: x),
+//        (x -: x) >>: (x -: x),
+//        (x -: x) >>: x >>: x
+//      )
+//    }
   }
+
+/*
+List(
+  LambdaExpression(
+    x => x,
+    LambdaExpression(
+      x,
+      ExpressionOfSort(x)
+    )
+  )
+)
+was not equal to
+Array(
+  LambdaExpression(
+    x => x,
+    ExpressionOfSort(x => x)    << Don't find this one
+  ),
+  LambdaExpression(
+    x => x,
+    LambdaExpression(
+      x,
+      ExpressionOfSort(x)
+    )
+  )
+)
+   */
 
 /*
 
 
-      "when there are multiple solutions" in {
-        checkMottoes((x -: x) -: (x -: x),
-          (x -: x) >>: (x -: x),
-          (x -: x) >>: x >>: x
-        )
-      }
 
 // TODO: fix simpler version...
 //      "when single application is required" in {
