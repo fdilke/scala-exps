@@ -198,7 +198,111 @@ class MottoesTest extends FreeSpec {
         rm should mottoize(ssx -: sx)
       }
     }
+
+    "can be queried for usecounts" - {
+      "when the usecount is 0" in {
+        (x >>: x).useCount(y) shouldBe 0
+      }
+      "when the usecount is 1" in {
+        (x >>: x).useCount(x) shouldBe 1
+      }
+      "when the usecount is > 1" in {
+        ((s -: s-: x) >>: s >>: (s -: s-: x)(s)(s)).useCount(s) shouldBe 2
+      }
+    }
+}
+
+/*
+    "can be queried for mottoes" - {
+      "when there are none" in {
+        checkMottoes(x)
+      }
+
+      "when there is only one" in {
+        checkMottoes(x -: x,
+          x >>: x
+        )
+      }
+
+      "when there are multiple solutions" in {
+        checkMottoes((x -: x) -: (x -: x),
+          (x -: x) >>: (x -: x),
+          (x -: x) >>: x >>: x
+        )
+      }
+
+// TODO: fix simpler version...
+//      "when single application is required" in {
+//        val sx = s -: x
+//        checkMottoes(sx -: s -: x,
+//          sx >>: s >>: sx(s),
+//          sx >>: sx,
+//          (x -: x) >>: x >>: (x -: x)(x)
+//        )
+//      }
+
+// TODO: can't quite calculate this itself
+//      "when double application is required" in {
+//        val sx = s -: x
+//        val ssx = s -: sx
+//        checkMottoes(ssx -: sx,
+//          ssx >>: s >>: ssx(s)(s)
+//        )
+//      }
+    }
+
+  private def checkMottoes(
+    sort: Sort,
+    expectedMottoes: Expression*
+  ) {
+    for (motto <- expectedMottoes) {
+      motto should mottoize(sort)
+    }
+    sort.mottoes shouldBe expectedMottoes
   }
 
-  // TODO: continue conversion of tests from old motto code from 'can be queried for mottoes'
+  "toString on sorts" - {
+    "works for base sorts" in {
+      (x : Sort).toString shouldBe "x"
+    }
+    "works for function sorts" in {
+      (x -: y).toString shouldBe "x => y"
+    }
+    "works for compound sorts, which are bracketed appropriately" in {
+      (x -: y -: z).toString shouldBe "x => y => z"
+      ((x -: y) -: z).toString shouldBe "(x => y) => z"
+
+      (((x -: y) -: z) -: w).toString shouldBe "((x => y) => z) => w"
+      ((x -: y) -: (z -: w)).toString shouldBe "(x => y) => z => w"
+      (x -: ((y -: z) -: w)).toString shouldBe "x => (y => z) => w"
+      (x -: (y -: (z -: w))).toString shouldBe "x => y => z => w"
+      ((x -: (y -: z)) -: w).toString shouldBe "(x => y => z) => w"
+    }
+  }
+
+  "We can enumerate sorts" - {
+    "of degree 1" in {
+      allSorts(x).take(4).toSeq shouldBe Seq[Sort](
+        x,
+        x -: x,
+        x -: (x -: x),
+        (x -: x) -: x
+      )
+    }
+    "of degree 2" in {
+      allSorts(x, y).take(9).toSeq shouldBe Seq[Sort](
+        x,
+        y,
+        x -: x,
+        x -: y,
+        y -: x,
+        x -: x -: x,
+        y -: y,
+        (x -: x) -: x,
+        x -: x -: y
+      )
+    }
+  }
+
+ */
 }
