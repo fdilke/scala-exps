@@ -4,6 +4,11 @@ This is a sandbox for experiments with aspects of Scala.
 Most of them are just to learn about the language but may turn
 out to be useful for other projects.
 
+## Functional Mottoes
+
+[Presentation](https://github.com/fdilke/scala-exps/blob/master/notes/FunctionalMottoes.pdf) about these
+gems of the pure lambda calculus, and my efforts to enumerate them
+
 ## Bewl: done
 Bind classes to dots, and to the sources and targets of arrows
 Fixed chained products
