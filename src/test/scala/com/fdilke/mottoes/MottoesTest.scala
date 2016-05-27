@@ -212,17 +212,20 @@ class MottoesTest extends FreeSpec {
     }
 }
 
-/*
-    "can be queried for mottoes" - {
-      "when there are none" in {
-        checkMottoes(x)
-      }
+  "can be queried for mottoes" - {
+    "when there are none" in {
+      checkMottoes(x)
+    }
 
-      "when there is only one" in {
-        checkMottoes(x -: x,
-          x >>: x
-        )
-      }
+    "when there is only one" in {
+      checkMottoes(x -: x,
+        x >>: x
+      )
+    }
+  }
+
+/*
+
 
       "when there are multiple solutions" in {
         checkMottoes((x -: x) -: (x -: x),
@@ -250,16 +253,6 @@ class MottoesTest extends FreeSpec {
 //        )
 //      }
     }
-
-  private def checkMottoes(
-    sort: Sort,
-    expectedMottoes: Expression*
-  ) {
-    for (motto <- expectedMottoes) {
-      motto should mottoize(sort)
-    }
-    sort.mottoes shouldBe expectedMottoes
-  }
 
   "toString on sorts" - {
     "works for base sorts" in {
@@ -305,4 +298,14 @@ class MottoesTest extends FreeSpec {
   }
 
  */
+
+  private def checkMottoes(
+    sort: Sort,
+    expectedMottoes: Expression*
+  ) {
+    for (motto <- expectedMottoes) {
+      motto should mottoize(sort)
+    }
+    sort.mottoes shouldBe expectedMottoes
+  }
 }

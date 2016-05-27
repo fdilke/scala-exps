@@ -1,8 +1,9 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.Sort.λ
+import Sort._
 
-import scala.language.implicitConversions
+import scala.language.{postfixOps, implicitConversions}
 
 sealed trait Expression {
   val sort: Sort
@@ -77,6 +78,47 @@ object Expression {
     sort: Sort
   ): Expression =
     ExpressionOfSort(sort)
+
+  implicit def fromSymbol(
+    symbol: Symbol
+  ): RichSort =
+    symbol : Sort
+
+  implicit class RichSort(
+    sort: Sort
+  ) {
+    def mottoes: Seq[Expression] =
+      formulaeGiven(Seq())
+
+    def formulaeGiven(
+      inputs: Seq[Sort]
+    ): Seq[Expression] = {
+//      println("")
+//      println("RECURSING: sort: " + sort)
+//      println("RECURSING: inputs: " + inputs)
+//      println("RECURSING: sort args: " + sort.args)
+
+      if (inputs contains sort)
+        Seq(ExpressionOfSort(sort))
+      else if (sort.args isEmpty)
+        Seq()
+      else
+        sort.returns.formulaeGiven(
+          inputs ++ sort.args
+        ) map { expr =>
+//          println("Formula found: " + expr)
+//          println("with inputs: " + inputs)
+//          println("and sort args: " + sort.args)
+          (sort.args :\ expr) {
+            (x: Sort, y: Expression) =>
+              x >>: y
+          }
+        }
+    }
+//                       map { expr =>
+//        expr
+//                       }
+  }
 
 //  implicit class RichFunctionSort(
 //    sort: Sort
