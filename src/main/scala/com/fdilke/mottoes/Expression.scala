@@ -98,23 +98,28 @@ object Expression {
       println("RECURSING: inputs: " + inputs)
       println("RECURSING: sort args: " + sort.args)
 
-      val xx = if (inputs contains sort)
-        Seq(ExpressionOfSort(sort))
-      else sort.args match {
-        case Nil =>
+      val xx = (
+        if (inputs contains sort)
+          Seq(ExpressionOfSort(sort))
+        else
           Seq()
-
-        case (head :: rest) =>
-          if (inputs contains head) {
-            println(":( Inputs contains head")
+      ) ++ (
+        sort.args match {
+          case Nil =>
             Seq()
-          } else
-            sort.returns.formulaeGiven(
-              inputs :+ head
-            ) map { expr =>
-              head >>: expr
-            }
-      }
+
+          case (head :: rest) =>
+            if (inputs contains head) {
+              println(":( Inputs contains head")
+              Seq()
+            } else
+              Sort(rest, sort.returns).formulaeGiven(
+                inputs :+ head
+              ) map { expr =>
+                head >>: expr
+              }
+        }
+      )
 
 //      if (sort.args isEmpty)
 //        Seq()

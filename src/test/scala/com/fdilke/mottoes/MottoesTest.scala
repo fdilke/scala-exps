@@ -227,10 +227,11 @@ class MottoesTest extends FreeSpec {
       )
     }
 
-    "including the (complex) target" in {
+    "including the (complex) target for which there are other derivations" in {
       val xx = x -: x
       xx.formulaeGiven(Seq(xx)) shouldBe Seq[Expression](
-        xx
+        xx,
+        x >>: x
       )
     }
   }
@@ -246,43 +247,15 @@ class MottoesTest extends FreeSpec {
       )
     }
 
-//    "when there are multiple solutions" in {
-//      checkMottoes((x -: x) -: (x -: x),
-//        (x -: x) >>: (x -: x),
-//        (x -: x) >>: x >>: x
-//      )
-//    }
+    "when there are multiple solutions" in {
+      checkMottoes((x -: x) -: (x -: x),
+        (x -: x) >>: (x -: x),
+        (x -: x) >>: x >>: x
+      )
+    }
   }
 
 /*
-List(
-  LambdaExpression(
-    x => x,
-    LambdaExpression(
-      x,
-      ExpressionOfSort(x)
-    )
-  )
-)
-was not equal to
-Array(
-  LambdaExpression(
-    x => x,
-    ExpressionOfSort(x => x)    << Don't find this one
-  ),
-  LambdaExpression(
-    x => x,
-    LambdaExpression(
-      x,
-      ExpressionOfSort(x)
-    )
-  )
-)
-   */
-
-/*
-
-
 
 // TODO: fix simpler version...
 //      "when single application is required" in {
