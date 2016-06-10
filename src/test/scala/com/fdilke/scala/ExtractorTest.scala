@@ -77,6 +77,19 @@ class ExtractorTest extends FunSpec {
 
     it("can extract a variable number of values") {
       object PossibleTriplet {
+        def unapplySeq(s: List[Int]): Option[Seq[Int]] =
+          if (s.size == 3)
+            Some(s)
+          else
+            None
+      }
+
+      val PossibleTriplet(a, b, c) = List(4, 5, 6)
+      (a, b, c) shouldBe (4, 5, 6)
+    }
+
+    it("can extract a fixed number of values, followed by a variable number") {
+      object PossibleTriplet {
         def unapplySeq(s: List[Int]) : Option[(Int, Seq[Int])] =
           if (s.size == 3)
             Some((s(0), s.slice(1, s.size)))
@@ -84,8 +97,8 @@ class ExtractorTest extends FunSpec {
             None
       }
 
-      val PossibleTriplet(a,b,c) = List(4,5,6)
-      (a, b, c) shouldBe (4,5,6)
+      val PossibleTriplet(a,b,c) = List(4, 5, 6)
+      (a, b, c) shouldBe (4, 5, 6)
     }
 
     it("can implicitly extract members from a case class with generics") {
