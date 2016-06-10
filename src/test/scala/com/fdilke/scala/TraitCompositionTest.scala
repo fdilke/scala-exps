@@ -29,5 +29,31 @@ class TraitCompositionTest extends FreeSpec {
 
       handler.toString(7) shouldBe "16"
     }
+
+    "can be stacked easily on top of existing methods" in {
+      trait IntHandler {
+        def handle(n: Int): String
+      }
+
+      trait IntHandlerIncrementer extends IntHandler {
+        abstract override def handle(n: Int): String =
+          super.handle(n + 1)
+      }
+
+      class MyIntHandler extends IntHandler  {
+        def handle(n: Int): String =
+          n.toString
+      }
+      val handler = new MyIntHandler with IntHandlerIncrementer
+
+      //      // What we'd like to do but can't:
+      //
+      //      val handler = new IntHandler with IntHandlerIncrementer {
+      //        override def handle(n: Int): String =
+      //          n.toString
+      //      }
+
+      handler.handle(3) shouldBe "4"
+    }
   }
 }
