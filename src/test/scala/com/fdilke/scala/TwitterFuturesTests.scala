@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 import com.twitter.util.{Future, Await, FutureTask}
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-import com.twitter.conversions.time._
 
 class TwitterFuturesTests extends FunSpec {
   describe("Twitter futures") {
