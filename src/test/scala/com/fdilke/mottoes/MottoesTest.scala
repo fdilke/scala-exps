@@ -234,6 +234,22 @@ class MottoesTest extends FreeSpec {
         x >>: x
       )
     }
+
+    "including a (complex) target ... and return an object of correct type" in {
+      val sx = s -: x
+
+      (sx -: s -: x).formulaeGiven(Seq()) shouldBe Seq[Expression](
+        sx >>: x >>: s >>: y
+      )
+//      (sx -: s -: x).formulaeGiven(Seq()) shouldBe Seq[Expression](
+//        sx >>: x >>: s >>: y
+//      )
+
+//      val sx = s -: x
+//      s.formulaeGiven(Seq(sx, x)) shouldBe Seq[Expression](
+//        sx >>: x >>: s >>: y
+//      )
+    }
   }
 
   "can be queried for mottoes" - {
@@ -253,80 +269,84 @@ class MottoesTest extends FreeSpec {
         (x -: x) >>: x >>: x
       )
     }
+
+    "when single application is required" in {
+      val sx = s -: x
+      checkMottoes(sx -: s -: x,
+        sx >>: s >>: sx(s)
+      )
+    }
   }
 
 /*
+List(
+  LambdaExpression(
+    s => x,
+    ExpressionOfSort(s => x)
+  )) was not equal to
+Array(
+  LambdaExpression(
+    s => x,
+    LambdaExpression(
+      s,
+      FunctionApplicationExpression(
+        ExpressionOfSort(s => x),
+        ExpressionOfSort(s)
+    )
+  )
+))
 
-// TODO: fix simpler version...
-//      "when single application is required" in {
-//        val sx = s -: x
-//        checkMottoes(sx -: s -: x,
-//          sx >>: s >>: sx(s),
-//          sx >>: sx,
-//          (x -: x) >>: x >>: (x -: x)(x)
-//        )
-//      }
+   */
 
-// TODO: can't quite calculate this itself
-//      "when double application is required" in {
-//        val sx = s -: x
-//        val ssx = s -: sx
-//        checkMottoes(ssx -: sx,
-//          ssx >>: s >>: ssx(s)(s)
-//        )
-//      }
+//         sx >>: sx
+//         (x -: x) >>: x >>: (x -: x)(x)
+
+  /*
+
+  // TODO: fix simpler version...
+
+  // TODO: can't quite calculate this itself
+  //      "when double application is required" in {
+  //        val sx = s -: x
+  //        val ssx = s -: sx
+  //        checkMottoes(ssx -: sx,
+  //          ssx >>: s >>: ssx(s)(s)
+  //        )
+  //      }
+      }
+
+    "We can enumerate sorts" - {
+      "of degree 1" in {
+        allSorts(x).take(4).toSeq shouldBe Seq[Sort](
+          x,
+          x -: x,
+          x -: (x -: x),
+          (x -: x) -: x
+        )
+      }
+      "of degree 2" in {
+        allSorts(x, y).take(9).toSeq shouldBe Seq[Sort](
+          x,
+          y,
+          x -: x,
+          x -: y,
+          y -: x,
+          x -: x -: x,
+          y -: y,
+          (x -: x) -: x,
+          x -: x -: y
+        )
+      }
     }
 
-  "toString on sorts" - {
-    "works for base sorts" in {
-      (x : Sort).toString shouldBe "x"
-    }
-    "works for function sorts" in {
-      (x -: y).toString shouldBe "x => y"
-    }
-    "works for compound sorts, which are bracketed appropriately" in {
-      (x -: y -: z).toString shouldBe "x => y => z"
-      ((x -: y) -: z).toString shouldBe "(x => y) => z"
-
-      (((x -: y) -: z) -: w).toString shouldBe "((x => y) => z) => w"
-      ((x -: y) -: (z -: w)).toString shouldBe "(x => y) => z => w"
-      (x -: ((y -: z) -: w)).toString shouldBe "x => (y => z) => w"
-      (x -: (y -: (z -: w))).toString shouldBe "x => y => z => w"
-      ((x -: (y -: z)) -: w).toString shouldBe "(x => y => z) => w"
-    }
-  }
-
-  "We can enumerate sorts" - {
-    "of degree 1" in {
-      allSorts(x).take(4).toSeq shouldBe Seq[Sort](
-        x,
-        x -: x,
-        x -: (x -: x),
-        (x -: x) -: x
-      )
-    }
-    "of degree 2" in {
-      allSorts(x, y).take(9).toSeq shouldBe Seq[Sort](
-        x,
-        y,
-        x -: x,
-        x -: y,
-        y -: x,
-        x -: x -: x,
-        y -: y,
-        (x -: x) -: x,
-        x -: x -: y
-      )
-    }
-  }
-
- */
+   */
 
   private def checkMottoes(
     sort: Sort,
     expectedMottoes: Expression*
   ) {
     for (motto <- expectedMottoes) {
+      println("checking motto: " + motto)
       motto should mottoize(sort)
     }
     sort.mottoes shouldBe expectedMottoes
