@@ -23,10 +23,13 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
   "org.scala-lang" % "scala-compiler" % "2.11.6",
   "org.scala-lang" % "scala-library" % "2.11.6",
-  "com.twitter" % "finagle-httpx_2.11" % "6.29.0",
-  "com.hp.hpl.jena" % "jena" % "2.6.4" excludeAll ExclusionRule(organization = "org.slf4j")
-).map { _.withSources().withJavadoc() } ++ Seq(
-  "org.apache.jena" % "jena-jdbc-driver-bundle" % "3.1.0" excludeAll ExclusionRule(organization = "org.slf4j")
+  "com.twitter" % "finagle-httpx_2.11" % "6.29.0"
+//  "com.hp.hpl.jena" % "jena" % "2.6.4" excludeAll ExclusionRule(organization = "org.slf4j")
+).map {
+  _.withSources().withJavadoc()
+} ++ Seq(
+  "org.apache.jena" % "apache-jena-libs" % "3.1.0" excludeAll ExclusionRule("org.scala-lang")
+//  "org.apache.jena" % "jena-jdbc-driver-bundle" % "3.1.0" excludeAll ExclusionRule(organization = "org.slf4j")
 )
 
 //ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
