@@ -3,8 +3,6 @@ package com.fdilke.scala
 import org.scalatest.{Matchers, FunSpec}
 import Matchers._
 
-// User: Felix Date: 05/05/2014 Time: 18:58
-
 class FoldingTest extends FunSpec {
   describe("folding") {
     it("works from the left (and by default)") {
@@ -18,6 +16,26 @@ class FoldingTest extends FunSpec {
       Seq(1,2,4).foldRight(0)((x, y) => x - y) shouldBe 3
       Seq(1,2,4).:\(0)((x, y) => x - y) shouldBe 3
       1 - (2 - (4 - 0)) shouldBe 3
+    }
+    it("...left fold spelt out in full") {
+      def f(
+        s: String,
+        i: Int
+      ): String =
+        i + s
+      var (a0, a1) = (1, 2)
+      var b = "B"
+      Seq(a0, a1).foldLeft(b)(f) shouldBe f(f(b, a0), a1)
+    }
+    it("...right fold spelt out in full") {
+      def f(
+        i: Int,
+        s: String
+      ): String =
+        i + s
+      var (a0, a1) = (1, 2)
+      var b = "B"
+      Seq(a0, a1).foldRight(b)(f) shouldBe f(a0, f(a1, b))
     }
   }
 }

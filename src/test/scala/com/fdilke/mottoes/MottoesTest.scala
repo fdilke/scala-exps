@@ -14,6 +14,7 @@ class MottoesTest extends FreeSpec {
       (x: Sort) shouldBe λ()(x)
       (x -: y) shouldBe λ(x)(y)
       x -: y -: z shouldBe λ(x, y)(z)
+      assert(0 == 1)
     }
 
     "has sane equality semantics" in {

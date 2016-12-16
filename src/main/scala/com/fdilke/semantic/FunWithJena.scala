@@ -41,7 +41,7 @@ object FunWithJena extends App {
       |
       |select distinct ?Band where {
       |  ?Band a schema:MusicGroup
-      |} LIMIT 10
+      |} LIMIT 10000
     """.stripMargin
 
   val query = QueryFactory.create(queryString)
@@ -54,7 +54,10 @@ object FunWithJena extends App {
     )
 
     try {
+      val startTime = System.currentTimeMillis()
       val results: ResultSet  = qexec.execSelect()
+      val totalTime = System.currentTimeMillis() - startTime
+      println(s"TOTAL TIME: $totalTime ms")
       while (results.hasNext) {
         val solution = results.next()
 //        solution.varNames().foreach { s =>
@@ -70,4 +73,5 @@ object FunWithJena extends App {
     finally {
       qexec.close()
     }
+
 }
