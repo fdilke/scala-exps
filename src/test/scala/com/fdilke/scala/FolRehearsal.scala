@@ -1,0 +1,42 @@
+package com.fdilke.scala
+
+import org.scalatest.{Matchers, FunSpec}
+import Matchers._
+import org.scalatest.FreeSpec
+
+// ∀∃
+
+class FolRehearsal extends FreeSpec {
+  "Experiments with a first order logic DSL" - {
+    "xx" in {
+      val set: Set[Int] = Set(1,2,3)
+      trait Doodad[T] {
+        def first: T
+      }
+      case class Widget[T](
+        set: Set[T]
+      ) {
+        def withFilter(dd: Doodad[T]): Widget[T] =
+          this
+        def map(ff: Doodad[T] => Boolean): Int =
+          6
+      }
+      def representation[T](set: Set[T]): Widget[T] =
+        Widget(set)
+      object ∀ {
+        def unapply[T](doodad: Doodad[T]): Seq[T] =
+          Seq(doodad.first)
+      }
+      representation(set) map { doodad =>
+        val t = ∀.unapply(doodad).head
+        t > 2
+      }
+      // Now make this work:
+//      for {
+//        ∀(x: Int) <- representation(set)
+//      } yield {
+//        x > 2
+//      }
+    }
+  }
+}
