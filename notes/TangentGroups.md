@@ -18,8 +18,7 @@ Can this be made into a functor from fields and places to abelian groups?
 
 Alternative construction: Given a ring R, when does the 'arctangent formula'
 
-atan2(y1, x1) * atan2(y2, x2) = 
-
-    atan2( y1x2 + y2x1, x1x2 - y1y2 )
+    atan2(y1, x1) * atan2(y2, x2) = 
+        atan2( y1x2 + y2x1, x1x2 - y1y2 )
 
 show how to make RxR into a group?
