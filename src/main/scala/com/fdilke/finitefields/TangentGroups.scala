@@ -18,13 +18,18 @@ case class TangentGroup(q: Int) {
   if (q % 4 != 3) {
     throw new IllegalArgumentException(s"$q is not evenly odd")
   }
-  private val field = FiniteField.GF(q)
+  private val field =
+    FiniteField.GF(q)
+
   import field._
-  val zero = GroupElement(Some(O))
+  val zero =
+    GroupElement(Some(O))
 
   val elements =
     new Traversable[GroupElement] {
-      override def foreach[U](f: GroupElement => U) {
+      override def foreach[U](
+        f: GroupElement => U
+      ) {
         field.foreach { e =>
           f(GroupElement(Some(e)))
           f(GroupElement(None))
@@ -63,7 +68,9 @@ case class TangentGroup(q: Int) {
       }
     )
 
-    private def conditionalInvert(element: Element) =
+    private def conditionalInvert(
+      element: Element
+    ): Option[Element] =
       if (element == O)
         None
       else

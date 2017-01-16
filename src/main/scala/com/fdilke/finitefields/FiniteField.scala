@@ -25,24 +25,35 @@ object FiniteField {
 
   private val conwayRegex = "\\[(.*),(.*),\\[(.*)\\]\\],".r
 
-  private val stream : InputStream = getClass.getResourceAsStream("CPimport.txt")
-  private val lines = scala.io.Source.fromInputStream( stream ).getLines
+  private val stream : InputStream =
+    getClass.getResourceAsStream("CPimport.txt")
 
-  private val allFields = lines./:(Map[NontrivialPrimePower, FiniteField]())(
-    (map: Map[NontrivialPrimePower, FiniteField], line: String) =>
-      if ((line startsWith "[") && (line endsWith "],")) {
-        val conwayRegex(pp, nn, coefftsCSV) = line
-        val pn = NontrivialPrimePower(pp toInt, nn toInt)
-        val coeffts = coefftsCSV.split(",").map { _.toInt }
-        map + (pn -> new FiniteField(pn, coeffts))
-      }
-      else map
-  )
+  private val lines =
+    scala.io.Source.fromInputStream(
+      stream
+    ) getLines
+
+  private val allFields =
+    lines.foldLeft(
+        Map[NontrivialPrimePower, FiniteField]()
+    ) {
+      (map, line) =>
+        if ((line startsWith "[") && (line endsWith "],")) {
+          val conwayRegex(pp, nn, coefftsCSV) = line
+          val pn = NontrivialPrimePower(pp toInt, nn toInt)
+          val coeffts = coefftsCSV.split(",").map {
+            _.toInt
+          }
+          map + (pn -> new FiniteField(pn, coeffts))
+        }
+        else map
+    }
 
   def GF: Int => FiniteField = {
     case NontrivialPrimePower(p, n) =>
       allFields(NontrivialPrimePower(p, n))
-    case _ => throw new IllegalArgumentException
+    case _ =>
+      throw new IllegalArgumentException
   }
 }
 
