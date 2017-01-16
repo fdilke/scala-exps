@@ -24,19 +24,22 @@ class FolRehearsal extends FreeSpec {
       def representation[T](set: Set[T]): Widget[T] =
         Widget(set)
       object ∀ {
-        def unapply[T](doodad: Doodad[T]): Seq[T] =
-          Seq(doodad.first)
+        def unapply[T](doodad: Doodad[T]): Option[T] =
+          Some(doodad.first)
       }
       representation(set) map { doodad =>
         val t = ∀.unapply(doodad).head
         t > 2
       }
       // Now make this work:
-//      for {
-//        ∀(x: Int) <- representation(set)
-//      } yield {
-//        x > 2
-//      }
+      for {
+        h <- representation[Int](set)
+      } yield {
+        h match {
+          case ∀(x) =>
+            x > 2
+        }
+      }
     }
   }
 }
