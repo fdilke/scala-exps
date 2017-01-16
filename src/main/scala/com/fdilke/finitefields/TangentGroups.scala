@@ -32,8 +32,8 @@ case class TangentGroup(q: Int) {
       ) {
         field.foreach { e =>
           f(GroupElement(Some(e)))
-          f(GroupElement(None))
         }
+        f(GroupElement(None))
       }
     }
 

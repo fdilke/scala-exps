@@ -11,17 +11,18 @@ class TangentGroupTest extends FunSpec {
       }
     }
 
-    // TODO fix!
-    ignore("is a group") {
-      testGroup(3)
-      testGroup(27)
-      testGroup(343)
+    it("is a group") {
+      Seq(
+        3, 7, 11, 27 // 343, 1331 take too long
+      ) foreach
+        testGroup
     }
 
-    def testGroup(pn: Int) {
-      val group = TangentGroup(pn)
-      import group._
-      elements should have size (pn + 1)
+    def testGroup(q: Int) {
+      println(s"testing GF($q)")
+      val group = TangentGroup(q)
+      import group.{ elements, zero }
+      elements should have size (q + 1)
       elements.foreach { a =>
         zero + a shouldBe a
         -a + a shouldBe zero
