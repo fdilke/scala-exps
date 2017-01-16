@@ -38,7 +38,7 @@ class ParserCombinatorTests extends FunSpec {
         { shoeSize: 14 }
       """
       specco shouldBe a[Specco]
-      println("specco = " + specco)
+//      println("specco = " + specco)
     }
   }
 }
