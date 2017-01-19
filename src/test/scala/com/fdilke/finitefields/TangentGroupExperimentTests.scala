@@ -37,31 +37,48 @@ class TangentGroupExperimentTests extends FreeSpec {
   }
 
   "we can construct a projective plane" - {
-    "rethink needed" ignore {
+    "using projective triples" in {
       val q = 7
-      val group = TangentGroup(q)
-      import group.field.RichElement
-      implicit class RicherElement(a: GroupElement) {
-        val Ratio(p, pp) = a.asRatio
-        def perp(b: GroupElement): Boolean = {
-          val Ratio(q, qq) = b.asRatio
-          p*q + pp*qq == group.field.O
-        }
+      val field = FiniteField.GF(q)
+      import field.{I, O, RichElement}
+
+      val II = I + I
+      val III = I + I + I
+      intercept[IllegalArgumentException] {
+        field.projectiveTriple(O, O, O)
       }
+      field.projectiveTriple(O, I, I) shouldBe
+        field.projectiveTriple(O, II, II)
+
+      field.projectiveTriple(I, O, I) shouldBe
+        field.projectiveTriple(III, O, III)
+
+      val triples = field.allProjectiveTriples
+
+      triples.size shouldBe (q*q + q + 1)
+
+      {
+        for {
+          a <- triples
+          b <- triples
+        } yield a == b
+      }.count {
+        identity
+      } shouldBe triples.size
 
       for {
-        a <- group
+        a <- triples
       }
-        group.count{
+        triples.count{
           _ perp a
         } shouldBe (q + 1)
 
       for {
-        a <- group
-        b <- group
+        a <- triples
+        b <- triples
       }
         if (a != b)
-          group.count { c =>
+          triples.count { c =>
             (a perp c) && (b perp c)
           } shouldBe 1
     }

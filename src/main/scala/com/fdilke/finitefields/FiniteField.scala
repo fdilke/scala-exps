@@ -63,6 +63,7 @@ class FiniteField(
   pn: NontrivialPrimePower,
   coeffts: Seq[Int]
 ) extends Traversable[Element] {
+
   def O = Element(0)
   def I = Element(1)
   private val elements = 0 until pn.power
@@ -155,7 +156,49 @@ class FiniteField(
     poly.:\(0) {
       (a, b) => a + pn.p * b
     }
+
+  case class ProjectiveTriple(
+    a: Element,
+    b: Element,
+    c: Element
+  ) {
+    def perp(other: ProjectiveTriple): Boolean = {
+      O == a * other.a + b * other.b + c * other.c
+    }
+  }
+
+  def projectiveTriple(
+    a: Element,
+    b: Element,
+    c: Element
+  ): ProjectiveTriple =
+    if (a != O)
+      ProjectiveTriple(I, b / a, c / a)
+    else if (b != O)
+      ProjectiveTriple(O, I, c / b)
+    else if (c != O)
+      ProjectiveTriple(O, O, I)
+    else
+      throw new IllegalArgumentException
+
+  def allProjectiveTriples =
+    Seq(
+      ProjectiveTriple(O, O, I)
+    ) ++ (
+      for {
+        a <- this
+      }
+        yield ProjectiveTriple(O, I, a)
+    ) ++ (
+      for {
+        a <- this
+        b <- this
+      }
+        yield ProjectiveTriple(I, a, b)
+    )
 }
 
-case class Element(index: Int) extends AnyVal
+case class Element(
+  index: Int
+) extends AnyVal
 
