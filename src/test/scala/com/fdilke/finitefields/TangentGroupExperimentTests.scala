@@ -36,18 +36,34 @@ class TangentGroupExperimentTests extends FreeSpec {
     }
   }
 
-//  "we can construct a projective plane" - {
-//    val q = 7
-//    val group = TangentGroup(q)
-//    implicit class RichElement(a: group.GroupElement) {
-//      def perp(b: group.GroupElement): Unit = {
-//
-//      }
-//    }
-//    for {
-//      a <- group.elements
-//      b <- group.elements
-//    }
-//      ???
-//  }
+  "we can construct a projective plane" - {
+    "rethink needed" ignore {
+      val q = 7
+      val group = TangentGroup(q)
+      import group.field.RichElement
+      implicit class RicherElement(a: GroupElement) {
+        val Ratio(p, pp) = a.asRatio
+        def perp(b: GroupElement): Boolean = {
+          val Ratio(q, qq) = b.asRatio
+          p*q + pp*qq == group.field.O
+        }
+      }
+
+      for {
+        a <- group
+      }
+        group.count{
+          _ perp a
+        } shouldBe (q + 1)
+
+      for {
+        a <- group
+        b <- group
+      }
+        if (a != b)
+          group.count { c =>
+            (a perp c) && (b perp c)
+          } shouldBe 1
+    }
+  }
 }
