@@ -35,4 +35,19 @@ class TangentGroupExperimentTests extends FreeSpec {
       a * (b * c)
     }
   }
+
+//  "we can construct a projective plane" - {
+//    val q = 7
+//    val group = TangentGroup(q)
+//    implicit class RichElement(a: group.GroupElement) {
+//      def perp(b: group.GroupElement): Unit = {
+//
+//      }
+//    }
+//    for {
+//      a <- group.elements
+//      b <- group.elements
+//    }
+//      ???
+//  }
 }

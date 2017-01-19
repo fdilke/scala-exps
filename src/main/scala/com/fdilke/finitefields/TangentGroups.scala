@@ -14,38 +14,77 @@ object TangentGroups extends App {
   }
 }
 
-case class TangentGroup(q: Int) {
+case class Ratio(
+  numerator: Element,
+  denominator: Element
+)
+
+case class TangentGroup(q: Int) extends Traversable[GroupElement] {
   if (q % 4 != 3) {
     throw new IllegalArgumentException(s"$q is not evenly odd")
   }
-  private val field =
+  val field =
     FiniteField.GF(q)
 
   import field._
   val zero =
-    GroupElement(Some(O))
+    groupElement(Some(O))
 
-  val elements =
-    new Traversable[GroupElement] {
-      override def foreach[U](
-        f: GroupElement => U
-      ) {
-        field.foreach { e =>
-          f(GroupElement(Some(e)))
-        }
-        f(GroupElement(None))
-      }
+  val infinity =
+    groupElement(None)
+
+  override def foreach[U](
+    f: GroupElement => U
+  ) {
+    field.foreach { e =>
+      f(groupElement(Some(e)))
+    }
+    f(groupElement(None))
+  }
+
+  def fromRatio(ratio: Ratio) =
+    if (ratio.denominator == field.O)
+      infinity
+    else
+      groupElement(
+        Some(ratio.numerator / ratio.denominator)
+      )
+
+  def groupElement(
+    element: Option[Element]
+  ) =
+    GroupElement(
+      this,
+      element
+    )
+}
+
+case class GroupElement(
+  group: TangentGroup,
+  possiblyFinite: Option[Element]
+) {
+
+  import group.field
+  import field.{O, I, RichElement}
+
+  def asRatio: Ratio =
+    possiblyFinite match {
+      case None =>
+        Ratio(field.I, field.O)
+      case Some(element) =>
+        Ratio(element, field.I)
     }
 
-  case class GroupElement(possiblyFinite: Option[Element]) {
-    def unary_- = GroupElement(
+  def unary_- =
+    group.groupElement(
       possiblyFinite match {
         case None => None
         case Some(element) => Some(-element)
       }
     )
 
-    def +(other: GroupElement) = GroupElement(
+  def +(other: GroupElement) =
+    group.groupElement(
       other.possiblyFinite match {
         case None => // infinity, so map a => -1/a
           possiblyFinite match {
@@ -68,12 +107,12 @@ case class TangentGroup(q: Int) {
       }
     )
 
-    private def conditionalInvert(
-      element: Element
-    ): Option[Element] =
-      if (element == O)
-        None
-      else
-        Some(-(~element))
-  }
+  private def conditionalInvert(
+    element: Element
+  ): Option[Element] =
+    if (element == O)
+      None
+    else
+      Some(-(~element))
 }
+
