@@ -162,7 +162,7 @@ class FiniteField(
     b: Element,
     c: Element
   ) {
-    def perp(other: ProjectiveTriple): Boolean = {
+    def ⊥(other: ProjectiveTriple): Boolean = {
       O == a * other.a + b * other.b + c * other.c
     }
   }

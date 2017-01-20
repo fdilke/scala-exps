@@ -5,7 +5,7 @@ import org.scalatest.Matchers._
 
 class TangentGroupExperimentTests extends FreeSpec {
 
-  "The arctan2 formula inspires a spiffy monoid" - {
+  "The arctan2 formula inspires a spiffy monoid" in {
 
     case class Atan2(
       p: Int,
@@ -36,8 +36,7 @@ class TangentGroupExperimentTests extends FreeSpec {
     }
   }
 
-  "we can construct a projective plane" - {
-    "using projective triples" in {
+  "we can construct a projective plane using projective triples" in {
       val q = 7
       val field = FiniteField.GF(q)
       import field.{I, O, RichElement}
@@ -70,17 +69,52 @@ class TangentGroupExperimentTests extends FreeSpec {
         a <- triples
       }
         triples.count{
-          _ perp a
+          _ ⊥ a
         } shouldBe (q + 1)
 
       for {
         a <- triples
         b <- triples
       }
-        if (a != b)
-          triples.count { c =>
-            (a perp c) && (b perp c)
-          } shouldBe 1
+        (a ⊥ b) == (b ⊥ a)
+
+      for {
+        a <- triples
+        b <- triples if a != b
+      }
+        triples.count { c =>
+          (a ⊥ c) && (b ⊥ c)
+        } shouldBe 1
+  }
+
+  "the plane construction does not contradict the Friendship Theorem" in {
+    val q = 2
+    val field = FiniteField.GF(q)
+
+    val triples = field.allProjectiveTriples
+    val tripleList = triples.toList
+
+    for {
+      a <- tripleList.indices
+      b <- tripleList.indices
+    }
+      if (tripleList(a) ⊥ tripleList(b))
+        println(s"$a ⊥ $b")
+  }
+
+  "a self-perpendicular triple exists in all cases" in {
+    Seq(
+      2, 3, 5, 7, 11, 25, 27
+    ) foreach { q =>
+      println("testing " + q)
+      val field = FiniteField.GF(q)
+      val triples = field.allProjectiveTriples
+
+      assert {
+        triples exists { a =>
+          a ⊥ a
+        }
+      }
     }
   }
 }
