@@ -22,3 +22,10 @@ Alternative construction: Given a ring R, when does the 'arctangent formula'
         atan2( y1x2 + y2x1, x1x2 - y1y2 )
 
 show how to make RxR into a group?
+
+Later note: Here's what's really going on here.
+If F has no square root of -1, then x^2 + 1 is irreducible and the
+quotient ring F[i] := F[x]/<x^2 + 1> is a field. Then the group described
+above is just the quotient of the two groups of units, F[i]*/F*, via the
+map that identifies formal ratios p/q (where not both p, q are 0) with the
+image of ip+q mod F*.
