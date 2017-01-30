@@ -2,6 +2,7 @@
 sbt
 
 # Local config
+scratch/
 local/
 
 # Class files

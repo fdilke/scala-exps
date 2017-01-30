@@ -4,6 +4,8 @@ import org.scalatest.FunSpec
 import scala.language.higherKinds
 import scala.language.existentials
 
+case class Pair[L, R](left: L, right: R)
+
 object DeathByTypeProjection {
 	trait ToposLite { Ɛ =>
 		type ~[T]
@@ -188,7 +190,7 @@ object AvoidingRevealAndReceive {
 object CompilerStillBeingSillyAboutBiproducts {
 	trait ToposLite { Ɛ =>
 		type ~
-		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type x[S <: ~, T <: ~] <: Pair[S, T] with ~
 		type STAR[S <: ~]
 		type BIPRODUCT[L <: ~, R <: ~] = BiproductStar[L, R] with STAR[L x R]
 		trait BiproductStar[L <: ~, R <: ~] { star: STAR[L x R] =>
@@ -225,7 +227,7 @@ object CompilerStillBeingSillyAboutBiproducts {
 		        aa: AA,
 		        bb: BB,
 		        aXb: Ɛ.x[A, B]
-		    ) extends (AA, BB)(aa, bb) with ~~[
+		    ) extends Pair[AA, BB](aa, bb) with ~~[
 		        Ɛ.x[A, B],
 		        BiproductWrapper[A, AA, B, BB]
 		    ] {
@@ -237,7 +239,7 @@ object CompilerStillBeingSillyAboutBiproducts {
 		    }
 
 			trait DoubleLinkContextFacade[SS <: ~, TT <: ~] {
-				type LINKBIPRODUCT <: (SS, TT) with ~ 
+				type LINKBIPRODUCT <: Pair[SS, TT] with ~
 				// type PREBIPRODUCT[SS <: ~] = SS#POSTBIPRODUCT[T, TT] 
 				// type POSTBIPRODUCT[U <: Ɛ.~, UU <: ~~[U, UU]] = BiproductWrapper[T, TT, U, UU]
 			}
@@ -282,7 +284,7 @@ object CompilerStillBeingSillyAboutBiproducts {
 object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 	trait ToposLite { Ɛ =>
 		type ~
-		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type x[S <: ~, T <: ~] <: Pair[S, T] with ~
 		type STAR[S <: ~]
 		type BIPRODUCT[L <: ~, R <: ~, LXR <: ~] = BiproductStar[L, R, LXR] with STAR[LXR]
 		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] =>
@@ -302,7 +304,7 @@ object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 		        aa: AA,
 		        bb: BB,
 		        aXb: Ɛ.x[A, B]
-		    ) extends (AA, BB)(aa, bb) with ~~[
+		    ) extends Pair[AA, BB](aa, bb) with ~~[
 		        Ɛ.x[A, B]
 		    ] {
 		        override val element = aXb
@@ -311,7 +313,7 @@ object SuccessWithDoubleLinkContextFacadeAndSimpleWrapperAndWeakBiproduct {
 	      	override type ~ = ~~[_ <: Ɛ.~]
 
 			trait DoubleLinkContextFacade[SS <: ~, TT <: ~] {
-				type LINKBIPRODUCT <: (SS, TT) with ~ 
+				type LINKBIPRODUCT <: Pair[SS, TT] with ~
 			}
 
 			class DoubleLinkContext[
@@ -442,7 +444,7 @@ object LinkagesUnbound {
 object LinkagesUnbound {
 	trait ToposLite { Ɛ =>
 		type ~
-		type x[S <: ~, T <: ~] <: (S, T) with ~
+		type x[S <: ~, T <: ~] <: Pair[S, T] with ~
 		type STAR[S <: ~] <: Star[S]
 		type BIPRODUCT[L <: ~, R <: ~] = BiproductStar[L, R, L x R] with STAR[L x R]
 		trait BiproductStar[L <: ~, R <: ~, LXR <: ~] { star: STAR[LXR] => }
@@ -476,8 +478,8 @@ object LinkagesUnbound {
 			class BiproductLink[
 				L <: Link, 
 				R <: Link
-			] (val left: L, val right: R) extends 
-			(L, R)(left, right) with Link {
+			] (override val left: L, override val right: R) extends
+		  Pair[L, R](left, right) with Link {
 				override type THIS = BiproductLink[L, R]
 				override type BASE = Ɛ.x[left.BASE, right.BASE]
 				override type LIFT = (left.LIFT, right.LIFT) with ~~~
@@ -499,7 +501,7 @@ object LinkagesUnbound {
 		        aa: AA,
 		        bb: BB,
 		        aXb: Ɛ.x[A, B]
-		    ) extends (AA, BB)(aa, bb) with ~~[
+		    ) extends Pair[AA, BB](aa, bb) with ~~[
 		        Ɛ.x[A, B]
 		    ] {
 		        override val element = aXb

@@ -8,6 +8,7 @@ import org.scalatest.Matchers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionException, Future}
+import scala.language.postfixOps
 
 class FuturesTests extends FunSpec {
   private val ASAP: FiniteDuration = 200 millis

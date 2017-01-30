@@ -2,7 +2,7 @@ package com.fdilke.scala
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-import org.scalatest.mock.MockitoSugar.mock
+import org.scalatest.mockito.MockitoSugar.mock
 import scala.util.{Failure, Success, Try}
 
 // User: Felix Date: 04/04/2014 Time: 13:48

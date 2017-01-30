@@ -10,7 +10,7 @@ object WeirdCharacters extends App {
 
 //  val engine = new ScriptEngineManager().getEngineByName("scala")
 //  val settings = engine.asInstanceOf[scala.tools.nsc.interpreter.IMain].settings
-  val engine = new IMain
+  val engine = new IMain(new scala.tools.nsc.Settings)
   val settings = engine.settings
   settings.embeddedDefaults[WeirdCharacters.type]
   settings.usejavacp.value = true
@@ -23,7 +23,7 @@ object WeirdCharacters extends App {
     engine.beSilentDuring {
       try {
         engine.reset()
-        engine.eval(s"val $c = 2") != null
+        engine.interpret(s"val $c = 2") != null
       } catch {
         case ex: Exception =>
           false

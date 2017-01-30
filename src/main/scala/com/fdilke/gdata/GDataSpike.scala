@@ -13,8 +13,7 @@ import com.google.api.client.util.store.{FileDataStoreFactory, DataStoreFactory}
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import java.net.URL
 import com.google.gdata.data.spreadsheet._
-import scala.collection.JavaConversions
-import JavaConversions._
+import scala.collection.JavaConverters._
 import com.google.gdata.data.PlainTextConstruct
 import scala.Some
 
@@ -114,10 +113,10 @@ object GDataSpikeReloadCredential extends App with GDataSpikeCommon {
 object ShowSpreadsheets extends App with GDataSpikeCommon {
   private val sheets = feed.getEntries
   println(s"${sheets.size} sheets:")
-  sheets.map { sheet =>
+  sheets.asScala.map { sheet =>
     val worksheets = sheet.getWorksheets
     println(s"\t${sheet.getTitle.getPlainText}: ${worksheets.size} worksheets")
-    worksheets foreach { worksheet =>
+    worksheets.asScala foreach { worksheet =>
       println(s"\t\t${worksheet.getTitle.getPlainText} " +
         s"(${worksheet.getColCount} x ${worksheet.getRowCount}) " +
         s"canEdit=${worksheet.getCanEdit} " +
@@ -128,7 +127,7 @@ object ShowSpreadsheets extends App with GDataSpikeCommon {
       val cellFeed = spreadsheetService.getFeed(cellFeedUrl, classOf[CellFeed])
 
       // Iterate through each cell, printing its value.
-      cellFeed.getEntries foreach { cell =>
+      cellFeed.getEntries.asScala foreach { cell =>
         println(s"\t\t\t${cell.getTitle.getPlainText} = ${cell.getCell.getValue}")
 //          getId().substring(cell.getId().lastIndexOf('/') + 1) + "\t") = cell's address in R1C1 notation
 //          getCell().getInputValue() = formula or text value

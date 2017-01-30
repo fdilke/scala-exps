@@ -7,6 +7,7 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter.IMain
+import scala.tools.nsc.interpreter.Results
 import scala.tools.nsc.util.ClassPath
 
 trait RunTimeCompilation { self: FunSpec =>
@@ -33,7 +34,7 @@ trait RunTimeCompilation { self: FunSpec =>
   val compile = Matcher { code: String =>
     MatchResult(
       try {
-        engine.eval(code) != null
+        engine.interpret(code) == Results.Success
       } catch {
         case ex: Exception =>
           false

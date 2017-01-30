@@ -1,6 +1,6 @@
 package com.fdilke.scala
 
-import scala.languageFeature.higherKinds
+import scala.language.higherKinds
 
 object FunWithMonads extends App {
 

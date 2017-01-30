@@ -25,7 +25,7 @@ class ExtractorTest extends FunSpec {
       val fileRegex = "file:[/\\w\\-]*?(scala-[\\.\\w]+)[/\\w\\-]*?".r
       val fileRegex(prefix) = getClass.getProtectionDomain.getCodeSource.getLocation.toString
 
-      prefix shouldBe "scala-2.11"
+      prefix shouldBe "scala-2.12"
     }
 
     it("can be invoked from yet fancier regexes") {

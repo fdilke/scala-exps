@@ -68,12 +68,15 @@ class UsingCollections extends FunSuite with MockFactory {
   }
 
   test("stacks") {
-    val stack = new mutable.Stack[String]
-    stack push "Pop"
-    stack push "on"
-    stack push "Hop"
+    // Officially deprecated in favour of List
+    // with pop => _.tail, push => _ :: list, so:
+    var stack = List[String]()
+    stack = "Pop" :: stack
+    stack = "on" :: stack
+    stack = "Hop" :: stack
     List("Hop", "on", "Pop") foreach { word =>
-      assert(word === stack.pop)
+      assert(word === stack.head)
+      stack = stack.tail
     }
     assert(stack isEmpty)
   }
