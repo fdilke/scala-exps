@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-xml" % "1.0.4",
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
   "org.scala-lang" % "scala-compiler" % "2.12.1",
-  "org.scala-lang" % "scala-library" % "2.12.1"
+  "org.scala-lang" % "scala-library" % "2.12.1",
+  "org.scalameta" %% "scalameta" % "1.4.0"
 ).map {
   _.withSources().withJavadoc()
 } ++ Seq(
