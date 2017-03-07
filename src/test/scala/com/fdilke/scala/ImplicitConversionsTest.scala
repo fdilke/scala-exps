@@ -1,7 +1,8 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
+import org.scalatest.{FunSpec, Matchers}
 import Matchers._
+
 import scala.language.implicitConversions
 
 class ImplicitConversionsTest extends FunSpec {
@@ -57,6 +58,24 @@ class ImplicitConversionsTest extends FunSpec {
         _ => 6
 
       Widget("Felix").measure shouldBe 6
+    }
+
+    it("work from inside a biproduct class") {
+      class BiproductProxy[S, T] {
+        val list = List[(S, T)]()
+        object implicits {
+          implicit class RichLeftElement(
+            s: S
+          ) {
+            def ⊕⊕(t: T) =
+              list
+          }
+        }
+      }
+      val biproduct = new BiproductProxy[Int, String]
+      import biproduct.implicits._
+      27 ⊕⊕ "xx" shouldBe Seq()
+      (new biproduct.implicits.RichLeftElement(27)).⊕⊕("xx") shouldBe Seq()
     }
   }
 }
