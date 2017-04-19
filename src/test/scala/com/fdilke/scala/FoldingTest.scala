@@ -37,5 +37,22 @@ class FoldingTest extends FunSpec {
       var b = "B"
       Seq(a0, a1).foldRight(b)(f) shouldBe f(a0, f(a1, b))
     }
+    it("... variation on right fold") {
+      type S = Int
+
+      class FoldingTarget {
+        def absorb(s: S): FoldingTarget =
+          new FoldingTarget
+      }
+
+      val xx: Traversable[S] =
+        Traversable(1,2,3)
+
+      xx.foldLeft(
+        new FoldingTarget
+      ) { (x: FoldingTarget, y: S) =>
+        x.absorb(y)
+      }
+    }
   }
 }
