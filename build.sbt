@@ -2,7 +2,7 @@ name := "scala-exp"
 
 version := "1.0"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.2"
 
 scalacOptions ++= Seq("-feature", "-deprecation", "-Xexperimental")
 
@@ -16,10 +16,10 @@ libraryDependencies ++= Seq(
   "com.google.gdata" % "core" % "1.47.1",
   "junit" % "junit" % "4.12" % "test",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.5.0" % "test",
-  "org.scala-lang.modules" %% "scala-xml" % "1.0.4",
+  "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6",
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
-  "org.scala-lang" % "scala-compiler" % "2.12.1",
-  "org.scala-lang" % "scala-library" % "2.12.1",
+  "org.scala-lang" % "scala-compiler" % "2.12.2",
+  "org.scala-lang" % "scala-library" % "2.12.2",
   "org.scalameta" %% "scalameta" % "1.4.0"
 ).map {
   _.withSources().withJavadoc()
