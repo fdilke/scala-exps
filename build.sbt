@@ -20,7 +20,9 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.10.19" % "test",
   "org.scala-lang" % "scala-compiler" % "2.12.3",
   "org.scala-lang" % "scala-library" % "2.12.3",
-  "org.scalameta" %% "scalameta" % "1.8.0"
+  "org.scalameta" %% "scalameta" % "1.8.0",
+  "com.typesafe.play" %% "play-json" % "2.6.3" excludeAll
+    ExclusionRule("org.scala-lang")
 ).map {
   _.withSources().withJavadoc()
 } ++ Seq(
