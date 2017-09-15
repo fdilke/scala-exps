@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
   "com.google.apis" % "google-api-services-drive" % "v2-rev276-1.21.0",
   "com.google.api-client" % "google-api-client" % "1.22.0",
   "com.google.http-client" % "google-http-client-jackson" % "1.22.0",
-  "com.google.gdata" % "core" % "1.47.1",
+  "com.google.gdata" % "core" % "1.47.1" excludeAll
+    ExclusionRule("com.google.guava"),
   "junit" % "junit" % "4.12" % "test",
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "test",
   "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6",

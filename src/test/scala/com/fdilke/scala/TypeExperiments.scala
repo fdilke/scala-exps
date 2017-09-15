@@ -163,3 +163,42 @@ trait ExistentialTypes {
   type STAR[ElementProxy[T]] = Array[String]
 }
 
+object ExtendingHigherKinds {
+  // case where SPIFFY_WIDGET[T] <: WIDGET[T] and we want to use
+  // SPIFFY_WIDGET as a type parameter
+
+  trait Widget[T]
+
+  class UsingSpiffy[
+    A,
+    SPIFFY_WIDGET[_] <: Widget[_]
+  ](
+    spiffy: SPIFFY_WIDGET[A] with Widget[A]
+  ) {
+    val xx: Widget[A] = spiffy
+  }
+  // I guess the 'with' is the answer.
+}
+
+object DependentTypeDeathSpiral {
+  class Widget {
+    class Doodad
+  }
+
+  trait WidgetWithDoodad {
+    val widget: Widget
+    val doodad: widget.Doodad
+  }
+}
+
+object ComparingValuesInTypes {
+  trait Widget {
+    val density: Int
+  }
+
+  trait Widget2 extends Widget {
+    override val density = 2
+  }
+
+  def xx(x: { val density: Int }) {}
+}
