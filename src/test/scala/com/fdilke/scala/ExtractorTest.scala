@@ -36,6 +36,23 @@ class ExtractorTest extends FunSpec {
       prefix shouldBe "0.17"
     }
 
+    it("can extract everything after a hash or a slash") {
+      val regex = ".*[\\#\\/](.*)".r
+
+      for { (input, output) <- Map(
+        "test/something/xx" -> "xx",
+        "test/xx" -> "xx",
+        "test#xx" -> "xx",
+        "test#something#xx" -> "xx",
+        "test/some#thing#xx" -> "xx",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" -> "type",
+        "http://ns.nature.com/terms/id" -> "id"
+      )} {
+        val regex(expectedSuffix) = input
+        output shouldBe expectedSuffix
+      }
+    }
+
     it("can perform a boolean test") {
       object Even {
         def unapply(n: Int):Boolean =
