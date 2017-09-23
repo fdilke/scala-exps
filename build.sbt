@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % "2.12.3",
   "org.scalameta" %% "scalameta" % "1.8.0",
   "com.typesafe.play" %% "play-json" % "2.6.3" excludeAll
-    ExclusionRule("org.scala-lang")
+    ExclusionRule("org.scala-lang"),
+  "javax.xml.bind" % "jaxb-api" % "2.3.0"
 ).map {
   _.withSources().withJavadoc()
 } ++ Seq(
