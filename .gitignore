@@ -2,6 +2,7 @@
 sbt
 
 # Local config
+config/
 scratch/
 local/
 
