@@ -36,6 +36,28 @@ class ExtractorTest extends FunSpec {
       prefix shouldBe "0.17"
     }
 
+    it("can be invoked from yet fancier regexes with multiple groups") {
+      val nquadRegex = "(.*) (.*) (.*) \\.".r
+
+      {
+        val nquad = "<http://lod.springer.com/data/confseries/icycsee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod.springer.com/data/ontology/class/ConferenceSeries> ."
+        val nquadRegex(subj, pred, obj) = nquad
+
+        subj shouldBe "<http://lod.springer.com/data/confseries/icycsee>"
+        pred shouldBe "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+        obj shouldBe "<http://lod.springer.com/data/ontology/class/ConferenceSeries>"
+      }
+
+      {
+        val nquad = "<http://lod.springer.com/data/book/978-1-4020-5331-3> <http://lod.springer.com/data/ontology/property/EISBN> \"978-1-4020-5331-3\"^^<http://www.w3.org/2000/01/rdf-schema#literal> ."
+        val nquadRegex(subj, pred, obj) = nquad
+
+        subj shouldBe "<http://lod.springer.com/data/book/978-1-4020-5331-3>"
+        pred shouldBe "<http://lod.springer.com/data/ontology/property/EISBN>"
+        obj shouldBe "\"978-1-4020-5331-3\"^^<http://www.w3.org/2000/01/rdf-schema#literal>"
+      }
+    }
+
     it("can extract everything after a hash or a slash") {
       val regex = ".*[\\#\\/](.*)".r
 
