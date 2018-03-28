@@ -56,6 +56,24 @@ class ExtractorTest extends FunSpec {
         pred shouldBe "<http://lod.springer.com/data/ontology/property/EISBN>"
         obj shouldBe "\"978-1-4020-5331-3\"^^<http://www.w3.org/2000/01/rdf-schema#literal>"
       }
+
+      {
+        val nquad = "<http://lod.springer.com/data/bookchapter/978-3-540-27388-2_13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://lod.springer.com/data/ontology/class/BookChapter> ."
+        val nquadRegex(subj, pred, obj) = nquad
+
+        subj shouldBe "<http://lod.springer.com/data/bookchapter/978-3-540-27388-2_13>"
+        pred shouldBe "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"
+        obj shouldBe "<http://lod.springer.com/data/ontology/class/BookChapter>"
+      }
+
+      {
+        val nquad = "<http://lod.springer.com/data/conference/cyphy2016> <http://lod.springer.com/data/ontology/property/otherPapers> \"1 (invited abstract)\"@en ."
+        val nquadRegex(subj, pred, obj) = nquad
+
+        subj shouldBe "<http://lod.springer.com/data/conference/cyphy2016>"
+        pred shouldBe "<http://lod.springer.com/data/ontology/property/otherPapers>"
+        obj shouldBe "\"1 (invited abstract)\"@en"
+      }
     }
 
     it("can extract everything after a hash or a slash") {
