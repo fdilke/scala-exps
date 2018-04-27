@@ -37,9 +37,7 @@ class StringInterpolationTests extends FunSpec {
 
     it("can work with user-defined prefixes") {
       import com.fdilke.scala.FooHelpers._
-      val myFoo = foo"Felix"
-      assert(myFoo.isInstanceOf[Foo])
-      myFoo.name should be("Felix")
+      foo"Felix" shouldBe Foo("Felix")
     }
   }
 }

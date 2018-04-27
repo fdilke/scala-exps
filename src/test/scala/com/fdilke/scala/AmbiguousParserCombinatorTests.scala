@@ -5,43 +5,43 @@ import org.scalatest.Matchers._
 
 import scala.util.parsing.combinator.RegexParsers
 
-sealed trait LaTeXToken
+sealed trait NylonDoodad
 
-case class ExpressionToken(expression: String) extends LaTeXToken
-case class TextToken(text: String) extends LaTeXToken {
-  println(s"created TextToken($text)")
+case class ExpressionDoodad(expression: String) extends NylonDoodad
+case class TextDoodad(text: String) extends NylonDoodad {
+  println(s"created TextDoodad($text)")
 }
-case class DefinitionToken(tokens: Seq[LaTeXToken]) extends LaTeXToken
-case class AnnotatedToken(heading: String, tokens: Seq[LaTeXToken]) extends LaTeXToken
+case class DefinitionDoodad(tokens: Seq[NylonDoodad]) extends NylonDoodad
+case class AnnotatedDoodad(heading: String, tokens: Seq[NylonDoodad]) extends NylonDoodad
 
 object PartialLaTeXParser extends RegexParsers {
 
   def symbols: Parser[String] =
     """[a-zA-Z1-9_]+""".r
 
-  def value : Parser[Seq[LaTeXToken]] =
-    rep(token) ^^ { valueTokens => println("value tokens: [" + valueTokens + "]") ; valueTokens }
+  def value : Parser[Seq[NylonDoodad]] =
+    rep(token) ^^ { valueDoodads => println("value tokens: [" + valueDoodads + "]") ; valueDoodads }
 
-  def token: Parser[LaTeXToken] =
-    definitionToken | annotatedToken // | textToken - can restore this??
+  def token: Parser[NylonDoodad] =
+    definitionDoodad | annotatedDoodad // | textDoodad - can restore this??
 
-  def textToken: Parser[LaTeXToken] =
-    symbols ^^ { TextToken }
+  def textDoodad: Parser[NylonDoodad] =
+    symbols ^^ { TextDoodad }
 
-  def annotatedToken: Parser[LaTeXToken] =
+  def annotatedDoodad: Parser[NylonDoodad] =
     (("\\\\".r ~> symbols <~ "\\{".r) ~ (value <~ "\\}".r)) ^^ {
-      makeAnnotatedToken
+      makeAnnotatedDoodad
     }
 
-  private def makeAnnotatedToken(
-    headingTokens: String ~ Seq[LaTeXToken]
+  private def makeAnnotatedDoodad(
+    headingDoodads: String ~ Seq[NylonDoodad]
   ) = {
-    val heading ~ tokens = headingTokens
-    AnnotatedToken(heading, tokens)
+    val heading ~ tokens = headingDoodads
+    AnnotatedDoodad(heading, tokens)
   }
 
-  def definitionToken: Parser[LaTeXToken] =
-    (beginDefinition ~> value <~ endDefinition) ^^ { DefinitionToken }
+  def definitionDoodad: Parser[NylonDoodad] =
+    (beginDefinition ~> value <~ endDefinition) ^^ { DefinitionDoodad }
 
   def beginDefinition: Parser[String] =
     "\\\\begin\\{definition\\}".r
@@ -49,11 +49,11 @@ object PartialLaTeXParser extends RegexParsers {
   def endDefinition: Parser[String] =
     "\\\\end\\{definition\\}".r
 
-  def asValue(text: String): ParseResult[Seq[LaTeXToken]] =
+  def asValue(text: String): ParseResult[Seq[NylonDoodad]] =
     parseAll(value, text)
 
-  def asDefinition(text: String): ParseResult[LaTeXToken] =
-    parseAll(definitionToken, text)
+  def asDefinition(text: String): ParseResult[NylonDoodad] =
+    parseAll(definitionDoodad, text)
 }
 
 class AmbiguousParserCombinatorTests extends FreeSpec {
@@ -62,7 +62,7 @@ class AmbiguousParserCombinatorTests extends FreeSpec {
       val parsed = PartialLaTeXParser.asDefinition("\\begin{definition} \\end{definition}")
       parsed.successful shouldBe true
       parsed.get shouldBe
-        DefinitionToken(
+        DefinitionDoodad(
           Seq(
           )
       )
