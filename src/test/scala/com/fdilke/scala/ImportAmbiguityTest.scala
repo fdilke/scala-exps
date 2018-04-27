@@ -2,7 +2,8 @@ package com.fdilke.scala
 
 import org.scalatest.FunSpec
 
-import scala.languageFeature.higherKinds
+import scala.language.higherKinds
+
 class ImportAmbiguityTest extends FunSpec {
   object OneObject {
     def foo(text: String) = true
