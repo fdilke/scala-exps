@@ -1,6 +1,7 @@
 package com.fdilke.finitefields
 
-import scala.tools.nsc.interpreter.InputStream
+import java.io.InputStream
+
 import scala.language.postfixOps
 
 case class NontrivialPrimePower(p: Int, n: Int) {
@@ -27,7 +28,7 @@ object FiniteField {
 
   private val conwayRegex = "\\[(.*),(.*),\\[(.*)\\]\\],".r
 
-  private val stream : InputStream =
+  private val stream: InputStream =
     getClass.getResourceAsStream("CPimport.txt")
 
   private val lines =

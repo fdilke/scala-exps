@@ -4,12 +4,6 @@ import scala.tools.nsc.interpreter._
 
 object WeirdCharacters extends App {
 
-//  val interpreter = new IMain
-//  val result = interpreter.parse("val x = 2; println(x)")
-//  println(s"result = $result")
-
-//  val engine = new ScriptEngineManager().getEngineByName("scala")
-//  val settings = engine.asInstanceOf[scala.tools.nsc.interpreter.IMain].settings
   val engine = new IMain(new scala.tools.nsc.Settings)
   val settings = engine.settings
   settings.embeddedDefaults[WeirdCharacters.type]
