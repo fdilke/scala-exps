@@ -5,6 +5,7 @@ sbt
 config/
 scratch/
 local/
+build.properties
 
 # Class files
 # *.class
