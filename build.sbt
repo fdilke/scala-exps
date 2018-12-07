@@ -2,7 +2,7 @@ name := "scala-exp"
 
 version := "1.0"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.8"
 
 scalacOptions ++= Seq("-feature", "-deprecation", "-Xexperimental")
 
@@ -19,8 +19,8 @@ libraryDependencies ++= Seq(
   "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "test",
   "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6",
   "org.mockito" % "mockito-all" % "1.10.19" % "test",
-  "org.scala-lang" % "scala-compiler" % "2.12.6",
-  "org.scala-lang" % "scala-library" % "2.12.6",
+  "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+  "org.scala-lang" % "scala-library" % scalaVersion.value,
   "org.scalameta" %% "scalameta" % "2.0.1",
   "com.typesafe.play" %% "play-json" % "2.6.3" excludeAll
     ExclusionRule("org.scala-lang"),
