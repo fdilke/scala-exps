@@ -1,4 +1,4 @@
-package com.fdilke.mottoes
+package com.fdilke.prevmottoes
 
 import org.scalatest.Matchers
 import org.scalatest.matchers.{BeMatcher, MatchResult, Matcher}

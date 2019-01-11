@@ -1,6 +1,6 @@
-package com.fdilke.mottoes
+package com.fdilke.prevmottoes
 
-import com.fdilke.mottoes.Sort.flip
+import com.fdilke.prevmottoes.Sort.flip
 
 import scala.language.{postfixOps, implicitConversions}
 

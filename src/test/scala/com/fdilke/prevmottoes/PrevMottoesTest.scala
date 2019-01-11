@@ -1,4 +1,4 @@
-package com.fdilke.mottoes
+package com.fdilke.prevmottoes
 
 import Expression._
 import ExpressionMatching._
@@ -6,7 +6,7 @@ import Sort._
 import org.scalatest.FreeSpec
 import org.scalatest.Matchers._
 
-class MottoesTest extends FreeSpec {
+class PrevMottoesTest extends FreeSpec {
   private val Seq(a, h, x, y, z, w, s) = Seq('a, 'h, 'x, 'y, 'z, 'w, 's)
 
   "The -: operator" - {
