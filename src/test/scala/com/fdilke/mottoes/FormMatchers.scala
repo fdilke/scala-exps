@@ -1,6 +1,7 @@
 package com.fdilke.mottoes
 
 import org.scalatest.matchers.{BeMatcher, MatchResult}
+import scala.language.reflectiveCalls
 
 object FormMatchers {
   val canonical: BeMatcher[BinaryForm] =
@@ -10,7 +11,11 @@ object FormMatchers {
       s"$form is canonical"
     )
 
-  val uniquelySolvable: BeMatcher[BinaryForm] =
+  def uniquelySolvable[
+    FORM <: {
+      def isUniquelySolvable: Boolean
+    }
+  ]: BeMatcher[FORM] =
     form => MatchResult(
       form.isUniquelySolvable,
       s"$form is not uniquely solvable",

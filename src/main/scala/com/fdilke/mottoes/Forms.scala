@@ -11,6 +11,13 @@ sealed trait MultiaryForm {
             _ :> _
           }
         }
+
+  def isUniquelySolvable: Boolean =
+    this match {
+      case basic: BasicForm => false
+      case CompoundMultiaryForm(args, finalTgt) =>
+        BinaryForm.canUniquelySolve(args, finalTgt)
+    }
 }
 
 sealed trait BinaryForm {
@@ -56,6 +63,14 @@ object BinaryForm {
 
   def apply(char: Char): BasicForm =
     BasicForm(char.toInt - intForA)
+
+  def canUniquelySolve(
+    args: Seq[MultiaryForm],
+    finalTgt: BasicForm
+  ) : Boolean =
+    args.count { case CompoundMultiaryForm(x, y) =>
+      true
+    } == 1
 }
 
 final case class BasicForm(
@@ -76,6 +91,9 @@ final case class BasicForm(
   def from(args: MultiaryForm*): CompoundMultiaryForm = {
     CompoundMultiaryForm(args, this)
   }
+
+  override def isUniquelySolvable: Boolean =
+    false
 }
 
 final case class CompoundBinaryForm(

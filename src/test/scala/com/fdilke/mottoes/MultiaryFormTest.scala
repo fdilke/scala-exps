@@ -3,6 +3,7 @@ package com.fdilke.mottoes
 import com.fdilke.mottoes.StandardLetters._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
+import FormMatchers._
 
 class MultiaryFormTest extends FunSpec {
   describe("Compound multiary forms") {
@@ -54,6 +55,29 @@ class MultiaryFormTest extends FunSpec {
       checkRoundTrip(D.from(B from A, C from B))
       checkRoundTrip(A from (B from A, C from A))
       checkRoundTrip(A from ( C from (B from A, B), B from C, B))
+    }
+
+    ignore("can be checked for unique solutions") {
+      A should not be uniquelySolvable
+
+      (A from A) shouldBe uniquelySolvable
+      (B from B) shouldBe uniquelySolvable
+      (B from A) should not be uniquelySolvable
+
+      C.from(A, B) should not be uniquelySolvable
+// TODO: enforce these
+//      A.from(A, B) should not be uniquelySolvable
+//      B.from(A, B) should not be uniquelySolvable
+      A.from(B, B) should not be uniquelySolvable
+      B.from(B, B) should not be uniquelySolvable
+
+      B.from(B from A, A) shouldBe uniquelySolvable
+      C.from(B from A, B) should not be uniquelySolvable
+      A.from(B from A, B) should not be uniquelySolvable
+      A.from(A from A, A) should not be uniquelySolvable
+
+      A.from(A, A, A) should not be uniquelySolvable
+      B.from(A, A, B) should not be uniquelySolvable
     }
   }
 }
