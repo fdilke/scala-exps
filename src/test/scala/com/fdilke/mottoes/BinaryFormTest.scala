@@ -8,29 +8,29 @@ import FormMatchers._
 class BinaryFormTest extends FunSpec {
   describe("Basic forms") {
     it("can be created and stringified") {
-      val basicForm: BinaryForm = BasicBinaryForm(0)
+      val basicForm: BinaryForm = BasicForm(0)
       basicForm.toString shouldBe "A"
     }
 
     it("can be initialized from letters") {
-      BasicBinaryForm(0) shouldBe BinaryForm('A')
+      BasicForm(0) shouldBe BinaryForm('A')
     }
 
     it("have sane semantics of equality") {
         A shouldBe A
         A shouldBe BinaryForm('A')
-        A shouldBe BasicBinaryForm(0)
+        A shouldBe BasicForm(0)
         A shouldNot be(B)
         A shouldNot be(BinaryForm('B'))
-        A shouldNot be(BasicBinaryForm(1))
+        A shouldNot be(BasicForm(1))
     }
   }
 
   describe("Compound binary forms") {
 
     it("can be created and stringified") {
-      val basicFormB: BinaryForm = BasicBinaryForm(1)
-      val basicFormC: BinaryForm = BasicBinaryForm(2)
+      val basicFormB: BinaryForm = BasicForm(1)
+      val basicFormC: BinaryForm = BasicForm(2)
       val compoundForm: BinaryForm = CompoundBinaryForm(basicFormB, basicFormC)
       compoundForm.toString shouldBe "(B :> C)"
     }
@@ -95,17 +95,29 @@ class BinaryFormTest extends FunSpec {
     }
   }
 
-//  describe("Conversion from binary to multiary forms") {
-//    it("does not lose information in a round trip") {
-//      def checkRoundTrip(form: Form): Unit = {
-//        form.toMultiary.toBinary shouldBe form
-//      }
-//
-//      def checkRoundTrip(mform: MultiaryForm): Unit = {
-//        mform.toBinary.toMultiary shouldBe mform
-//      }
-//    }
-//  }
+  describe("Conversion from binary to multiary forms") {
+    it("works as expected") {
+      A.toMultiary shouldBe A
+      (A :> B).toMultiary shouldBe B.from(A)
+      (A :> (B :> C)).toMultiary shouldBe C.from(A, B)
+      ((A :> B) :> C).toMultiary shouldBe C.from(B.from(A))
+      ((A :> B) :> (C :> A)).toMultiary shouldBe A.from(B.from(A), C)
+    }
+
+    it("does not lose information in a round trip") {
+      def checkRoundTrip(form: BinaryForm): Unit = {
+        form.toMultiary.toBinary shouldBe form
+      }
+
+      checkRoundTrip(A)
+      checkRoundTrip(A :> A)
+      checkRoundTrip(A :> B)
+      checkRoundTrip((A :> B) :> (B :> C))
+      checkRoundTrip((A :> B) :> (B :> C) :> D)
+      checkRoundTrip((A :> B) :> (A :> C) :> A)
+      checkRoundTrip(((A :> B) :> (B :> C)) :> ((C :> B) :> (B :> A)))
+    }
+  }
 
   describe("The unique solvability of binary forms") {
     ignore("can be tested for simple types") {

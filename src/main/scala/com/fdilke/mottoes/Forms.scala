@@ -1,7 +1,16 @@
 package com.fdilke.mottoes
 
 sealed trait MultiaryForm {
-
+  def toBinary: BinaryForm =
+    this match {
+      case basic: BasicForm =>  basic
+      case CompoundMultiaryForm(args, finalTgt) =>
+        args.map {
+          _.toBinary
+        }.foldRight(finalTgt : BinaryForm) {
+            _ :> _
+          }
+        }
 }
 
 sealed trait BinaryForm {
@@ -14,9 +23,20 @@ sealed trait BinaryForm {
   final def isCanonical: Boolean = {
     val firsts = BinaryForm.firstOccurrences(letters)
     firsts == (
-      firsts.indices map BasicBinaryForm map { _.letter }
+      firsts.indices map BasicForm map { _.letter }
     )
   }
+
+  def toMultiary: MultiaryForm =
+    this match {
+      case basic: BasicForm => basic
+      case CompoundBinaryForm(src, tgt)  =>
+        tgt.toMultiary match {
+          case basic: BasicForm => basic.from(src.toMultiary)
+          case CompoundMultiaryForm(args, finalTarget) =>
+            finalTarget.from(src.toMultiary +: args:_*)
+        }
+    }
 
   def isUniquelySolvable: Boolean =
     ???
@@ -34,11 +54,11 @@ object BinaryForm {
         occurrences :+ next
     }
 
-  def apply(char: Char): BasicBinaryForm =
-    BasicBinaryForm(char.toInt - intForA)
+  def apply(char: Char): BasicForm =
+    BasicForm(char.toInt - intForA)
 }
 
-final case class BasicBinaryForm(
+final case class BasicForm(
   index: Int
 ) extends BinaryForm with MultiaryForm {
   def letter : Char =
@@ -81,7 +101,7 @@ object StandardLetters {
 
 final case class CompoundMultiaryForm(
   args: Seq[MultiaryForm],
-  result: BasicBinaryForm
+  result: BasicForm
 ) extends MultiaryForm {
    require(args.nonEmpty)
 
