@@ -28,14 +28,16 @@ class FormTest extends FunSpec {
   describe("Compound forms") {
 
     it("can be created and stringified") {
-      val basicFormB : Form = BasicForm(1)
-      val basicFormC : Form = BasicForm(2)
+      val basicFormB: Form = BasicForm(1)
+      val basicFormC: Form = BasicForm(2)
       val compoundForm: Form = CompoundForm(basicFormB, basicFormC)
       compoundForm.toString shouldBe "(B :> C)"
     }
 
     it("have a convenience constructor") {
       A :> B shouldBe CompoundForm(A, B)
+      A :> B :> C shouldBe ((A :> B) :> C)
+      A :> B :> C should not be (A :> (B :> C))
     }
 
     it("have sane semantics of equality") {
@@ -46,6 +48,22 @@ class FormTest extends FunSpec {
       A :> A should not be AB
       AB should not be BA
       A :> B shouldBe AB
+    }
+  }
+
+  describe("Form properties") {
+    it("include 'size'") {
+      A should have size 1
+      A :> B should have size 2
+      A :> (B :> C) should have size 3
+      (A :> B) :> C should have size 3
+    }
+
+    it("include 'letters'") {
+      A.letters shouldBe Seq('A')
+      (A :> B).letters shouldBe Seq('A', 'B')
+      (A :> (B :> C)).letters shouldBe Seq('A', 'B', 'C')
+      ((A :> B) :> (C :> D)).letters shouldBe Seq('A', 'B', 'C', 'D')
     }
   }
 }
