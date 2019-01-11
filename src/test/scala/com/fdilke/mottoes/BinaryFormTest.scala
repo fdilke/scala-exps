@@ -5,38 +5,38 @@ import org.scalatest.Matchers._
 import StandardLetters._
 import FormMatchers._
 
-class FormTest extends FunSpec {
+class BinaryFormTest extends FunSpec {
   describe("Basic forms") {
     it("can be created and stringified") {
-      val basicForm: Form = BasicForm(0)
+      val basicForm: BinaryForm = BasicBinaryForm(0)
       basicForm.toString shouldBe "A"
     }
 
     it("can be initialized from letters") {
-      BasicForm(0) shouldBe Form('A')
+      BasicBinaryForm(0) shouldBe BinaryForm('A')
     }
 
     it("have sane semantics of equality") {
         A shouldBe A
-        A shouldBe Form('A')
-        A shouldBe BasicForm(0)
+        A shouldBe BinaryForm('A')
+        A shouldBe BasicBinaryForm(0)
         A shouldNot be(B)
-        A shouldNot be(Form('B'))
-        A shouldNot be(BasicForm(1))
+        A shouldNot be(BinaryForm('B'))
+        A shouldNot be(BasicBinaryForm(1))
     }
   }
 
-  describe("Compound forms") {
+  describe("Compound binary forms") {
 
     it("can be created and stringified") {
-      val basicFormB: Form = BasicForm(1)
-      val basicFormC: Form = BasicForm(2)
-      val compoundForm: Form = CompoundForm(basicFormB, basicFormC)
+      val basicFormB: BinaryForm = BasicBinaryForm(1)
+      val basicFormC: BinaryForm = BasicBinaryForm(2)
+      val compoundForm: BinaryForm = CompoundBinaryForm(basicFormB, basicFormC)
       compoundForm.toString shouldBe "(B :> C)"
     }
 
     it("have a convenience constructor") {
-      A :> B shouldBe CompoundForm(A, B)
+      A :> B shouldBe CompoundBinaryForm(A, B)
       A :> B :> C shouldBe ((A :> B) :> C)
       A :> B :> C should not be (A :> (B :> C))
     }
@@ -52,9 +52,9 @@ class FormTest extends FunSpec {
     }
   }
 
-  describe("Form helper method") {
+  describe("Binary form helper methods") {
     it("calculates first occurrences") {
-      Form.firstOccurrences(Seq(
+      BinaryForm.firstOccurrences(Seq(
         17, 0, 0, 17, 2, 17, 1, 0, 5
       )) shouldBe Seq(
         17, 0, 2, 1, 5
@@ -62,7 +62,7 @@ class FormTest extends FunSpec {
     }
   }
 
-  describe("simple form properties") {
+  describe("simple binary form properties") {
     it("include 'size'") {
       A should have size 1
       A :> B should have size 2
@@ -107,7 +107,7 @@ class FormTest extends FunSpec {
 //    }
 //  }
 
-  describe("The unique solvability of forms") {
+  describe("The unique solvability of binary forms") {
     ignore("can be tested for simple types") {
       A should not be uniquelySolvable
 

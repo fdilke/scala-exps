@@ -4,17 +4,17 @@ sealed trait MultiaryForm {
 
 }
 
-sealed trait Form {
-  def :>(tgt: Form): Form =
-    CompoundForm(this, tgt)
+sealed trait BinaryForm {
+  def :>(tgt: BinaryForm): BinaryForm =
+    CompoundBinaryForm(this, tgt)
 
   def size: Int
   def letters: Seq[Char]
 
   final def isCanonical: Boolean = {
-    val firsts = Form.firstOccurrences(letters)
+    val firsts = BinaryForm.firstOccurrences(letters)
     firsts == (
-      firsts.indices map BasicForm map { _.letter }
+      firsts.indices map BasicBinaryForm map { _.letter }
     )
   }
 
@@ -22,7 +22,7 @@ sealed trait Form {
     ???
 }
 
-object Form {
+object BinaryForm {
   val intForA: Int =
     'A'.toInt
 
@@ -34,15 +34,15 @@ object Form {
         occurrences :+ next
     }
 
-  def apply(char: Char): BasicForm =
-    BasicForm(char.toInt - intForA)
+  def apply(char: Char): BasicBinaryForm =
+    BasicBinaryForm(char.toInt - intForA)
 }
 
-final case class BasicForm(
+final case class BasicBinaryForm(
   index: Int
-) extends Form with MultiaryForm {
+) extends BinaryForm with MultiaryForm {
   def letter : Char =
-    (Form.intForA + index).toChar
+    (BinaryForm.intForA + index).toChar
 
   override def toString : String =
     letter.toString
@@ -58,10 +58,10 @@ final case class BasicForm(
   }
 }
 
-final case class CompoundForm(
-  src: Form,
-  tgt: Form
-) extends Form {
+final case class CompoundBinaryForm(
+                                     src: BinaryForm,
+                                     tgt: BinaryForm
+) extends BinaryForm {
   override def toString : String =
     "(" + src.toString + " :> " + tgt.toString + ")"
 
@@ -73,15 +73,15 @@ final case class CompoundForm(
 }
 
 object StandardLetters {
-  val A = Form('A')
-  val B = Form('B')
-  val C = Form('C')
-  val D = Form('D')
+  val A = BinaryForm('A')
+  val B = BinaryForm('B')
+  val C = BinaryForm('C')
+  val D = BinaryForm('D')
 }
 
 final case class CompoundMultiaryForm(
   args: Seq[MultiaryForm],
-  result: BasicForm
+  result: BasicBinaryForm
 ) extends MultiaryForm {
    require(args.nonEmpty)
 
