@@ -9,4 +9,11 @@ object FormMatchers {
       s"$form is not canonical",
       s"$form is canonical"
     )
+
+  val uniquelySolvable: BeMatcher[Form] =
+    form => MatchResult(
+      form.isUniquelySolvable,
+      s"$form is not uniquely solvable",
+      s"$form is uniquely solvable"
+    )
 }

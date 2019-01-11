@@ -62,7 +62,7 @@ class FormTest extends FunSpec {
     }
   }
 
-  describe("Form properties") {
+  describe("simple form properties") {
     it("include 'size'") {
       A should have size 1
       A :> B should have size 2
@@ -92,6 +92,42 @@ class FormTest extends FunSpec {
       (A :> (A :> C)) should not be canonical
       (A :> (C :> A)) should not be canonical
       ((A :> B) :> (C :> A)) shouldBe canonical
+    }
+  }
+
+//  describe("Conversion from binary to multiary forms") {
+//    it("does not lose information in a round trip") {
+//      def checkRoundTrip(form: Form): Unit = {
+//        form.toMultiary.toBinary shouldBe form
+//      }
+//
+//      def checkRoundTrip(mform: MultiaryForm): Unit = {
+//        mform.toBinary.toMultiary shouldBe mform
+//      }
+//    }
+//  }
+
+  describe("The unique solvability of forms") {
+    ignore("can be tested for simple types") {
+      A should not be uniquelySolvable
+
+      (A :> A) shouldBe uniquelySolvable
+      (B :> B) shouldBe uniquelySolvable
+      (A :> B) should not be uniquelySolvable
+
+      (A :> (B :> C)) should not be uniquelySolvable
+      (A :> (B :> A)) should not be uniquelySolvable
+      (B :> (A :> B)) should not be uniquelySolvable
+      (B :> (B :> A)) should not be uniquelySolvable
+      (B :> (B :> B)) should not be uniquelySolvable
+
+      ((A :> B) :> (A :> B)) shouldBe uniquelySolvable
+      ((A :> B) :> (B :> C)) should not be uniquelySolvable
+      ((A :> B) :> (B :> A)) should not be uniquelySolvable
+      ((A :> A) :> (A :> A)) should not be uniquelySolvable
+
+      A :> (A :> (A :> A)) should not be uniquelySolvable
+      A :> (A :> (B :> B)) should not be uniquelySolvable
     }
   }
 }

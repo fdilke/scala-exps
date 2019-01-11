@@ -1,5 +1,9 @@
 package com.fdilke.mottoes
 
+sealed trait MultiaryForm {
+
+}
+
 sealed trait Form {
   def :>(tgt: Form): Form =
     CompoundForm(this, tgt)
@@ -13,6 +17,9 @@ sealed trait Form {
       firsts.indices map BasicForm map { _.letter }
     )
   }
+
+  def isUniquelySolvable: Boolean =
+    ???
 }
 
 object Form {
@@ -27,13 +34,13 @@ object Form {
         occurrences :+ next
     }
 
-  def apply(char: Char): Form =
+  def apply(char: Char): BasicForm =
     BasicForm(char.toInt - intForA)
 }
 
 final case class BasicForm(
   index: Int
-) extends Form {
+) extends Form with MultiaryForm {
   def letter : Char =
     (Form.intForA + index).toChar
 
@@ -45,6 +52,10 @@ final case class BasicForm(
 
   override def letters: Seq[Char] =
     Seq(letter)
+
+  def from(args: MultiaryForm*): CompoundMultiaryForm = {
+    CompoundMultiaryForm(args, this)
+  }
 }
 
 final case class CompoundForm(
@@ -66,4 +77,14 @@ object StandardLetters {
   val B = Form('B')
   val C = Form('C')
   val D = Form('D')
+}
+
+final case class CompoundMultiaryForm(
+  args: Seq[MultiaryForm],
+  result: BasicForm
+) extends MultiaryForm {
+   require(args.nonEmpty)
+
+  override def toString: String =
+    "(" + args.map { _.toString }.mkString(",") + ") >> " + result.toString
 }
