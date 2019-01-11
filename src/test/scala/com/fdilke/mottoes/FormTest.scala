@@ -3,6 +3,7 @@ package com.fdilke.mottoes
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 import StandardLetters._
+import FormMatchers._
 
 class FormTest extends FunSpec {
   describe("Basic forms") {
@@ -51,6 +52,16 @@ class FormTest extends FunSpec {
     }
   }
 
+  describe("Form helper method") {
+    it("calculates first occurrences") {
+      Form.firstOccurrences(Seq(
+        17, 0, 0, 17, 2, 17, 1, 0, 5
+      )) shouldBe Seq(
+        17, 0, 2, 1, 5
+      )
+    }
+  }
+
   describe("Form properties") {
     it("include 'size'") {
       A should have size 1
@@ -64,6 +75,23 @@ class FormTest extends FunSpec {
       (A :> B).letters shouldBe Seq('A', 'B')
       (A :> (B :> C)).letters shouldBe Seq('A', 'B', 'C')
       ((A :> B) :> (C :> D)).letters shouldBe Seq('A', 'B', 'C', 'D')
+    }
+
+    it("include 'is canonical'") {
+      A shouldBe 'canonical
+      B should not be canonical
+
+      (A :> A) shouldBe canonical
+      (A :> B) shouldBe canonical
+      (B :> A) should not be canonical
+      (A :> C) should not be canonical
+
+      (A :> (A :> A)) shouldBe canonical
+      (A :> (A :> B)) shouldBe canonical
+      (A :> (B :> A)) shouldBe canonical
+      (A :> (A :> C)) should not be canonical
+      (A :> (C :> A)) should not be canonical
+      ((A :> B) :> (C :> A)) shouldBe canonical
     }
   }
 }

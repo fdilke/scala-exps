@@ -6,11 +6,26 @@ sealed trait Form {
 
   def size: Int
   def letters: Seq[Char]
+
+  final def isCanonical: Boolean = {
+    val firsts = Form.firstOccurrences(letters)
+    firsts == (
+      firsts.indices map BasicForm map { _.letter }
+    )
+  }
 }
 
 object Form {
   val intForA: Int =
     'A'.toInt
+
+  def firstOccurrences[T](seq: Seq[T]): Seq[T] =
+    seq.foldLeft(Seq.empty[T]) { (occurrences, next) =>
+      if (occurrences.contains(next))
+        occurrences
+      else
+        occurrences :+ next
+    }
 
   def apply(char: Char): Form =
     BasicForm(char.toInt - intForA)
