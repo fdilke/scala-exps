@@ -1,7 +1,8 @@
 package com.fdilke.mottoes
 
 sealed trait Form {
-
+  def :>(tgt: Form): Form =
+    CompoundForm(this, tgt)
 }
 
 object Form {
@@ -27,6 +28,8 @@ final case class CompoundForm(
     "(" + src.toString + " :> " + tgt.toString + ")"
 }
 
-//object StandardLetters {
-//  val A = BasicForm('A')
-//}
+object StandardLetters {
+  val A = Form('A')
+  val B = Form('B')
+  val C = Form('C')
+}
