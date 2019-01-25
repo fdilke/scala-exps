@@ -14,17 +14,16 @@ sealed trait MultiaryForm {
         }
       }
 
-  def isUniquelySolvable: Boolean = {
-    println("ZZZ testing: " + this)
+  def isUniquelySolvable: Boolean =
     this match {
-      case basic: BasicForm => false
+      case _: BasicForm => false
       case CompoundMultiaryForm(args, finalTgt) =>
         BinaryForm.canUniquelySolve(args, finalTgt)
     }
-  }
 
   def size: Int
   def letters: Seq[Char]
+  def ::(other: MultiaryForm): MultiaryForm
 }
 
 sealed trait BinaryForm {
@@ -131,6 +130,14 @@ final case class BasicForm(
     CompoundMultiaryForm(args, this)
   }
 
+  override def ::(prefix: MultiaryForm): MultiaryForm =
+    prefix match {
+      case basic: BasicForm =>
+        this from basic
+      case CompoundMultiaryForm(args, tgt) =>
+        CompoundMultiaryForm(args :+ tgt, this)
+    }
+
   override def isUniquelySolvable: Boolean =
     false
 }
@@ -154,13 +161,26 @@ object StandardLetters {
   val B = BinaryForm('B')
   val C = BinaryForm('C')
   val D = BinaryForm('D')
+  val E = BinaryForm('E')
+  val F = BinaryForm('F')
 }
 
 final case class CompoundMultiaryForm(
   args: Seq[MultiaryForm],
   result: BasicForm
 ) extends MultiaryForm {
-   require(args.nonEmpty)
+  override def ::(prefix: MultiaryForm): MultiaryForm =
+    prefix match {
+      case basic: BasicForm =>
+        CompoundMultiaryForm(basic +: args, result)
+      case CompoundMultiaryForm(prefixArgs, tgt) =>
+        println(s"We are in here. prefixArgs = $prefixArgs tgt = $tgt args = $args result = $result")
+        //        We are in here. prefixArgs = WrappedArray(A) tgt = B args = WrappedArray(C) result = D
+//        CompoundMultiaryForm((prefixArgs :+ tgt) ++ args, result)
+        CompoundMultiaryForm(prefix +: args, result)
+    }
+
+  require(args.nonEmpty)
 
   override def letters: Seq[Char] =
     args.flatMap { _.letters } :+ result.letter
