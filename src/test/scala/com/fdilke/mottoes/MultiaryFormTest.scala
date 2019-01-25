@@ -59,13 +59,17 @@ class MultiaryFormTest extends FunSpec {
 
     it("admit a concatenation operator") {
       A :: B shouldBe (B from A)
-      A :: (C from B) shouldBe (C from (A, B))
+      A :: (C from B) shouldBe (C from(A, B))
       (B from A) :: (D from C) shouldBe (D from(B from A, C))
       C.from(A, B) :: F.from(D, E) shouldBe F.from(
         C.from(A, B),
         D,
         E
       )
+    }
+
+    it("- - -") {
+      (A from A) :: A shouldBe (A from (A from A))
     }
 
     it("can be converted to binary and back without losing information") {

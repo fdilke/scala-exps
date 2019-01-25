@@ -121,12 +121,7 @@ final case class BasicForm(
   }
 
   override def ::(prefix: MultiaryForm): MultiaryForm =
-    prefix match {
-      case basic: BasicForm =>
-        this from basic
-      case CompoundMultiaryForm(args, tgt) =>
-        CompoundMultiaryForm(args :+ tgt, this)
-    }
+    this from prefix
 
   override def isUniquelySolvable: Boolean =
     false
@@ -160,12 +155,7 @@ final case class CompoundMultiaryForm(
   result: BasicForm
 ) extends MultiaryForm {
   override def ::(prefix: MultiaryForm): MultiaryForm =
-    prefix match {
-      case basic: BasicForm =>
-        CompoundMultiaryForm(basic +: args, result)
-      case CompoundMultiaryForm(prefixArgs, tgt) =>
-        CompoundMultiaryForm(prefix +: args, result)
-    }
+    CompoundMultiaryForm(prefix +: args, result)
 
   require(args.nonEmpty)
 

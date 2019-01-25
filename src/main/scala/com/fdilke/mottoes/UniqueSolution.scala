@@ -5,7 +5,6 @@ object UniqueSolution {
     candidates: Seq[A]
   ) {
     def hasUniqueSolution(criterion: PartialFunction[A, Boolean]): Boolean = {
-//      candidates.count { criterion } == 1
       var numSolutions: Int = 0
       candidates takeWhile { candidate =>
         if (numSolutions <= 1) {

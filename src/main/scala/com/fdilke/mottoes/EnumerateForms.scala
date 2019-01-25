@@ -1,7 +1,5 @@
 package com.fdilke.mottoes
 
-import com.fdilke.mottoes.StandardLetters._
-
 import scala.language.postfixOps
 
 object EnumerateForms {
@@ -19,10 +17,7 @@ object EnumerateForms {
           highest = BinaryForm(prefix.letters.max).index
           suffix <- EnumerateForms(length - i, highest + 1)
         } yield {
-          CompoundBinaryForm(
-            prefix.toBinary,
-            suffix.toBinary
-          ).toMultiary
+          prefix :: suffix
         }
     }
 }

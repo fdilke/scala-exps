@@ -3,7 +3,6 @@ package com.fdilke.mottoes
 import com.fdilke.mottoes.StandardLetters._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-import FormMatchers._
 
 class EnumerateFormsTest extends FunSpec {
 
