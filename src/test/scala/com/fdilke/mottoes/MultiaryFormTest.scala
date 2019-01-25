@@ -73,20 +73,13 @@ class MultiaryFormTest extends FunSpec {
       A.from(B from A, B) should not be uniquelySolvable
       A.from(A from A, A) should not be uniquelySolvable
 
-// TODO: enforce these
       A.from(A, A, A) should not be uniquelySolvable
-// TODO: aargh, fix it
-//      B.from(A, A, B) should not be uniquelySolvable
     }
 
-  it("can be checked for unique solutions - even when we don't want to admit these cases") {
-    A.from(A, B) shouldBe uniquelySolvable
-    B.from(A, B) shouldBe uniquelySolvable
-  }
-
-    //  it("copes with awkward recursive case") {
-//    A.from(A from A, A) should not be uniquelySolvable
-//  }
-
+    it("can be checked for unique solutions - even when we don't want to admit these cases") {
+      A.from(A, B) shouldBe uniquelySolvable
+      B.from(A, B) shouldBe uniquelySolvable
+      B.from(A, A, B) shouldBe uniquelySolvable
+    }
   }
 }
