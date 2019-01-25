@@ -1,5 +1,7 @@
 package com.fdilke.mottoes
 
+import com.fdilke.mottoes.UniqueSolution._
+
 sealed trait MultiaryForm {
   def toBinary: BinaryForm =
     this match {
@@ -69,27 +71,42 @@ object BinaryForm {
   def canUniquelySolve(
     args: Seq[MultiaryForm],
     finalTgt: BasicForm
-  ) : Boolean =
-    args.count {
-      case basic : BasicForm  =>
+  ) : Boolean = {
+    println(s"c: ${args map { _.toString} mkString ", "} => $finalTgt")
+    args hasUniqueSolution {
+      case basic: BasicForm =>
+        println(s"c: 1")
         basic == finalTgt
       case CompoundMultiaryForm(otherArgs, otherTgt) =>
+        println(s"c: 2")
         (otherTgt == finalTgt) &&
-        otherArgs.forall { arg =>
-          canUniquelySolveSub(args, arg)
-        }
-    } == 1
+          otherArgs.forall { arg =>
+            println(s"c: 2 arg = $arg")
+            if (arg == finalTgt) { // avoid infinite descent
+              println(s"c: 2 avoiding infinite descent")
+              throw new AbandonUniqueSearchException
+            } else {
+              println(s"c: 2 descending")
+              canUniquelySolveSub(args, arg)
+            }
+          }
+    }
+  }
 
   def canUniquelySolveSub(
-        args: Seq[MultiaryForm],
-        tgt: MultiaryForm
-  ) : Boolean =
+    args: Seq[MultiaryForm],
+    tgt: MultiaryForm
+  ) : Boolean = {
+    println(s"cSub: ${args map { _.toString} mkString ", "} => $tgt")
     tgt match {
-      case basic : BasicForm  =>
+      case basic: BasicForm =>
+        println(s"cSub: 1")
         canUniquelySolve(args, basic)
       case CompoundMultiaryForm(otherArgs, otherTgt) =>
+        println(s"cSub: 2")
         canUniquelySolve(args ++ otherArgs, otherTgt)
     }
+  }
 }
 
 final case class BasicForm(
@@ -116,8 +133,8 @@ final case class BasicForm(
 }
 
 final case class CompoundBinaryForm(
-                                     src: BinaryForm,
-                                     tgt: BinaryForm
+  src: BinaryForm,
+  tgt: BinaryForm
 ) extends BinaryForm {
   override def toString : String =
     "(" + src.toString + " :> " + tgt.toString + ")"
