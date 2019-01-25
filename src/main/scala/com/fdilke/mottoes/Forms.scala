@@ -74,23 +74,16 @@ object BinaryForm {
     args: Seq[MultiaryForm],
     finalTgt: BasicForm
   ) : Boolean = {
-    println(s"c: ${args map { _.toString} mkString ", "} => $finalTgt")
     args hasUniqueSolution {
       case basic: BasicForm =>
-        println(s"c: 1")
         basic == finalTgt
       case CompoundMultiaryForm(otherArgs, otherTgt) =>
-        println(s"c: 2")
         (otherTgt == finalTgt) &&
           otherArgs.forall { arg =>
-            println(s"c: 2 arg = $arg")
-            if (arg == finalTgt) { // avoid infinite descent
-              println(s"c: 2 avoiding infinite descent")
+            if (arg == finalTgt)  // avoid infinite descent
               throw new AbandonUniqueSearchException
-            } else {
-              println(s"c: 2 descending")
+            else
               canUniquelySolveSub(args, arg)
-            }
           }
     }
   }
@@ -99,13 +92,10 @@ object BinaryForm {
     args: Seq[MultiaryForm],
     tgt: MultiaryForm
   ) : Boolean = {
-    println(s"cSub: ${args map { _.toString} mkString ", "} => $tgt")
     tgt match {
       case basic: BasicForm =>
-        println(s"cSub: 1")
         canUniquelySolve(args, basic)
       case CompoundMultiaryForm(otherArgs, otherTgt) =>
-        println(s"cSub: 2")
         canUniquelySolve(args ++ otherArgs, otherTgt)
     }
   }
@@ -174,9 +164,6 @@ final case class CompoundMultiaryForm(
       case basic: BasicForm =>
         CompoundMultiaryForm(basic +: args, result)
       case CompoundMultiaryForm(prefixArgs, tgt) =>
-        println(s"We are in here. prefixArgs = $prefixArgs tgt = $tgt args = $args result = $result")
-        //        We are in here. prefixArgs = WrappedArray(A) tgt = B args = WrappedArray(C) result = D
-//        CompoundMultiaryForm((prefixArgs :+ tgt) ++ args, result)
         CompoundMultiaryForm(prefix +: args, result)
     }
 

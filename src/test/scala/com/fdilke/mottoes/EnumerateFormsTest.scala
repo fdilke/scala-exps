@@ -9,19 +9,19 @@ class EnumerateFormsTest extends FunSpec {
 
     describe("enumeration of forms") {
       it("covers the case of length 0") {
-        EnumerateForms(0, 0) shouldBe Seq()
+        EnumerateForms(0) shouldBe Seq()
         EnumerateForms(0, 1) shouldBe Seq()
         EnumerateForms(0, 2) shouldBe Seq()
       }
 
       it("covers the case of length 1") {
-        EnumerateForms(1, 0) shouldBe Seq(A)
+        EnumerateForms(1) shouldBe Seq(A)
         EnumerateForms(1, 1) shouldBe Seq(A, B)
         EnumerateForms(1, 2) shouldBe Seq(A, B, C)
       }
 
       it("covers the case of length 2") {
-        EnumerateForms(2, 0) shouldBe Seq(
+        EnumerateForms(2) shouldBe Seq(
           A from A,
           B from A
         )
@@ -45,7 +45,7 @@ class EnumerateFormsTest extends FunSpec {
         )
       }
       it("covers the case of length 3") {
-        EnumerateForms(3, 0) shouldBe Seq(
+        EnumerateForms(3) shouldBe Seq(
           A from (A, A),
           B from (A, A),
           A from (A, B),
