@@ -50,4 +50,16 @@ Or even "(A => A) => (A => A)" where the A => A is.
 
 So have a solving algorithm that keeps track of what inputs it's used in the solution?
  
+# initial enumeration
 
+Seems to work. The concatenation operator :: is handy for multiary forms, and
+suggests that the binary forms are redundant - it's fine to just work with multiary
+ones across the board.
+
+But can't test this form for unique solvability:
+
+    (((A) >> A) >> A) >> A
+    
+This causes some deeper type of infinite descent I should be testing for??
+Also try to unify the two versions of canUniquelySolveXxx,
+and use DoEnumerateForms to output the results.    
