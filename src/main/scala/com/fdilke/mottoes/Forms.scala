@@ -22,6 +22,9 @@ sealed trait MultiaryForm {
         BinaryForm.canUniquelySolve(args, finalTgt)
     }
   }
+
+  def size: Int
+  def letters: Seq[Char]
 }
 
 sealed trait BinaryForm {
@@ -158,6 +161,12 @@ final case class CompoundMultiaryForm(
   result: BasicForm
 ) extends MultiaryForm {
    require(args.nonEmpty)
+
+  override def letters: Seq[Char] =
+    args.flatMap { _.letters } :+ result.letter
+
+  override def size: Int =
+    args.map { _.size }.sum + 1
 
   override def toString: String =
     "(" + args.map { _.toString }.mkString(",") + ") >> " + result.toString

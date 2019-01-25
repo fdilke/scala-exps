@@ -35,6 +35,20 @@ class MultiaryFormTest extends FunSpec {
       B.from(A, B) should not be AB
     }
 
+    it("have a 'size' property") {
+      A should have size 1
+      (B from A) should have size 2
+      (C from (A, B)) should have size 3
+      (C from (B from A)) should have size 3
+    }
+
+    it("include a 'letters' property") {
+      A.letters shouldBe Seq('A')
+      (B from A).letters shouldBe Seq('A', 'B')
+      (C from (A, B)).letters shouldBe Seq('A', 'B', 'C')
+      (D from (B from A, C)).letters shouldBe Seq('A', 'B', 'C', 'D')
+    }
+
     it("can be converted to binary") {
         A.toMultiary shouldBe A
         B.from(A).toBinary shouldBe (A :> B)
