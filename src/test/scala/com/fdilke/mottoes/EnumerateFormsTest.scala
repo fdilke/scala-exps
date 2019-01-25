@@ -25,6 +25,38 @@ class EnumerateFormsTest extends FunSpec {
           A from A,
           B from A
         )
+        EnumerateForms(2, 1) shouldBe Seq(
+          A from A,
+          B from A,
+          A from B,
+          B from B,
+          C from B
+        )
+        EnumerateForms(2, 2) shouldBe Seq(
+          A from A,
+          B from A,
+          A from B,
+          B from B,
+          C from B,
+          A from C,
+          B from C,
+          C from C,
+          D from C
+        )
+      }
+      it("covers the case of length 3") {
+        EnumerateForms(3, 0) shouldBe Seq(
+          A from (A, A),
+          B from (A, A),
+          A from (A, B),
+          B from (A, B),
+          C from (A, B),
+          A from (A from A),
+          B from (A from A),
+          A from (B from A),
+          B from (B from A),
+          C from (B from A)
+        )
       }
     }
 }
