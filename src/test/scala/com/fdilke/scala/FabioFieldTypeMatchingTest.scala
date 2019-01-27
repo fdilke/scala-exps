@@ -12,7 +12,7 @@ trait FieldAdapter {
   def dbType: DbType[U]
 }
 
-class FabioTest extends FlatSpec {
+class FabioFieldTypeMatchingTest extends FlatSpec {
   "Pattern matching" should "work for a generalised ADT" in {
     val x: FieldAdapter = new FieldAdapter {
       override type U = String
