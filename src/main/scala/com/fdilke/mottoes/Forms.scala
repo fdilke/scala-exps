@@ -72,33 +72,25 @@ object BinaryForm {
 
   def canUniquelySolve(
     args: Seq[MultiaryForm],
-    finalTgt: BasicForm
-  ) : Boolean = {
-    args hasUniqueSolution {
-      case basic: BasicForm =>
-        basic == finalTgt
-      case CompoundMultiaryForm(otherArgs, otherTgt) =>
-        (otherTgt == finalTgt) &&
-          otherArgs.forall { arg =>
-            if (arg == finalTgt)  // avoid infinite descent
-              throw new AbandonUniqueSearchException
-            else
-              canUniquelySolveSub(args, arg)
-          }
-    }
-  }
-
-  def canUniquelySolveSub(
-    args: Seq[MultiaryForm],
     tgt: MultiaryForm
-  ) : Boolean = {
+  ) : Boolean =
     tgt match {
       case basic: BasicForm =>
-        canUniquelySolve(args, basic)
-      case CompoundMultiaryForm(otherArgs, otherTgt) =>
-        canUniquelySolve(args ++ otherArgs, otherTgt)
+        args hasUniqueSolution {
+          case basicArg: BasicForm =>
+            basicArg == basic
+          case CompoundMultiaryForm(otherArgs, otherTgt) =>
+            (otherTgt == basic) &&
+              otherArgs.forall { arg =>
+                if (arg == basic)  // avoid infinite descent
+                  throw new AbandonUniqueSearchException
+                else
+                  canUniquelySolve(args, arg)
+              }
+        }
+      case CompoundMultiaryForm(innerArgs, innerTgt) =>
+        canUniquelySolve(args ++ innerArgs, innerTgt)
     }
-  }
 }
 
 final case class BasicForm(
