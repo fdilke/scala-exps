@@ -105,6 +105,12 @@ class MultiaryFormTest extends FunSpec {
       A.from(A, A, A) should not be uniquelySolvable
     }
 
+    it("can test unique solvability in an awkward case") {
+      val awkward = A from(A from(A from A))
+      println("testing awkward case: " + awkward)
+      awkward shouldBe uniquelySolvable
+    }
+
     it("can be checked for unique solutions - even when we don't want to admit these cases") {
       A.from(A, B) shouldBe uniquelySolvable
       B.from(A, B) shouldBe uniquelySolvable

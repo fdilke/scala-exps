@@ -63,3 +63,85 @@ But can't test this form for unique solvability:
 This causes some deeper type of infinite descent I should be testing for??
 Also try to unify the two versions of canUniquelySolveXxx,
 and use DoEnumerateForms to output the results.    
+
+# fixing the solver
+
+Refactored so 2 submethods are unified.
+Maybe need more sophisticated heuristic for detecting infinite descent?
+Have to guard against this scenario:
+
+args/tgt/basic/innerArgs/innerTgt = (((A) >> A) >> A)/A/A/WrappedArray((A) >> A)/A
+args/tgt/basic/innerArgs/innerTgt = (((A) >> A) >> A, A)/A/A/WrappedArray((A) >> A)/A
+args/tgt/basic/innerArgs/innerTgt = (((A) >> A) >> A, A, A)/A/A/WrappedArray((A) >> A)/A
+
+given <args, tgt> as inputs, end up reinvoking with <args :+ A,...>
+
+If we're about to invoke a canUniquelySolve woth same args and a not-strictly-simpler target...
+should we give up? Or abandon the whole thing?
+Try: Just give up at this point. It has to be simpler.
+So maybe don't need the "abandon whole search" mechanism?? <<== Probably this is correct
+
+Seems to be ok to just give up. But the logic is too opaque - not clear enough what's going on. So:
+
+- the difficult case is cUS(args, basic)
+
+- for this to be true, there must be a unique arg for which either:
+
+- it's a basic arg and is the target, or:
+    
+- the arg is innerArgs => innerTgt and for each inner arg: 
+
+- we can uniquely derive the inner arg from what we already have, except:
+
+- shouldn't even try under certain conditions.
+
+Now, what are those? Should we accumulate a list of things we're in the process of trying to construct?
+Should it be:
+
+    canUniquelySolve(args, tgt, unreachableGoals)
+    
+and then if at any point we're trying to reach an unreachable goal, should just give up?
+Prefer the idea of: making it false
+But might occasionally be valid to set a more complex goal than the current target.
+
+Should instead make all this more object-oriented - 
+have a Seeker object which starts off with a list of args, tries to construct other stuff?
+And keeps a list of stuff it knows is out of reach?
+
+This would just be a relatively trivial refactoring of current scheme. Not useful.
+Work with an "unreachable" list. Like this:
+
+- if at any point we were about to look for something on the list of unreachables, give up.
+- whenever you launch a new search, add the current target to the list of unreachables.
+
+and again, NEVER abandon the search. This is declared not a useful concept. Maybe even get rid of the mechanism.
+
+Don't yet need to spell out more precisely the possibly vague idea of "uniquely solvable".
+We know there will be other criteria for a motto, because e.g. you never want to have a duplicate arg in any
+subform.
+     
+And now, logically: if someone gives you an ((A) >> A) >> A, you can produce an A. 
+Will have to spell out why this isn't a motto. Maybe should say more generally:
+
+(MOTTO > A) > A   doesn't count as a motto.
+
+This is of course just M[MOTTO] where M is a generic strong monad. So...
+
+Better definition of a motto (categorical): an object in the topos for which there's a canonical global object.
+Example: X ^ X. So if M is a motto, are we never interested in T[M] as a motto, where T is a strong monad?
+
+BTW given M, find the unique 0 -> M, apply T and get a canonical 1 -> T[M]. Assuming T(0) is always 1??
+
+If T = β_H then T(0) = (0 > H) > H = 1 > H = H. This is all presumably still true for H an algebra.
+
+try to better understand: (1) why is there always a canonical global object for T[M] when M is a motto?
+(2) why doesn't this count as a motto / new construction?
+
+Note the forms are in fact just elements in the free magma <alphabet, ^> used as abstract
+specifications. So for some of these there's a canonical global object, others, not. 
+
+ 
+     
+
+ 
+

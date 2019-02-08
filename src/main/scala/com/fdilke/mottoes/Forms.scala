@@ -18,7 +18,7 @@ sealed trait MultiaryForm {
     this match {
       case _: BasicForm => false
       case CompoundMultiaryForm(args, finalTgt) =>
-        BinaryForm.canUniquelySolve(args, finalTgt)
+        BinaryForm.canUniquelySolve(args, finalTgt, Seq.empty)
     }
 
   def size: Int
@@ -72,25 +72,27 @@ object BinaryForm {
 
   def canUniquelySolve(
     args: Seq[MultiaryForm],
-    tgt: MultiaryForm
-  ) : Boolean =
+    tgt: MultiaryForm,
+    unreachables: Seq[MultiaryForm]
+  ) : Boolean = {
+//    println(s"caUniquelySolve($args, $tgt, $unreachables)")
     tgt match {
+      case CompoundMultiaryForm(innerArgs, innerTgt) =>
+        canUniquelySolve(args ++ innerArgs, innerTgt, unreachables)
       case basic: BasicForm =>
         args hasUniqueSolution {
           case basicArg: BasicForm =>
             basicArg == basic
-          case CompoundMultiaryForm(otherArgs, otherTgt) =>
-            (otherTgt == basic) &&
-              otherArgs.forall { arg =>
-                if (arg == basic)  // avoid infinite descent
-                  throw new AbandonUniqueSearchException
-                else
-                  canUniquelySolve(args, arg)
+          case CompoundMultiaryForm(innerArgs, innerTgt) =>
+            (innerTgt == basic) &&
+              innerArgs.forall { arg =>
+//                println(s"potential infinite descent: args/tgt/basic/innerArgs/innerTgt = $args/$tgt/$basic/$innerArgs/$innerTgt")
+                !(unreachables.contains(basic)) &&
+                  canUniquelySolve(args, arg, unreachables :+ basic)
               }
         }
-      case CompoundMultiaryForm(innerArgs, innerTgt) =>
-        canUniquelySolve(args ++ innerArgs, innerTgt)
     }
+  }
 }
 
 final case class BasicForm(
