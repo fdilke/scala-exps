@@ -138,10 +138,15 @@ try to better understand: (1) why is there always a canonical global object for 
 (2) why doesn't this count as a motto / new construction?
 
 Note the forms are in fact just elements in the free magma <alphabet, ^> used as abstract
-specifications. So for some of these there's a canonical global object, others, not. 
+specifications. So for some of these there's a canonical global object, others, not.
 
- 
-     
+# next refinement
 
- 
+Enumerate a bunch, see degenerate cases I want to exclude.
+For example 'redundant' forms like "(A,B) >> A" which don't use all their arguments.
+
+Recast code inside a special "motto finder" class which encapsulates all this. Will be like the Search
+considered above, except it keeps track of more. Do as new code, using previous 'solver' as a template
+
+At any point we have: a list of args, some of which may have been used, a target, and a list of unreachables.
 

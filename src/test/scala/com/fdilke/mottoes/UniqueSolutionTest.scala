@@ -60,4 +60,38 @@ class UniqueSolutionTest extends FunSpec {
       seen shouldBe Seq(1, 2)
     }
   }
+
+  private def checkWith(criterion: Int => Boolean) =
+    candidates.checkUniqueSolution { case x => criterion(x) }
+
+  describe("The checking of unique solutions") {
+    it("will detect a unique solution, if available") {
+      checkWith {
+        _ == 2
+      } shouldBe Some(2)
+    }
+
+    it("will detect when there are multiple solutions") {
+      checkWith {
+        _ > 1
+      } shouldBe None
+    }
+
+    it("will detect when there is no solution") {
+      checkWith {
+        _ < 0
+      } shouldBe None
+    }
+
+    it("will end as soon as we know the solution isn't unique") {
+      val seen: mutable.MutableList[Int] =
+        new mutable.MutableList[Int]
+
+      checkWith { candidate =>
+        seen += candidate
+        candidate > 0
+      } shouldBe None
+      seen shouldBe Seq(1, 2)
+    }
+  }
 }
