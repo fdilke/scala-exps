@@ -13,13 +13,7 @@ import scala.tools.nsc.util.ClassPath
 trait RunTimeCompilation { self: FunSpec =>
   private lazy val engine = {
     val settings = new Settings
-    // incantations to add the Scala library to our classpath
-    val loader = getClass.getClassLoader.asInstanceOf[URLClassLoader]
-    val entries = loader.getURLs map(_.getPath)
-    val sclpath = entries find(_.endsWith("scala-compiler.jar")) map {
-      _.replaceAll("scala-compiler.jar", "scala-library.jar")
-    }
-    settings.classpath.value = ClassPath.join(entries ++ sclpath : _*)
+    settings.classpath.value = System.getProperty("java.class.path")
     new IMain(settings)
   }
 
