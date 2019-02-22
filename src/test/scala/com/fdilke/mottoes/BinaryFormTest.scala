@@ -118,28 +118,4 @@ class BinaryFormTest extends FunSpec {
       checkRoundTrip(((A :> B) :> (B :> C)) :> ((C :> B) :> (B :> A)))
     }
   }
-
-  describe("The unique solvability of binary forms") {
-    ignore("can be tested for simple types") {
-      A should not be uniquelySolvable
-
-      (A :> A) shouldBe uniquelySolvable
-      (B :> B) shouldBe uniquelySolvable
-      (A :> B) should not be uniquelySolvable
-
-      (A :> (B :> C)) should not be uniquelySolvable
-      (A :> (B :> A)) should not be uniquelySolvable
-      (B :> (A :> B)) should not be uniquelySolvable
-      (B :> (B :> A)) should not be uniquelySolvable
-      (B :> (B :> B)) should not be uniquelySolvable
-
-      ((A :> B) :> (A :> B)) shouldBe uniquelySolvable
-      ((A :> B) :> (B :> C)) should not be uniquelySolvable
-      ((A :> B) :> (B :> A)) should not be uniquelySolvable
-      ((A :> A) :> (A :> A)) should not be uniquelySolvable
-
-      A :> (A :> (A :> A)) should not be uniquelySolvable
-      A :> (A :> (B :> B)) should not be uniquelySolvable
-    }
-  }
 }

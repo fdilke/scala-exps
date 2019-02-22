@@ -5,18 +5,21 @@ import com.fdilke.mottoes.UniqueSolution._
 import scala.collection.mutable
 
 object FormSolver {
-  def apply(form: CompoundMultiaryForm): Option[Set[MultiaryForm]] =
-    new FormSolver(
-      form.args,
-      form.result
-    ).solve()
+  def apply(form: MultiaryForm): Option[Set[MultiaryForm]] =
+    form match {
+      case _: BasicForm => None
+      case CompoundMultiaryForm(args, result) =>
+        new FormSolver(
+          args,
+          result
+        ).solve()
+    }
 }
 
 class FormSolver(
   args: Seq[MultiaryForm],
   tgt: MultiaryForm
 ) {
-
   def canUniquelySolve(
     args: Seq[MultiaryForm],
     tgt: MultiaryForm,
@@ -27,47 +30,48 @@ class FormSolver(
       case CompoundMultiaryForm(innerArgs, innerTgt) =>
         canUniquelySolve(args ++ innerArgs, innerTgt, unreachables)
       case basic: BasicForm =>
-        val annotatedArgs: Seq[(MultiaryForm, Option[Set[MultiaryForm]])] =
-          args map {
-            case basicArg: BasicForm =>
-              if (basicArg == basic)
-                basicArg -> Some(Set(basicArg : MultiaryForm))
-              else
-                basicArg -> None
-
-            case compoundArg @ CompoundMultiaryForm(innerArgs, innerTgt) if innerTgt == basic =>
-              val allArgsUsed: mutable.Set[MultiaryForm] = new mutable.HashSet[MultiaryForm]()
-              if (
-                innerArgs.forall { innerArg =>
-                //                println(s"potential infinite descent: args/tgt/basic/innerArgs/innerTgt = $args/$tgt/$basic/$innerArgs/$innerTgt")
-                if (unreachables.contains(basic))
-                  false
-                else {
-                  canUniquelySolve(args, innerArg, unreachables :+ basic) match {
-                    case Some(argsUsed) =>
-                      allArgsUsed ++= argsUsed
-                      true
-                    case None =>
-                      false
-                  }
-                }
-              }
-            )
-              compoundArg -> Some(allArgsUsed.toSet)
-            else
-              compoundArg -> None
-            case otherArg =>
-              otherArg -> None
-          }
-
-        annotatedArgs checkUniqueSolution {
-          case (_, optionalArgsUsed) => optionalArgsUsed.isDefined
-        } match {
-          case Some((arg, optionalArgsUsed)) => optionalArgsUsed
-          case None => None
+        args map { arg =>
+          arg -> fiddlyCalc(arg, basic, unreachables)
+        } checkUniqueSolution {
+          case (_, solution) => solution.isDefined
+        } flatMap {
+          _._2
         }
     }
   }
+
+  private def fiddlyCalc(
+    arg: MultiaryForm,
+    target: BasicForm,
+    unreachables: Seq[MultiaryForm]
+  ): Option[Set[MultiaryForm]] =
+    arg match {
+      case `target` =>
+          Some(Set(arg))
+
+      case CompoundMultiaryForm(innerArgs, innerTgt) if innerTgt == target =>
+        val allArgsUsed: mutable.Set[MultiaryForm] = new mutable.HashSet[MultiaryForm]()
+        if (
+          innerArgs.forall { innerArg =>
+            //                println(s"potential infinite descent: args/tgt/basic/innerArgs/innerTgt = $args/$tgt/$basic/$innerArgs/$innerTgt")
+            if (unreachables.contains(target))
+              false
+            else {
+              canUniquelySolve(args, innerArg, unreachables :+ target) match {
+                case Some(argsUsed) =>
+                  allArgsUsed ++= argsUsed
+                  true
+                case None =>
+                  false
+              }
+            }
+          }
+        )
+          Some(allArgsUsed.toSet)
+        else
+          None
+      case _ => None
+    }
 
   /**
     * Tell if a form has a unique solution.

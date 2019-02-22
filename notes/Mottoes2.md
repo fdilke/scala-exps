@@ -150,6 +150,12 @@ considered above, except it keeps track of more. Do as new code, using previous 
 
 At any point we have: a list of args, some of which may have been used, a target, and a list of unreachables.
 
+# Lean and mean, or...?
+
+Do we even need the concatenation operator for multiary forms, or is it essentially a binary thing / only useful for enumeration?
+Should the forms be able to do analysis of their own structure?
+If not, maybe build FormSolver code into CompoundMultiaryForm (where it looks like it belongs) and deprecate old solver code?
+
 # What is a motto?
 
 We're not entirely sure, but:
@@ -172,4 +178,6 @@ have a HighLevelSanityTest to ensure this
 - Notes to firm up vocab?
 
 - Expedient demise of the binary forms?
+
+
 

@@ -7,9 +7,20 @@ import org.scalatest.Matchers._
 
 class FormSolverTest extends FunSpec {
   describe("The form solver") {
+    it("rejects basic forms") {
+      FormSolver(A) shouldBe None
+    }
+
     it("can detect when a form is uniquely solvable") {
-      val solution = FormSolver(B from(A, B))
-      solution shouldBe Some(Set(B))
+      FormSolver(B from(A, B)) shouldBe Some(Set(B))
+    }
+
+    ignore("...") {
+      FormSolver(
+        A from (A from (A from A))
+      ) shouldBe Some(Set(
+        A from (A from A)
+      ))
     }
   }
 }
