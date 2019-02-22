@@ -23,7 +23,7 @@ object UniqueSolution {
       numSolutions == 1
     }
 
-    def checkUniqueSolution(criterion: PartialFunction[A, Boolean]): Option[A] = {
+    def checkUniqueSolution(criterion: A => Boolean): Option[A] = {
       var numSolutions: Int = 0
       var possiblyUniqueSolution: Option[A] = None
       candidates takeWhile { candidate =>

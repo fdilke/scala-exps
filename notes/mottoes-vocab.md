@@ -81,3 +81,9 @@ Emerging definition: a form is a motto if
 
 - it does not contain a motto as an internal argument
 
+But by this definition, the following not very iconic form counts:
+
+    A => ((A => B) => B) aka (A, A => B) => B
+    
+Should this be excluded? On what grounds? Leave it in for now.
+This could even charitably be interpreted as a duality.

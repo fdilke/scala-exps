@@ -7,12 +7,24 @@ import org.scalatest.Matchers._
 
 class FormSolverTest extends FunSpec {
   describe("The form solver") {
-    it("rejects basic forms") {
+    it("rejects basic forms and non-uniquely-solvable ones") {
       FormSolver(A) shouldBe None
+      FormSolver(A from B) shouldBe None
+      FormSolver(C from(A, B)) shouldBe None
+      FormSolver(B from(B from A)) shouldBe None
+      FormSolver(A from(B, B from A)) shouldBe None
+      FormSolver(A from(A, A)) shouldBe None
     }
 
-    it("can detect when a form is uniquely solvable") {
+    it("detects which arguments are used in a uniquely solvable form") {
+      FormSolver(A from A) shouldBe Some(Set(A))
       FormSolver(B from(A, B)) shouldBe Some(Set(B))
+
+      // TODO: fix!
+      // FormSolver(B from(A, B from A)) shouldBe Some(Set(A, B from A))
+
+      // TODO; fix!
+      //      FormSolver(C from(A, B from A, C from B)) shouldBe Some(Set(C from B, A))
     }
 
     ignore("...") {

@@ -38,6 +38,7 @@ class HighLevelSanityTests extends FunSpec {
       FormSolver(form) match {
         case None =>
         case Some(argsUsed) =>
+          argsUsed should not be empty
           form match {
             case _: BasicForm => fail("can't solve basic form")
             case CompoundMultiaryForm(args, _) =>

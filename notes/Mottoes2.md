@@ -162,7 +162,7 @@ We're not entirely sure, but:
 - a motto should be uniquely solvable with no redundant args
 - a motto should not include another motto as an internal argument
 
-# To do
+# Done
 
 - add concept of canonicity for multiary forms 
 
@@ -171,13 +171,22 @@ We're not entirely sure, but:
 - Make sure new solver's concept of "unique solvability" (with optional redundant args) is consistent with previous code -
 have a HighLevelSanityTest to ensure this
 
+- Notes to firm up vocab?
+
+# Not doing
+
+- Expedient demise of the binary forms
+
+although almost no worthwhile code is left here.
+Would be nice to just have Form and not Binary/MultiaryForm
+
+# To do
+
 - Add a method to enumerate internal arguments
 
 - Add tests that we correctly calculate what internal args are used when solving a form.
 
-- Notes to firm up vocab?
-
-- Expedient demise of the binary forms?
-
-
+I convinced myself that for now, we only have to keep track (when solving)
+of what TOP-LEVEL arguments are used. But can't quite see how to make the
+algorithm do this, even though it sounds straightforward... :0
 

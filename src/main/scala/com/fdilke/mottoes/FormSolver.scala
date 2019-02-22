@@ -3,6 +3,7 @@ package com.fdilke.mottoes
 import com.fdilke.mottoes.UniqueSolution._
 
 import scala.collection.mutable
+import scala.language.postfixOps
 
 object FormSolver {
   def apply(form: MultiaryForm): Option[Set[MultiaryForm]] =
@@ -28,14 +29,19 @@ class FormSolver(
     //    println(s"caUniquelySolve($args, $tgt, $unreachables)")
     tgt match {
       case CompoundMultiaryForm(innerArgs, innerTgt) =>
-        canUniquelySolve(args ++ innerArgs, innerTgt, unreachables)
+        if (args.toSet.intersect(innerArgs.toSet).nonEmpty)
+          None
+        else
+          canUniquelySolve(args ++ innerArgs, innerTgt, unreachables) map {
+            _ intersect args.toSet
+          }
       case basic: BasicForm =>
         args map { arg =>
           arg -> fiddlyCalc(arg, basic, unreachables)
         } checkUniqueSolution {
-          case (_, solution) => solution.isDefined
-        } flatMap {
-          _._2
+          _._2.isDefined
+        } map {
+          case (arg, _) => Set(arg)
         }
     }
   }
@@ -67,7 +73,8 @@ class FormSolver(
             }
           }
         )
-          Some(allArgsUsed.toSet)
+//          Some(allArgsUsed.toSet)
+          Some(Set(arg))
         else
           None
       case _ => None

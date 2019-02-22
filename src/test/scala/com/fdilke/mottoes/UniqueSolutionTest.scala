@@ -62,7 +62,7 @@ class UniqueSolutionTest extends FunSpec {
   }
 
   private def checkWith(criterion: Int => Boolean) =
-    candidates.checkUniqueSolution { case x => criterion(x) }
+    candidates.checkUniqueSolution { criterion }
 
   describe("The checking of unique solutions") {
     it("will detect a unique solution, if available") {
