@@ -13,15 +13,15 @@ class BinaryFormTest extends FunSpec {
     }
 
     it("can be initialized from letters") {
-      BasicForm(0) shouldBe BinaryForm('A')
+      BasicForm(0) shouldBe Form('A')
     }
 
     it("have sane semantics of equality") {
         A shouldBe A
-        A shouldBe BinaryForm('A')
+        A shouldBe Form('A')
         A shouldBe BasicForm(0)
         A shouldNot be(B)
-        A shouldNot be(BinaryForm('B'))
+        A shouldNot be(Form('B'))
         A shouldNot be(BasicForm(1))
     }
   }
@@ -54,7 +54,7 @@ class BinaryFormTest extends FunSpec {
 
   describe("Binary form helper methods") {
     it("calculates first occurrences") {
-      BinaryForm.firstOccurrences(Seq(
+      Form.firstOccurrences(Seq(
         17, 0, 0, 17, 2, 17, 1, 0, 5
       )) shouldBe Seq(
         17, 0, 2, 1, 5

@@ -14,7 +14,7 @@ object EnumerateForms {
         for {
           i <- 1 until length
           prefix <- EnumerateForms(i, letterStart)
-          highest = BinaryForm(prefix.letters.max).index
+          highest = Form(prefix.letters.max).index
           suffix <- EnumerateForms(length - i, highest + 1)
         } yield {
           prefix :: suffix

@@ -14,11 +14,18 @@ sealed trait MultiaryForm {
         }
       }
 
+  def isCanonical: Boolean = {
+    val firsts = Form.firstOccurrences(letters)
+    firsts == (
+      firsts.indices map BasicForm map { _.letter }
+      )
+  }
+
   def isUniquelySolvable: Boolean =
     this match {
       case _: BasicForm => false
       case CompoundMultiaryForm(args, finalTgt) =>
-        BinaryForm.canUniquelySolve(args, finalTgt, Seq.empty)
+        Form.canUniquelySolve(args, finalTgt, Seq.empty)
     }
 
   def size: Int
@@ -33,8 +40,8 @@ sealed trait BinaryForm {
   def size: Int
   def letters: Seq[Char]
 
-  final def isCanonical: Boolean = {
-    val firsts = BinaryForm.firstOccurrences(letters)
+  def isCanonical: Boolean = {
+    val firsts = Form.firstOccurrences(letters)
     firsts == (
       firsts.indices map BasicForm map { _.letter }
     )
@@ -55,7 +62,7 @@ sealed trait BinaryForm {
     ???
 }
 
-object BinaryForm {
+object Form {
   val intForA: Int =
     'A'.toInt
 
@@ -99,7 +106,7 @@ final case class BasicForm(
   index: Int
 ) extends BinaryForm with MultiaryForm {
   def letter : Char =
-    (BinaryForm.intForA + index).toChar
+    (Form.intForA + index).toChar
 
   override def toString : String =
     letter.toString
@@ -119,6 +126,9 @@ final case class BasicForm(
 
   override def isUniquelySolvable: Boolean =
     false
+
+  override def isCanonical: Boolean =
+    super.isCanonical
 }
 
 final case class CompoundBinaryForm(
@@ -136,12 +146,12 @@ final case class CompoundBinaryForm(
 }
 
 object StandardLetters {
-  val A = BinaryForm('A')
-  val B = BinaryForm('B')
-  val C = BinaryForm('C')
-  val D = BinaryForm('D')
-  val E = BinaryForm('E')
-  val F = BinaryForm('F')
+  val A = Form('A')
+  val B = Form('B')
+  val C = Form('C')
+  val D = Form('D')
+  val E = Form('E')
+  val F = Form('F')
 }
 
 final case class CompoundMultiaryForm(

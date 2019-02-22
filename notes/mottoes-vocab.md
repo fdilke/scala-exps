@@ -63,9 +63,19 @@ arguments. But even this isn't quite enough to make it a motto. Consider:
     
 This shouldn't be a motto because we can trivially find an A => A, namely the identity. Indeed A => A is itself a motto.    
 
+## Canonicality
+
+For purpose of enumeration, we're also not interested in mottoes that are alternate versions of existing ones, with letters reassigned. 
+
+We therefore want to exclude B => B from consideration, given we already have A => A. So:
+
+A form is canonical if when the letters in it are listed by order of appearance, the result is an initial segment of the alphabet. 
+
 ## What is a motto?
 
 Emerging definition: a form is a motto if
+
+- it is canonical
 
 - it can be uniquely solved without redundant arguments
 

@@ -66,9 +66,6 @@ class MultiaryFormTest extends FunSpec {
         D,
         E
       )
-    }
-
-    it("- - -") {
       (A from A) :: A shouldBe (A from (A from A))
     }
 
@@ -84,6 +81,24 @@ class MultiaryFormTest extends FunSpec {
       checkRoundTrip(D.from(B from A, C from B))
       checkRoundTrip(A from (B from A, C from A))
       checkRoundTrip(A from ( C from (B from A, B), B from C, B))
+    }
+
+    it("can be checked for canonicity") {
+      A shouldBe canonical
+      B should not be canonical
+
+      (A from A) shouldBe canonical
+      (B from A) shouldBe canonical
+      (A from B) should not be canonical
+      (C from A) should not be canonical
+
+
+      A from(A, A) shouldBe canonical
+      B from(A, A) shouldBe canonical
+      A from(A, B) shouldBe canonical
+      C from(A, A) should not be canonical
+      A from(A, C) should not be canonical
+      A from(B from A, C) shouldBe canonical
     }
 
     it("can be checked for unique solutions") {

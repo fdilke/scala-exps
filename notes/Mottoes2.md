@@ -158,6 +158,10 @@ We're not entirely sure, but:
 
 # To do
 
+- add concept of canonicity for multiary forms 
+
+- in sanity checks, make sure enumerated forms are canonical
+
 - Make sure new solver's concept of "unique solvability" (with optional redundant args) is consistent with previous code -
 have a HighLevelSanityTest to ensure this
 
@@ -167,4 +171,5 @@ have a HighLevelSanityTest to ensure this
 
 - Notes to firm up vocab?
 
-- Expediant demise of the binary forms?
+- Expedient demise of the binary forms?
+

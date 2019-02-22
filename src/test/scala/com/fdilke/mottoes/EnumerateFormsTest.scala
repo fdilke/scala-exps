@@ -3,6 +3,7 @@ package com.fdilke.mottoes
 import com.fdilke.mottoes.StandardLetters._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
+import FormMatchers._
 
 class EnumerateFormsTest extends FunSpec {
 
@@ -56,6 +57,12 @@ class EnumerateFormsTest extends FunSpec {
           B from (B from A),
           C from (B from A)
         )
+      }
+      it("enumerates only canonical forms") {
+        for {
+          form <- EnumerateForms(4)
+        }
+          form shouldBe canonical
       }
     }
 }

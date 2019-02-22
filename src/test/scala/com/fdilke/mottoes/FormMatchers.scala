@@ -4,7 +4,11 @@ import org.scalatest.matchers.{BeMatcher, MatchResult}
 import scala.language.reflectiveCalls
 
 object FormMatchers {
-  val canonical: BeMatcher[BinaryForm] =
+  def canonical[
+    FORM <: {
+      def isCanonical: Boolean
+    }
+  ]: BeMatcher[FORM] =
     form => MatchResult(
       form.isCanonical,
       s"$form is not canonical",
