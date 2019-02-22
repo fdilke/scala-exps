@@ -69,7 +69,10 @@ class FormSolver(
     }
   }
 
-
+  /**
+    * Tell if a form has a unique solution.
+    * @return None if not. Else Some() of the internal args used.
+    */
   def solve() =
     canUniquelySolve(args, tgt, Seq())
 }

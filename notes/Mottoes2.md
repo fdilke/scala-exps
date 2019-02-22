@@ -150,3 +150,21 @@ considered above, except it keeps track of more. Do as new code, using previous 
 
 At any point we have: a list of args, some of which may have been used, a target, and a list of unreachables.
 
+# What is a motto?
+
+We're not entirely sure, but:
+- a motto should be uniquely solvable with no redundant args
+- a motto should not include another motto as an internal argument
+
+# To do
+
+- Make sure new solver's concept of "unique solvability" (with optional redundant args) is consistent with previous code -
+have a HighLevelSanityTest to ensure this
+
+- Add a method to enumerate internal arguments
+
+- Add tests that we correctly calculate what internal args are used when solving a form.
+
+- Notes to firm up vocab?
+
+- Expediant demise of the binary forms?
