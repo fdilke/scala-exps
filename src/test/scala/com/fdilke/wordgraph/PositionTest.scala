@@ -116,7 +116,6 @@ class PositionTest extends FunSpec {
         "Utah",
         "Wyoming"
       ), None) shouldBe 'P
-
     }
   }
 }
