@@ -2,7 +2,7 @@ package com.fdilke.wordgraph
 
 import scala.reflect.ClassTag
 
-case class IndexedGraph[NODE : ClassTag](
+class IndexedGraph[NODE : ClassTag](
   nodes: Set[NODE],
   rawAdjacency: (NODE, NODE) => Boolean
 ) {
@@ -36,4 +36,71 @@ case class IndexedGraph[NODE : ClassTag](
       case -1 => adjacencyTable(index2)(index1)
       case _ => false
     }
+
+  def positionFromNodes(
+    words: Set[NODE],
+    prevWord: Option[NODE]
+  ) = Position(
+    words map { indexOf },
+    prevWord map { indexOf }
+  )
+
+  lazy val initialPosition: Position =
+    position(
+      (0 to size).toSet,
+      None
+    )
+
+  def position(
+    words: Set[Int],
+    prevWord: Option[Int]
+  ) = Position(
+    words,
+    prevWord
+  )
+
+  case class Position(
+    words: Set[Int],
+    prevWord: Option[Int]
+  ) {
+    def allowedMoves: Set[Int] =
+      prevWord match {
+        case None => words
+        case Some(prev) =>
+          words.filter {
+            isAdjacent(_, prev)
+          }
+      }
+
+    def allowedMovesAsNodes: Set[NODE] =
+      allowedMoves map { value }
+
+    def move(newWord: Int): Position =
+      if (!words.contains(newWord))
+        throw new IllegalArgumentException("word not in set")
+      else if(
+        !prevWord.forall {
+          isAdjacent(_, newWord)
+        }
+      ) throw new IllegalArgumentException("word not adjacent to previous")
+      else
+        position(
+          words.filterNot { _ == newWord },
+          Some(newWord)
+        )
+
+    def moveFromNode(newNode: NODE): Position =
+      move(indexOf(newNode))
+
+    def winningMoves: Set[Int] =
+      allowedMoves.filter { newWord =>
+        move(newWord).isP
+      }
+
+    def isP: Boolean =
+      winningMoves.isEmpty
+
+    def isN: Boolean =
+      !isP
+  }
 }

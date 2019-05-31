@@ -4,21 +4,28 @@ import org.scalatest.{FunSpec, Matchers}
 import Matchers._
 
 class PositionTest extends FunSpec {
+  private val graph =
+    new IndexedGraph[String](
+      Set("foo", "bar", "baz", "corge", "fred") ++
+        States.stateNames.toList,
+      WordGraphCriterion.adjacent
+    )
+
   describe("Allowable moves in a WordGraph position") {
     it("are all, if there is no previous word") {
-      Position(
+      graph.positionFromNodes(
         Set("foo", "bar"),
         None
-      ).allowedMoves shouldBe Set(
+      ).allowedMovesAsNodes shouldBe Set(
         "foo", "bar"
       )
     }
 
     it("are all adjacent to the previous word, if present") {
-      Position(
+      graph.positionFromNodes(
         Set("foo", "bar", "baz"),
         Some("corge")
-      ).allowedMoves shouldBe Set(
+      ).allowedMovesAsNodes shouldBe Set(
         "foo", "bar"
       )
     }
@@ -27,58 +34,66 @@ class PositionTest extends FunSpec {
   describe("Making a move in a WordGraph position") {
     it("is only allowed if it's in the set") {
       intercept[IllegalArgumentException] {
-        Position(Set("foo", "bar"), Some("fred")).move("corge")
+        graph.positionFromNodes(
+          Set("foo", "bar"),
+          Some("fred")
+        ).moveFromNode("corge")
       }
     }
 
     it("is only allowed if it's adjacent") {
       intercept[IllegalArgumentException] {
-        Position(Set("foo", "bar", "corge"), Some("baz")).move("corge")
+        graph.positionFromNodes(
+          Set("foo", "bar", "corge"),
+          Some("baz")
+        ).moveFromNode("corge")
       }
     }
 
     it("removes the move from the set and stores it as previous") {
-      Position(
+      graph.positionFromNodes(
         Set("foo", "bar", "corge"),
         Some("fred")
-      ).move("corge") shouldBe Position(
-        Set("foo", "bar"),
-        Some("corge")
-      )
+      ).moveFromNode("corge") shouldBe
+        graph.positionFromNodes(
+          Set("foo", "bar"),
+          Some("corge")
+        )
 
-      Position(
+      graph.positionFromNodes(
         Set("foo", "bar", "corge"),
         None
-      ).move("corge") shouldBe Position(
-        Set("foo", "bar"),
-        Some("corge")
-      )
+      ).moveFromNode("corge") shouldBe
+        graph.positionFromNodes(
+          Set("foo", "bar"),
+          Some("corge")
+        )
     }
   }
 
   describe("Verifying WordGraph positions for P") {
     it("has the right basic properties") {
-      Position(Set.empty, None) shouldBe 'P
-      Position(Set("foo"), None) should not be 'P
-      Position(Set("foo", "bar"), None) should not be 'P
-      Position(Set("bar", "baz"), None) shouldBe 'P
+      graph.positionFromNodes(Set.empty, None) shouldBe 'P
+      graph.positionFromNodes(Set("foo"), None) should not be 'P
+      graph.positionFromNodes(Set("foo", "bar"), None) should not be 'P
+      graph.positionFromNodes(Set("bar", "baz"), None) shouldBe 'P
     }
 
     it("depends only on parity for complete graphs") {
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Delaware",
         "Florida",
         "Georgia"
       ), None) shouldBe 'N
 
-      Position(Set(
+      graph.positionFromNodes(Set(
         "New Hampshire",
         "New Jersey",
         "New Mexico",
         "New York",
       ), None) shouldBe 'P
 
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Rhode Island",
         "South Carolina",
         "South Dakota",
@@ -86,7 +101,7 @@ class PositionTest extends FunSpec {
         "Texas"
       ), None) shouldBe 'N
 
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Illinois",
         "Indiana",
         "Missouri",
@@ -96,21 +111,21 @@ class PositionTest extends FunSpec {
     }
 
     it("can handle more complex scenarios") {
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Alabama",
         "Connecticut",
         "Kentucky",
         "Minnesota"
       ), None) shouldBe 'P
 
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Arkansas",
         "Hawaii",
         "New Jersey",
         "Ohio",
       ), None) shouldBe 'P
 
-      Position(Set(
+      graph.positionFromNodes(Set(
         "Oregon",
         "Pennsylvania",
         "Utah",

@@ -10,7 +10,7 @@ class IndexedGraphTest extends FunSpec {
   describe("Indexed graphs") {
     it("create an index of their vertex sets") {
       val graph =
-        IndexedGraph(
+        new IndexedGraph(
           Set("foo", "bar", "baz"),
           alwaysAdjacent
         )
@@ -24,7 +24,7 @@ class IndexedGraphTest extends FunSpec {
     }
 
     it("measure the size of the graph") {
-      IndexedGraph(
+      new IndexedGraph(
         Set("foo", "bar", "baz"),
         alwaysAdjacent
       ).size shouldBe 3
@@ -35,7 +35,7 @@ class IndexedGraphTest extends FunSpec {
       adjacencyHelper.flagAdjacent("foo", "bar")
       adjacencyHelper.flagAdjacent("bar", "baz")
       val graph =
-        IndexedGraph(
+        new IndexedGraph(
           Set("foo", "bar", "baz", "corge"),
           adjacencyHelper.isAdjacent
         )

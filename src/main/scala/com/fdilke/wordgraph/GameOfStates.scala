@@ -1,8 +1,7 @@
 package com.fdilke.wordgraph
 
-object GameOfStates extends App {
-
-  private val stateNames: Set[String] = Set(
+object States {
+  val stateNames: Set[String] = Set(
     "Alabama",
     "Alaska",
     "Arizona",
@@ -54,8 +53,15 @@ object GameOfStates extends App {
     "Wisconsin",
     "Wyoming"
   )
+}
 
-  val game = Position(stateNames, None)
+object GameOfStates extends App {
+  val graph =
+    new IndexedGraph(
+      States.stateNames,
+      WordGraphCriterion.adjacent
+    )
+  val game = graph.initialPosition
   println("Computing value of game...")
   val nextWins = game.isN
   println("... done")
