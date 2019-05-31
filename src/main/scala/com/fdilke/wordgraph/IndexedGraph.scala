@@ -47,7 +47,7 @@ class IndexedGraph[NODE : ClassTag](
 
   lazy val initialPosition: Position =
     position(
-      (0 to size).toSet,
+      (0 until size).toSet,
       None
     )
 

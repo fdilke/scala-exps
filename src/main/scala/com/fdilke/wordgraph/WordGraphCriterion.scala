@@ -19,6 +19,4 @@ object WordGraphCriterion {
       str1.toLowerCase(),
       str2.toLowerCase()
     )
-
-  5.toChar
 }
