@@ -57,12 +57,66 @@ class PositionTest extends FunSpec {
   }
 
   describe("Verifying WordGraph positions for P") {
-    ignore("has the right basic properties") {
+    it("has the right basic properties") {
       Position(Set.empty, None) shouldBe 'P
       Position(Set("foo"), None) should not be 'P
       Position(Set("foo", "bar"), None) should not be 'P
       Position(Set("bar", "baz"), None) shouldBe 'P
     }
-  }
 
+    it("depends only on parity for complete graphs") {
+      Position(Set(
+        "Delaware",
+        "Florida",
+        "Georgia"
+      ), None) shouldBe 'N
+
+      Position(Set(
+        "New Hampshire",
+        "New Jersey",
+        "New Mexico",
+        "New York",
+      ), None) shouldBe 'P
+
+      Position(Set(
+        "Rhode Island",
+        "South Carolina",
+        "South Dakota",
+        "Tennessee",
+        "Texas"
+      ), None) shouldBe 'N
+
+      Position(Set(
+        "Illinois",
+        "Indiana",
+        "Missouri",
+        "Texas",
+        "Kentucky"
+      ), None) shouldBe 'N
+    }
+
+    it("can handle more complex scenarios") {
+      Position(Set(
+        "Alabama",
+        "Connecticut",
+        "Kentucky",
+        "Minnesota"
+      ), None) shouldBe 'P
+
+      Position(Set(
+        "Arkansas",
+        "Hawaii",
+        "New Jersey",
+        "Ohio",
+      ), None) shouldBe 'P
+
+      Position(Set(
+        "Oregon",
+        "Pennsylvania",
+        "Utah",
+        "Wyoming"
+      ), None) shouldBe 'P
+
+    }
+  }
 }

@@ -6,9 +6,6 @@ case class Position(
   words: Set[String],
   prevWord: Option[String]
 ) {
-  def isP: Boolean =
-    winningMoves.isEmpty
-
   def allowedMoves: Set[String] =
     prevWord match {
       case None => words
@@ -33,5 +30,13 @@ case class Position(
         )
 
   def winningMoves: Set[String] =
-    ??? // allowedMoves.
+    allowedMoves.filter { newWord =>
+      move(newWord).isP
+    }
+
+  def isP: Boolean =
+    winningMoves.isEmpty
+
+  def isN: Boolean =
+    !isP
 }
