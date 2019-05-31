@@ -45,9 +45,44 @@ class IndexedGraph[NODE : ClassTag](
     prevWord map { indexOf }
   )
 
+  def reachableFrom(
+    words: Set[Int],
+    startWord: Int
+   ): Set[Int] = {
+    var nodesSoFar: Set[Int] =
+      Set.empty
+    var addNeighboursOf: Set[Int] =
+      Set(startWord)
+
+    do {
+      val extras =
+        words filter { index =>
+          addNeighboursOf.exists { addMine =>
+            isAdjacent(index, addMine)
+          }
+        } diff nodesSoFar
+      nodesSoFar ++= extras
+      addNeighboursOf = extras
+    } while(addNeighboursOf.nonEmpty)
+
+    nodesSoFar
+  }
+
+  def reachableFromAsNodes(
+    words: Set[NODE],
+    startWord: NODE
+   ): Set[NODE] =
+    reachableFrom(
+      words map indexOf,
+      indexOf(startWord)
+    ) map value
+
+  lazy val indexRange: Set[Int] =
+    (0 until size).toSet
+
   lazy val initialPosition: Position =
     position(
-      (0 until size).toSet,
+      indexRange,
       None
     )
 
@@ -102,5 +137,15 @@ class IndexedGraph[NODE : ClassTag](
 
     def isN: Boolean =
       !isP
+
+    def trimComponents: Position =
+      prevWord match {
+        case None => this
+        case Some(prev) =>
+          position(
+            reachableFrom(words, prev),
+            prevWord
+          )
+      }
   }
 }

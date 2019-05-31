@@ -60,3 +60,7 @@ remove any nodes we can't possibly
 ever connect to - and that is HARD to
 compute efficiently.
 
+# Next...
+
+use "reachability" of positions (just implemented)
+

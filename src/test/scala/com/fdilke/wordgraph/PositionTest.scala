@@ -133,4 +133,24 @@ class PositionTest extends FunSpec {
       ), None) shouldBe 'P
     }
   }
+
+  describe("Trimming components in WordGraph positions for reachability") {
+    it("has the right basic properties") {
+      graph.positionFromNodes(
+        Set(
+          "New Jersey",
+          "Arkansas",
+          "Ohio"
+        ),
+        Some("Texas")
+      ).trimComponents shouldBe
+        graph.positionFromNodes(
+          Set(
+            "New Jersey",
+            "Arkansas",
+          ),
+          Some("Texas")
+        )
+    }
+  }
 }

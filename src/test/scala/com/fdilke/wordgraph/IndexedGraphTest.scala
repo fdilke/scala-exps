@@ -39,7 +39,6 @@ class IndexedGraphTest extends FunSpec {
           Set("foo", "bar", "baz", "corge"),
           adjacencyHelper.isAdjacent
         )
-      System.err.println(s"queriedAdj = ${adjacencyHelper.queriedAdjacencies}")
       adjacencyHelper.queriedAdjacencies.size shouldBe 6
       val foo = graph.indexOf("foo")
       val bar = graph.indexOf("bar")
@@ -47,6 +46,42 @@ class IndexedGraphTest extends FunSpec {
       graph.isAdjacent(foo, bar) shouldBe true
       graph.isAdjacent(foo, baz) shouldBe false
       adjacencyHelper.queriedAdjacencies.size shouldBe 6
+    }
+
+    it("tests reachability") {
+      val adjacencyHelper = new AdjacencyHelper
+      adjacencyHelper.flagAdjacent("foo", "bar")
+      adjacencyHelper.flagAdjacent("bar", "baz")
+      val graph =
+        new IndexedGraph(
+          Set("foo", "bar", "baz", "corge"),
+          adjacencyHelper.isAdjacent
+        )
+      graph.reachableFromAsNodes(
+        Set("foo", "bar", "baz", "corge"),
+        "baz"
+      ) shouldBe Set(
+        "foo", "bar", "baz"
+      )
+    }
+
+    it("tests reachability - a more complex example") {
+      val adjacencyHelper = new AdjacencyHelper
+      adjacencyHelper.flagAdjacent("foo", "bar")
+      adjacencyHelper.flagAdjacent("bar", "baz")
+      adjacencyHelper.flagAdjacent("baz", "boi")
+      adjacencyHelper.flagAdjacent("baz", "quux")
+      val graph =
+        new IndexedGraph(
+          Set("foo", "bar", "baz", "corge", "quux", "wurve" ,"boi"),
+          adjacencyHelper.isAdjacent
+        )
+      graph.reachableFromAsNodes(
+        Set("bar", "baz", "corge", "quux", "wurve" ,"boi"),
+        "baz"
+      ) shouldBe Set(
+        "bar", "baz", "boi", "quux"
+      )
     }
   }
 
@@ -61,14 +96,13 @@ class IndexedGraphTest extends FunSpec {
       mutable.Buffer[(String, String)]()
 
     def flagAdjacent(str1: String, str2: String): Unit = {
-      val edge = str1 -> str2
-      adjacencies.add(edge)
+      adjacencies.add(str1 -> str2)
     }
 
     def isAdjacent(str1: String, str2: String): Boolean = {
-      val edge = str1 -> str2
-      queriedAdjacencies.append(edge)
-      adjacencies.contains(edge)
+      queriedAdjacencies.append(str1 -> str2)
+      adjacencies.contains(str1 -> str2) ||
+        adjacencies.contains(str2 -> str1)
     }
   }
 }
