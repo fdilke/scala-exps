@@ -1,8 +1,8 @@
 package com.fdilke.varsymm
 
 import com.fdilke.varsymm.GroupMatcher.beAGroupOf
+import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-import org.scalatest.{FunSpec, Matchers}
 
 class DihedralGroupTest extends FunSpec {
 

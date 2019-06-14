@@ -3,10 +3,10 @@ package com.fdilke.permutations
 import scala.math.max
 import scala.language.postfixOps
 
-object Permutation {
-  val identity = new Permutation(Seq[Int]())
+object OldPermutation {
+  val identity = new OldPermutation(Seq[Int]())
 
-  def apply(values:Int*) = new Permutation(canonical(values:_*))
+  def apply(values:Int*) = new OldPermutation(canonical(values:_*))
 
   def canonical(values:Int*) = values slice(0, essentialDegree(values:_*))
 
@@ -19,11 +19,11 @@ object Permutation {
     }
 }
 
-class Permutation(val values: Seq[Int]) {
-  def apply(that : Permutation) : Permutation = {
+class OldPermutation(val values: Seq[Int]) {
+  def apply(that : OldPermutation) : OldPermutation = {
     val maxDegree = max(degree, that.degree)
     val composite = { n : Int => apply(that.apply(n))}
-    Permutation(0 until maxDegree map composite:_*)
+    OldPermutation(0 until maxDegree map composite:_*)
   }
 
   def apply(n : Int) : Int = if (n < degree) values(n) else n
@@ -47,7 +47,7 @@ class Permutation(val values: Seq[Int]) {
   }
 
   override def equals(other: Any): Boolean = other match {
-    case that: Permutation =>  values == that.values
+    case that: OldPermutation =>  values == that.values
     case _ => false
   }
 

@@ -1,13 +1,13 @@
 package com.fdilke.permutations
 
 object GenerateGroup {
-  def apply(generators: Permutation*) = {
+  def apply(generators: OldPermutation*) = {
     if (generators.isEmpty) {
-      new GenerateGroup(Set(Permutation.identity))
+      new GenerateGroup(Set(OldPermutation.identity))
     } else {
       val g = generators.toSet
 
-      def genloop(t: Set[Permutation], x: Set[Permutation]): Set[Permutation] = {
+      def genloop(t: Set[OldPermutation], x: Set[OldPermutation]): Set[OldPermutation] = {
         val xg = multiplySets(x, g)
         val xg_t = xg -- t
         if (xg_t.isEmpty) {
@@ -21,11 +21,11 @@ object GenerateGroup {
     }
   }
 
-  def multiplySets(a : Set[Permutation], b : Set[Permutation]) : Set[Permutation] =
+  def multiplySets(a : Set[OldPermutation], b : Set[OldPermutation]) : Set[OldPermutation] =
     for (x <- a; y <- b)
       yield x(y)
 }
 
-class GenerateGroup(val set: Set[Permutation]) {
+class GenerateGroup(val set: Set[OldPermutation]) {
 }
 
