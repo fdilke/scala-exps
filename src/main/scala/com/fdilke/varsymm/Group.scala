@@ -1,6 +1,6 @@
 package com.fdilke.varsymm
 
-trait Group[T] {
+trait Group[T] { group =>
   val unit: T
   val elements: Traversable[T]
   def multiply(element1: T, element2 : T): T
@@ -8,6 +8,21 @@ trait Group[T] {
 
   lazy val order: Int =
     elements.size
+
+  case class Subgroup(
+     override val elements: Traversable[T]
+  ) extends Group[T] {
+    override final val unit: T = group.unit
+
+    override final def multiply(element1: T, element2: T): T =
+      group.multiply(element1, element2)
+
+    override final def invert(element: T): T =
+      group.invert(element)
+  }
+
+  lazy val trivialSubgroup: Subgroup =
+    Subgroup(Seq(unit))
 }
 
 object GroupSugar {

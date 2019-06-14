@@ -1,7 +1,7 @@
 package com.fdilke.varsymm
 
+import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-import org.scalatest.{FunSpec, Matchers}
 
 class DihedralSymmetryTest extends FunSpec {
   describe("Dihedral symmetries") {
