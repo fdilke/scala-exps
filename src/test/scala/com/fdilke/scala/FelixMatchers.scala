@@ -5,7 +5,7 @@ import org.scalatest.matchers.{MatchResult, BeMatcher, BePropertyMatcher, BeProp
 import scala.reflect.ClassTag
 
 object FelixMatchers {
-  def anInstanceOf[T](implicit manifest: Manifest[T]) = {
+  def anInstanceOf[T](implicit manifest: Manifest[T]): BeMatcher[AnyRef] = {
     val clazz = manifest.runtimeClass
     new BeMatcher[AnyRef] {
       def apply(left: AnyRef) =
@@ -15,7 +15,7 @@ object FelixMatchers {
     }
   }
 
-  def ofType[T:ClassTag] = {
+  def ofType[T:ClassTag]: BeMatcher[AnyRef] = {
     val tClass = implicitly[ClassTag[T]].runtimeClass
     new BeMatcher[AnyRef] {
       def apply(left: AnyRef) =

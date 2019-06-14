@@ -1,8 +1,8 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import com.fdilke.varsymm.GroupMatcher.groupOf
+import org.scalatest.Matchers._
+import org.scalatest.{FunSpec, Matchers}
 
 class DihedralGroupTest extends FunSpec {
 
@@ -22,9 +22,12 @@ class DihedralGroupTest extends FunSpec {
       }
     }
 
-//    it("should actually be a group") {
-//      DihedralGroup()
-//    }
+    it("should actually be a group") {
+      val dihedralGroup: Group[Int] =
+        DihedralGroup(4)
+
+      dihedralGroup shouldBe groupOf[Int]
+    }
 
 //    it("should have the right order") {
 //
