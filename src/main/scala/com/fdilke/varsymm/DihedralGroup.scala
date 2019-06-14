@@ -11,6 +11,7 @@ object DihedralGroup {
   }
 }
 
+// The dihedral group D_2n = automorphisms of an n-gon, parameterised here by n
 class DihedralGroup(n: Int) extends Group[DihedralSymmetry] {
   override val unit: DihedralSymmetry =
     DihedralSymmetry.unit
@@ -27,5 +28,10 @@ class DihedralGroup(n: Int) extends Group[DihedralSymmetry] {
     element2: DihedralSymmetry
   ): DihedralSymmetry =
     element1.compose(element2, n)
+
+  override def invert(
+    element: DihedralSymmetry
+  ): DihedralSymmetry =
+    element.invert(modulus = n)
 }
 

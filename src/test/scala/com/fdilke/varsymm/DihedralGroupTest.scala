@@ -26,8 +26,8 @@ class DihedralGroupTest extends FunSpec {
       DihedralGroup(4) should beAGroupOf[DihedralSymmetry]
     }
 
-//    it("should have the right order") {
-//
-//    }
+    it("should have the right order") {
+      DihedralGroup(8).elements should have size 8
+    }
   }
 }
