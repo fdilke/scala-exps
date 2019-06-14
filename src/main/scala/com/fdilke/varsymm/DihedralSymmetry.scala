@@ -20,6 +20,8 @@ case class DihedralSymmetry(
   def invert(modulus: Int): DihedralSymmetry =
     if (reflect)
       this
+    else if (shift == 0)
+      DihedralSymmetry.unit
     else
       DihedralSymmetry(reflect=false, modulus - shift)
 

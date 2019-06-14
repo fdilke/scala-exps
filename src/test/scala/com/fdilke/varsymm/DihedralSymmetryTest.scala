@@ -37,6 +37,10 @@ class DihedralSymmetryTest extends FunSpec {
   }
 
   describe("Inversion of dihedral symmetries") {
+    it("works as expected for the identity") {
+      DihedralSymmetry.unit.invert(2) shouldBe DihedralSymmetry.unit
+    }
+
     it("works as expected for pure rotations") {
       val ds = DihedralSymmetry(reflect=false, 3)
       ds.invert(8) shouldBe DihedralSymmetry(reflect=false, 5)
