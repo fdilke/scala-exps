@@ -30,17 +30,17 @@ object Permutation {
       0 until degree :_*
     )
 
-  def enumerate(degree: Int): Traversable[Permutation] =
+  def enumerate(degree: Int): Seq[Permutation] =
     (0 until degree permutations) map {
       Permutation(_ :_*)
-    } toTraversable
+    } toSeq
 
   def group(degree: Int): Group[Permutation] =
     new Group[Permutation] {
       override lazy val unit: Permutation =
         Permutation.identity(degree)
 
-      override lazy val elements: Traversable[Permutation] =
+      override lazy val elements: Seq[Permutation] =
         enumerate(degree)
 
       override def multiply(

@@ -1,8 +1,10 @@
 package com.fdilke.varsymm
 
+import scala.annotation.tailrec
+
 trait Group[T] { group =>
   val unit: T
-  val elements: Traversable[T]
+  val elements: Seq[T]
   def multiply(element1: T, element2 : T): T
   def invert(element: T): T
 
@@ -10,7 +12,7 @@ trait Group[T] { group =>
     elements.size
 
   case class Subgroup(
-     override val elements: Traversable[T]
+     override val elements: Seq[T]
   ) extends Group[T] {
     override final val unit: T = group.unit
 
@@ -23,6 +25,38 @@ trait Group[T] { group =>
 
   lazy val trivialSubgroup: Subgroup =
     Subgroup(Seq(unit))
+
+  lazy val wholeGroup: Subgroup =
+    Subgroup(elements)
+
+  def generateSubgroup(generators: T*): Subgroup = {
+    val g: Set[T] =
+      generators.toSet
+
+    def multiplySets(
+      set1: Set[T],
+      set2: Set[T]
+    ): Set[T] = {
+      for (x <- set1; y <- set2)
+        yield group.multiply(x, y)
+    }
+
+    @tailrec def generate(
+      t: Set[T],
+      x: Set[T]
+    ): Set[T] = {
+      val xg = multiplySets(x, g)
+      val xg_t = xg -- t
+      if (xg_t.isEmpty)
+        t
+      else
+        generate(t ++ xg_t, xg_t)
+    }
+
+    Subgroup(
+      group.unit +: generate(g, g).toSeq
+    )
+  }
 }
 
 object GroupSugar {
