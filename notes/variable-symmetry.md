@@ -36,3 +36,19 @@ OK, I have an implementation of this. Next, to calculate subgroups.
 Seems best to first move the permutation stuff back in and make it work 
 with this machinery - then I have more groups to test the subgroup-enumerator with
 or maybe quickly redevelop the bare essentials - this code dates from 2014, can do better!
+
+# notes for hack day:
+
+What I did
+
+    Started writing a program to generate snowflake-type patterns of continuously variable symmetry.
+    The idea is that while you’re watching the pattern evolve, it will smoothly morph from having (say) reflection symmetry to 3-fold rotational symmetry, and back again.
+    I worked out a formula to do this (based on subgroups of the dihedral group D_2n) and have been thinking about implementing it for a while
+    
+What I learnt
+
+    My Scala is getting a bit rusty. In particular I had to remind myself how ScalaTest’s BeMatchers work
+    The theory of the dihedral group isn’t quite as simple as it seems
+    I need a subgroup-enumerating algorithm and therefore more groups to test it on
+    Remastering my permutation code from 2014 improved it a LOT
+

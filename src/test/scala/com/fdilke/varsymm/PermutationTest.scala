@@ -25,6 +25,14 @@ class PermutationTest extends FunSpec {
       Permutation.identity(4) shouldBe Permutation(0, 1, 2, 3)
     }
 
+    it("can be inverted") {
+      Permutation(1,0,2).inverse shouldBe
+        Permutation(1,0,2)
+
+      Permutation(1,2,0).inverse shouldBe
+        Permutation(2,0,1)
+    }
+
     it("of a given degree can be enumerated") {
       Permutation.enumerate(degree = 1) shouldBe Seq(
         Permutation.identity(1)
@@ -35,6 +43,14 @@ class PermutationTest extends FunSpec {
         Permutation(1, 0, 2), Permutation(1, 2, 0),
         Permutation(2, 0, 1), Permutation(2, 1, 0)
       )
+    }
+
+    it("of a given degree can be made into a group") {
+      val group: Group[Permutation] =
+        Permutation.group(degree = 4)
+
+      group should GroupMatcher.beAGroupOf[Permutation]
+      group.order shouldBe 24
     }
   }
 }

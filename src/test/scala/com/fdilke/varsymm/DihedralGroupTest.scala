@@ -27,7 +27,7 @@ class DihedralGroupTest extends FunSpec {
     }
 
     it("should have the right order") {
-      DihedralGroup(8).elements should have size 8
+      DihedralGroup(8).order shouldBe 8
     }
   }
 }

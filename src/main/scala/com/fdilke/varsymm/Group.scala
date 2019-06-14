@@ -5,6 +5,9 @@ trait Group[T] {
   val elements: Traversable[T]
   def multiply(element1: T, element2 : T): T
   def invert(element: T): T
+
+  lazy val order: Int =
+    elements.size
 }
 
 object GroupSugar {
