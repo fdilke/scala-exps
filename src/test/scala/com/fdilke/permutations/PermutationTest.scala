@@ -1,4 +1,4 @@
-package com.fdilke.dihedrality
+package com.fdilke.permutations
 
 import org.scalatest.FunSpec
 import org.scalatest.{Matchers, FunSpec}

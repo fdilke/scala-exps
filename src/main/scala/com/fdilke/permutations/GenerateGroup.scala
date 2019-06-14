@@ -1,9 +1,9 @@
-package com.fdilke.dihedrality
+package com.fdilke.permutations
 
-object Group {
-  def generate(generators: Permutation*) = {
+object GenerateGroup {
+  def apply(generators: Permutation*) = {
     if (generators.isEmpty) {
-      new Group(Set(Permutation.identity))
+      new GenerateGroup(Set(Permutation.identity))
     } else {
       val g = generators.toSet
 
@@ -17,7 +17,7 @@ object Group {
         }
       }
 
-      new Group(genloop(g, g))
+      new GenerateGroup(genloop(g, g))
     }
   }
 
@@ -26,6 +26,6 @@ object Group {
       yield x(y)
 }
 
-class Group(val set: Set[Permutation]) {
+class GenerateGroup(val set: Set[Permutation]) {
 }
 

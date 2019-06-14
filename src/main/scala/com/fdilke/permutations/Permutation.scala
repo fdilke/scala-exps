@@ -1,4 +1,4 @@
-package com.fdilke.dihedrality
+package com.fdilke.permutations
 
 import scala.math.max
 import scala.language.postfixOps
@@ -32,7 +32,7 @@ class Permutation(val values: Seq[Int]) {
     val array = values.toArray
 
     var flag = 1
-    for (index <- 0 to array.length-1) {
+    for (index <- array.indices) {
       if (array(index) != index) {
         var other = index
         while (index != array(other)) {
@@ -58,5 +58,6 @@ class Permutation(val values: Seq[Int]) {
 
   override def toString = s"Permutation(${values.mkString(",")})"
 
-  val degree = values.length
+  val degree: Int =
+    values.length
 }
