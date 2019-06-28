@@ -28,9 +28,4 @@ object EnumerateSubgroups {
       Seq.empty
     )
   }
-
-//    Seq(
-//      group.trivialSubgroup
-//    )
-
 }
