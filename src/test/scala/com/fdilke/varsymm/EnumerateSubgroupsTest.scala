@@ -24,22 +24,37 @@ class EnumerateSubgroupsTest extends FunSpec {
     }
 
     it("of cyclic groups works - at least orders are correct") {
-      subgroupOrders(CyclicGroup(6)) shouldBe Seq(1,2,3,6)
-      subgroupOrders(CyclicGroup(7)) shouldBe Seq(1,7)
-      subgroupOrders(CyclicGroup(8)) shouldBe Seq(1,2,4,8)
+      subgroupOrdersX(CyclicGroup(6)) shouldBe Seq(-1,-2,-3,-6)
+      subgroupOrdersX(CyclicGroup(7)) shouldBe Seq(-1,-7)
+      subgroupOrdersX(CyclicGroup(8)) shouldBe Seq(-1,-2,-4,-8)
     }
 
     it("of symmetric groups works") {
-      subgroupOrders(Permutation.group(3)) shouldBe Seq(
-        1, 2, 2, 2, 3, 6
+      subgroupOrdersX(Permutation.group(3)) shouldBe Seq(
+        -1, 2, 2, 2, -3, -6
+      )
+    }
+
+    it("of dihedral groups works") {
+      subgroupOrdersX(DihedralGroup(12)) shouldBe Seq(
+        -1, 2, 2, 2, 2, 2, 2, -2, -3, 4, 4, 4, -6, -6, -6, -12
       )
     }
   }
 
-  private def subgroupOrders[T](group: Group[T]): Seq[Int] =
+  // return the orders of a group's subgroups -
+  // with the sign reversed if they're normal!
+  // and ordered with the normal subgroups last for each order
+  private def subgroupOrdersX[T](group: Group[T]): Seq[Int] =
     EnumerateSubgroups(
       group
-    ).toSeq.map {
-      _.order
-    } sorted
+    ).toSeq.map { subgroup =>
+      subgroup.order * (
+        if (subgroup.isNormal) -1 else +1
+      )
+    } sortBy { orderX =>
+      3 * Math.abs(orderX) - (
+        if (orderX > 0) +1 else -1
+      )
+    }
 }

@@ -11,9 +11,25 @@ trait Group[T] { group =>
   lazy val order: Int =
     elements.size
 
+  final def conjugate(x: T, y : T): T =
+    multiply(
+      invert(y),
+      multiply(x, y)
+    )
+
   case class Subgroup(
      override val elements: Set[T]
-  ) extends Group[T] {
+  ) extends Group[T] { subgroup =>
+    final def isNormal: Boolean = {
+      group.elements.forall { x =>
+        subgroup.elements.subsetOf(
+          subgroup.elements.map { y =>
+            group.conjugate(y, x)
+          }
+        )
+      }
+    }
+
     override final val unit: T = group.unit
 
     override final def multiply(element1: T, element2: T): T =
@@ -21,6 +37,9 @@ trait Group[T] { group =>
 
     override final def invert(element: T): T =
       group.invert(element)
+
+    def contains(other: group.Subgroup): Boolean =
+      other.elements.subsetOf(elements)
   }
 
   lazy val trivialSubgroup: Subgroup =
@@ -68,12 +87,25 @@ trait Group[T] { group =>
         multiply(x, y) == multiply(y, x)
       }
     }
+
+  trait AnnotatedSubgroup {
+    val toSubgroup: Subgroup
+    val strictlyAbove: Set[AnnotatedSubgroup]
+    val strictlyBelow: Set[AnnotatedSubgroup]
+  }
 }
 
 object GroupSugar {
-  implicit class MultiplicationWrapper[T : Group](element: T) {
+  implicit class MultiplicationWrapper[
+    T : Group
+  ](
+    element: T
+  ) {
     def *(element2: T): T =
       implicitly[Group[T]].multiply(element, element2)
+
+    def ^(element2: T): T =
+      implicitly[Group[T]].conjugate(element, element2)
 
     def unary_~ : T =
       implicitly[Group[T]].invert(element)
