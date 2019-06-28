@@ -32,15 +32,14 @@ trait Group[T] { group =>
   def generateSubgroup(generators: T*): Subgroup =
     generateSubgroup(generators.toSet)
 
-  def generateSubgroup(generators: Set[T]): Subgroup = {
-    def multiplySets(
-      set1: Set[T],
-      set2: Set[T]
-    ): Set[T] = {
-      for (x <- set1; y <- set2)
-        yield group.multiply(x, y)
-    }
+  private def multiplySets(
+    set1: Set[T],
+    set2: Set[T]
+  ): Set[T] =
+    for (x <- set1; y <- set2)
+      yield group.multiply(x, y)
 
+  def generateSubgroup(generators: Set[T]): Subgroup = {
     @tailrec def generate(
       t: Set[T],
       x: Set[T]
@@ -57,6 +56,18 @@ trait Group[T] { group =>
       generate(generators, generators) + group.unit
     )
   }
+
+  def isCyclic: Boolean =
+    elements.exists { candidateGenerator =>
+      generateSubgroup(candidateGenerator) == wholeGroup
+    }
+
+  def isAbelian: Boolean =
+    elements.forall { x =>
+      elements.forall { y =>
+        multiply(x, y) == multiply(y, x)
+      }
+    }
 }
 
 object GroupSugar {

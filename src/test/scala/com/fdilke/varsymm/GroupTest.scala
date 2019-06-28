@@ -15,7 +15,7 @@ class GroupTest extends FunSpec {
 
       group.generateSubgroup(
         transposition
-      ).elements.toSet shouldBe Set(
+      ).elements shouldBe Set(
         group.unit,
         transposition
       )
@@ -27,6 +27,18 @@ class GroupTest extends FunSpec {
         rotation
       ).elements.toSet shouldBe
         group.elements.toSet
+    }
+
+    it("can tell if a group is cyclic") {
+      CyclicGroup(9).isCyclic shouldBe true
+      DihedralGroup(4).isCyclic shouldBe false
+      Permutation.group(3).isCyclic shouldBe false
+    }
+
+    it("can tell if a group is abelian") {
+      CyclicGroup(9).isAbelian shouldBe true
+      DihedralGroup(4).isAbelian shouldBe true
+      Permutation.group(3).isAbelian shouldBe false
     }
   }
 }
