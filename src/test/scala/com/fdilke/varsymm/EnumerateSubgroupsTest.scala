@@ -20,5 +20,14 @@ class EnumerateSubgroupsTest extends FunSpec {
         twoGroup.wholeGroup
       )
     }
+
+//    it("of the cyclic group works") {
+//      val twoGroup = CyclicGroup(6)
+//
+//      EnumerateSubgroups(twoGroup) shouldBe Set(
+//        twoGroup.trivialSubgroup,
+//        twoGroup.wholeGroup
+//      )
+//    }
   }
 }

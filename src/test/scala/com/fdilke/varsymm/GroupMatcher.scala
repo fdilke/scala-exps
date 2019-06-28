@@ -16,7 +16,7 @@ object GroupMatcher {
     group =>
         MatchResult(
           {
-            group.elements.exists { _ == group.unit }
+            group.elements.contains(group.unit)
           },
           "structure does not contain its unit",
           "structure contains its unit"
@@ -27,8 +27,7 @@ object GroupMatcher {
         MatchResult(
           {
             group.elements.forall{ x =>
-              val theInverse = ~x
-              group.elements.exists { _ == theInverse }
+              group.elements.contains(~x)
             }
           },
           "structure is not closed under inversion",
@@ -41,15 +40,12 @@ object GroupMatcher {
           {
             group.elements.forall{ x =>
               group.elements.forall { y =>
-                val theProduct = x * y
-                group.elements.exists {
-                  _ == theProduct
-                }
+                group.elements.contains(x * y)
               }
             }
           },
-          "structure is not closed under inversion",
-          "structure is closed under inversion"
+          "structure is not closed under multiplication",
+          "structure is closed under multiplication"
         )
 
   def obeyTheUnitLaw[T]: Matcher[Group[T]] =
@@ -58,6 +54,7 @@ object GroupMatcher {
           {
             val unit: T = group.unit
             group.elements.forall { x =>
+              println(s"trying: x = $x")
               ( x * unit == x ) &&
                 ( unit * x == x )
             }
