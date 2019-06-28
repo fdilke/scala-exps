@@ -16,9 +16,9 @@ class DihedralGroup(n: Int) extends Group[DihedralSymmetry] {
   override val unit: DihedralSymmetry =
     DihedralSymmetry.unit
 
-  override val elements: Seq[DihedralSymmetry] =
+  override val elements: Set[DihedralSymmetry] =
     for {
-      sign <- Seq(true, false)
+      sign <- Set(true, false)
       shift <- 0 until n
     } yield
       DihedralSymmetry(sign, shift)

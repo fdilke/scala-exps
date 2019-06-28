@@ -1,5 +1,7 @@
 package com.fdilke.varsymm
 
+import scala.language.postfixOps
+
 case class Permutation(
   images: Int*
 ) {
@@ -30,17 +32,17 @@ object Permutation {
       0 until degree :_*
     )
 
-  def enumerate(degree: Int): Seq[Permutation] =
+  def enumerate(degree: Int): Set[Permutation] =
     (0 until degree permutations) map {
       Permutation(_ :_*)
-    } toSeq
+    } toSet
 
   def group(degree: Int): Group[Permutation] =
     new Group[Permutation] {
       override lazy val unit: Permutation =
         Permutation.identity(degree)
 
-      override lazy val elements: Seq[Permutation] =
+      override lazy val elements: Set[Permutation] =
         enumerate(degree)
 
       override def multiply(

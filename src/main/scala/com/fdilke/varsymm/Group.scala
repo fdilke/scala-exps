@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 
 trait Group[T] { group =>
   val unit: T
-  val elements: Seq[T]
+  val elements: Set[T]
   def multiply(element1: T, element2 : T): T
   def invert(element: T): T
 
@@ -12,7 +12,7 @@ trait Group[T] { group =>
     elements.size
 
   case class Subgroup(
-     override val elements: Seq[T]
+     override val elements: Set[T]
   ) extends Group[T] {
     override final val unit: T = group.unit
 
@@ -24,15 +24,15 @@ trait Group[T] { group =>
   }
 
   lazy val trivialSubgroup: Subgroup =
-    Subgroup(Seq(unit))
+    Subgroup(Set(unit))
 
   lazy val wholeGroup: Subgroup =
     Subgroup(elements)
 
-  def generateSubgroup(generators: T*): Subgroup = {
-    val g: Set[T] =
-      generators.toSet
+  def generateSubgroup(generators: T*): Subgroup =
+    generateSubgroup(generators.toSet)
 
+  def generateSubgroup(generators: Set[T]): Subgroup = {
     def multiplySets(
       set1: Set[T],
       set2: Set[T]
@@ -45,7 +45,7 @@ trait Group[T] { group =>
       t: Set[T],
       x: Set[T]
     ): Set[T] = {
-      val xg = multiplySets(x, g)
+      val xg = multiplySets(x, generators)
       val xg_t = xg -- t
       if (xg_t.isEmpty)
         t
@@ -54,7 +54,7 @@ trait Group[T] { group =>
     }
 
     Subgroup(
-      group.unit +: generate(g, g).toSeq
+      generate(generators, generators) + group.unit
     )
   }
 }

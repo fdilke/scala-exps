@@ -34,11 +34,11 @@ class PermutationTest extends FunSpec {
     }
 
     it("of a given degree can be enumerated") {
-      Permutation.enumerate(degree = 1) shouldBe Seq(
+      Permutation.enumerate(degree = 1) shouldBe Set(
         Permutation.identity(1)
       )
 
-      Permutation.enumerate(degree = 3).toSet shouldBe Set(
+      Permutation.enumerate(degree = 3) shouldBe Set(
         Permutation(0, 1, 2), Permutation(0, 2, 1),
         Permutation(1, 0, 2), Permutation(1, 2, 0),
         Permutation(2, 0, 1), Permutation(2, 1, 0)

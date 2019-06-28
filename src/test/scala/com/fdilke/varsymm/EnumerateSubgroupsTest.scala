@@ -7,23 +7,15 @@ class EnumerateSubgroupsTest extends FunSpec {
   describe("Enumerating subgroups") {
     it("of the trivial group works") {
       val trivialGroup = Permutation.group(1)
-      EnumerateSubgroups(trivialGroup) shouldBe Seq(
+      EnumerateSubgroups(trivialGroup) shouldBe Set(
         trivialGroup.trivialSubgroup
       )
     }
 
-    // TODO: fix
-    ignore("of the 2-element group works") {
+    it("of the 2-element group works") {
       val twoGroup = Permutation.group(2)
-      val thing = EnumerateSubgroups(twoGroup)
-      println("thing size = " + thing.size)
-      val Seq(foo, bar): Seq[twoGroup.Subgroup] = thing
-      println("foo = " + foo)
-      println("bar= " + bar)
-      println("foo size = " + foo.order)
-      println("bar= size " + bar.order)
 
-      EnumerateSubgroups(twoGroup).toSet shouldBe Set(
+      EnumerateSubgroups(twoGroup) shouldBe Set(
         twoGroup.trivialSubgroup,
         twoGroup.wholeGroup
       )
