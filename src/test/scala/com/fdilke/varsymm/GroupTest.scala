@@ -40,5 +40,27 @@ class GroupTest extends FunSpec {
       DihedralGroup(4).isAbelian shouldBe true
       Permutation.group(3).isAbelian shouldBe false
     }
+
+    describe("can compute the centre") {
+      it("for cyclic groups") {
+        val group = CyclicGroup(9)
+        group.centre shouldBe group.wholeGroup
+      }
+
+      it("for symmetric groups") {
+        val group = Permutation.group(4)
+        group.centre shouldBe group.trivialSubgroup
+      }
+
+      it("for dihedral groups") {
+        val group = DihedralGroup(4)
+        group.centre shouldBe group.wholeGroup
+      }
+
+      it("for bigger dihedral groups") {
+        val group = DihedralGroup(6)
+        group.centre.order shouldBe 1
+      }
+    }
   }
 }

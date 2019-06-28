@@ -48,6 +48,15 @@ trait Group[T] { group =>
   lazy val wholeGroup: Subgroup =
     Subgroup(elements)
 
+  lazy val centre: Subgroup =
+    Subgroup(
+      elements filter { x =>
+        elements forall { y =>
+          group.commutes(x, y)
+        }
+      }
+    )
+
   def generateSubgroup(generators: T*): Subgroup =
     generateSubgroup(generators.toSet)
 
@@ -84,9 +93,12 @@ trait Group[T] { group =>
   def isAbelian: Boolean =
     elements.forall { x =>
       elements.forall { y =>
-        multiply(x, y) == multiply(y, x)
+        commutes(x, y)
       }
     }
+
+  def commutes(x: T, y: T): Boolean =
+    multiply(x, y) == multiply(y, x)
 
   trait AnnotatedSubgroup {
     val toSubgroup: Subgroup
