@@ -4,6 +4,8 @@ trait ZigZag[L] {
   val isZig: Boolean
   val lower: L
   val upper: L
+
+  final lazy val isZag = !isZig
 }
 
 case class Zig[L](
@@ -17,7 +19,7 @@ case class Zag[L](
   override val upper: L,
   override val lower: L
 ) extends ZigZag[L] {
-  override val isZig = true
+  override val isZig = false
 }
 
 case class AlternatingZigZagFactory[L <: LatticeElement[L]](
@@ -28,6 +30,12 @@ case class AlternatingZigZagFactory[L <: LatticeElement[L]](
     Zig(
       lattice.bottom,
       selectOne(lattice.bottom.strictlyAbove)
+    )
+
+  val initialZag: ZigZag[L] =
+    Zag(
+      lattice.top,
+      selectOne(lattice.top.strictlyBelow)
     )
 
   private def selectOne[X](set: Set[X]): X =
