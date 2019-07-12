@@ -52,3 +52,11 @@ What I learnt
     I need a subgroup-enumerating algorithm and therefore more groups to test it on
     Remastering my permutation code from 2014 improved it a LOT
 
+adventures with dependent types: can you really not do this:
+
+case class AnnotatedSubgroupLattice[T](
+  group: Group[T]
+) extends AnnotatedLattice[group.AnnotatedSubgroup]
+
+This is because of some small print about constructors
+Try using an object instead ... 
