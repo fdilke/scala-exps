@@ -88,5 +88,9 @@ they will be a set of "annotated inclusions" H <= K
 where H or K is L, and which includes the coset reps.
 
 add the framework to make all this typesafe,
-then the machinery to calculate the coset reps...
+then the machinery to calculate the coset reps... done!
+
+Next is to use it in LocalInclusion
+and then, we can start drawing things...
+or at least calculating the geometry to do so
 

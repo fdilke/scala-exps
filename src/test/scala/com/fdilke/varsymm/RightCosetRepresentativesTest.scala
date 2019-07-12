@@ -49,7 +49,7 @@ class RightCosetRepresentativesTest extends FunSpec {
             group.orderOf(x) == 2
           }.get
         )
-      val representatives =
+      val representatives: Seq[DihedralSymmetry] =
         RightCosetRepresentatives(group)(
           subgroup,
           group.wholeGroup
