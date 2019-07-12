@@ -8,7 +8,7 @@ trait Group[T] { group =>
   def multiply(element1: T, element2 : T): T
   def invert(element: T): T
 
-  lazy val order: Int =
+  final lazy val order: Int =
     elements.size
 
   final def conjugate(x: T, y : T): T =
@@ -17,7 +17,7 @@ trait Group[T] { group =>
       multiply(x, y)
     )
 
-  case class Subgroup(
+  final case class Subgroup(
      override val elements: Set[T]
   ) extends Group[T] { subgroup =>
     final def isNormal: Boolean = {
@@ -38,17 +38,17 @@ trait Group[T] { group =>
     override final def invert(element: T): T =
       group.invert(element)
 
-    def contains(other: group.Subgroup): Boolean =
+    final def contains(other: group.Subgroup): Boolean =
       other.elements.subsetOf(elements)
   }
 
-  lazy val trivialSubgroup: Subgroup =
+  final lazy val trivialSubgroup: Subgroup =
     Subgroup(Set(unit))
 
-  lazy val wholeGroup: Subgroup =
+  final lazy val wholeGroup: Subgroup =
     Subgroup(elements)
 
-  lazy val centre: Subgroup =
+  final lazy val centre: Subgroup =
     Subgroup(
       elements filter { x =>
         elements forall { y =>
@@ -57,7 +57,7 @@ trait Group[T] { group =>
       }
     )
 
-  def generateSubgroup(generators: T*): Subgroup =
+  final def generateSubgroup(generators: T*): Subgroup =
     generateSubgroup(generators.toSet)
 
   private def multiplySets(
@@ -67,7 +67,7 @@ trait Group[T] { group =>
     for (x <- set1; y <- set2)
       yield group.multiply(x, y)
 
-  def generateSubgroup(generators: Set[T]): Subgroup = {
+  final def generateSubgroup(generators: Set[T]): Subgroup = {
     @tailrec def generate(
       t: Set[T],
       x: Set[T]
@@ -85,19 +85,22 @@ trait Group[T] { group =>
     )
   }
 
-  def isCyclic: Boolean =
+  def orderOf(x: T): Int =
+    generateSubgroup(x).order
+
+  final def isCyclic: Boolean =
     elements.exists { candidateGenerator =>
       generateSubgroup(candidateGenerator) == wholeGroup
     }
 
-  def isAbelian: Boolean =
+  final def isAbelian: Boolean =
     elements.forall { x =>
       elements.forall { y =>
         commutes(x, y)
       }
     }
 
-  def commutes(x: T, y: T): Boolean =
+  final def commutes(x: T, y: T): Boolean =
     multiply(x, y) == multiply(y, x)
 
   trait AnnotatedSubgroup {
