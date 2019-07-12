@@ -60,8 +60,8 @@ class GroupTest extends FunSpec {
       }
 
       it("for bigger dihedral groups") {
-        val group = DihedralGroup(6)
-        group.centre.order shouldBe 1
+        DihedralGroup(6).centre.order shouldBe 1
+        DihedralGroup(12).centre.order shouldBe 2
       }
     }
   }
