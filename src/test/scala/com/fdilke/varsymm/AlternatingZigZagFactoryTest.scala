@@ -3,13 +3,15 @@ package com.fdilke.varsymm
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
+import scala.Function.tupled
 import scala.language.postfixOps
 
 class AlternatingZigZagFactoryTest extends FunSpec {
   private val group = DihedralGroup(6)
   private val lattice = AnnotatedSubgroupLattice(group)
   private val generator: () => Int = { () => 0 }
-  private val zzFactory = AlternatingZigZagFactory(lattice, generator)
+  private val zzFactory =
+    new AlternatingZigZagFactory(lattice, generator)
 
   describe("an alternating zig zag factory") {
     it("provides an initial zig") {
@@ -27,10 +29,65 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       zigzag.lower shouldBe lattice.top.strictlyBelow.head
       sanityCheck(zigzag)
     }
+
+    it("turns zigs into zags and vice versa") {
+      val zigzags: Seq[ZigZag[group.AnnotatedSubgroup]] =
+        Iterator.iterate(
+          zzFactory.initialZig
+        ) {
+          zzFactory(_)
+        } take 20 toSeq
+
+      for {
+        (zigzag, index) <- zigzags.zipWithIndex
+      } {
+        zigzag shouldBe zigOrZag(index)
+        sanityCheck(zigzag)
+      }
+
+      for {
+        (zeg, zog) <- zigzags zip zigzags.tail
+      }
+        checkContinuation(zeg, zog)
+    }
   }
 
   private def sanityCheck(zigzag: ZigZag[group.AnnotatedSubgroup]) =
     zigzag.upper.toSubgroup.contains(
       zigzag.lower.toSubgroup
     ) shouldBe true
+
+  private def zigOrZag(index: Int): Symbol =
+    if (index % 2 == 0)
+      'zig
+    else
+      'zag
+
+  private def zagOrZig(index: Int): Symbol =
+    zigOrZag(index + 1)
+
+  private def checkContinuation(
+    zigOrZag: ZigZag[group.AnnotatedSubgroup],
+    zagOrZig: ZigZag[group.AnnotatedSubgroup]
+  ) =
+    if (zigOrZag.isZig)
+      checkZigThenZag(zigOrZag, zagOrZig)
+    else
+      checkZagThenZig(zigOrZag, zagOrZig)
+
+  private def checkZigThenZag(
+    zig: ZigZag[group.AnnotatedSubgroup],
+    zag: ZigZag[group.AnnotatedSubgroup]
+  ) {
+    zag shouldBe 'zag
+    zag.upper shouldBe zig.upper
+  }
+
+  private def checkZagThenZig(
+    zag: ZigZag[group.AnnotatedSubgroup],
+    zig: ZigZag[group.AnnotatedSubgroup]
+  ) {
+    zig shouldBe 'zig
+    zig.lower shouldBe zag.lower
+  }
 }

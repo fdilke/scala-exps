@@ -22,7 +22,7 @@ case class Zag[L](
   override val isZig = false
 }
 
-case class AlternatingZigZagFactory[L <: LatticeElement[L]](
+class AlternatingZigZagFactory[L <: LatticeElement[L]](
   lattice: AnnotatedLattice[L],
   generator: () => Int
 ) {
@@ -37,6 +37,18 @@ case class AlternatingZigZagFactory[L <: LatticeElement[L]](
       lattice.top,
       selectOne(lattice.top.strictlyBelow)
     )
+
+  def apply(zigzag: ZigZag[L]): ZigZag[L] =
+    if (zigzag.isZig)
+      Zag(
+        zigzag.upper,
+        selectOne(zigzag.upper.strictlyBelow)
+      )
+    else
+      Zig(
+        zigzag.lower,
+        selectOne(zigzag.lower.strictlyAbove)
+      )
 
   private def selectOne[X](set: Set[X]): X =
     if (set.isEmpty)
