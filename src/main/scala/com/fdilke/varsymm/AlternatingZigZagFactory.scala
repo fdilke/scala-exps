@@ -27,28 +27,28 @@ class AlternatingZigZagFactory[L <: LatticeElement[L]](
   generator: () => Int
 ) {
   val initialZig: ZigZag[L] =
-    Zig(
-      lattice.bottom,
-      selectOne(lattice.bottom.strictlyAbove)
-    )
+    zigFrom(lattice.bottom)
 
   val initialZag: ZigZag[L] =
+    zagFrom(lattice.top)
+
+  private def zigFrom(element: L): ZigZag[L] =
+    Zig(
+      element,
+      selectOne(element.strictlyAbove)
+    )
+
+  private def zagFrom(element: L): ZigZag[L] =
     Zag(
-      lattice.top,
-      selectOne(lattice.top.strictlyBelow)
+      element,
+      selectOne(element.strictlyBelow)
     )
 
   def apply(zigzag: ZigZag[L]): ZigZag[L] =
     if (zigzag.isZig)
-      Zag(
-        zigzag.upper,
-        selectOne(zigzag.upper.strictlyBelow)
-      )
+      zagFrom(zigzag.upper)
     else
-      Zig(
-        zigzag.lower,
-        selectOne(zigzag.lower.strictlyAbove)
-      )
+      zigFrom(zigzag.lower)
 
   private def selectOne[X](set: Set[X]): X =
     if (set.isEmpty)

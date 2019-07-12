@@ -46,9 +46,30 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       }
 
       for {
-        (zeg, zog) <- zigzags zip zigzags.tail
+        (zigOrZag, zagOrZig) <- zigzags zip zigzags.tail
       }
-        checkContinuation(zeg, zog)
+        checkContinuation(zigOrZag, zagOrZig)
+    }
+
+    it("turns zags into zigs and vice versa") {
+      val zagzigs: Seq[ZigZag[group.AnnotatedSubgroup]] =
+        Iterator.iterate(
+          zzFactory.initialZag
+        ) {
+          zzFactory(_)
+        } take 20 toSeq
+
+      for {
+        (zigzag, index) <- zagzigs.zipWithIndex
+      } {
+        zigzag shouldBe zagOrZig(index)
+        sanityCheck(zigzag)
+      }
+
+      for {
+        (zigOrZag, zagOrZig) <- zagzigs zip zagzigs.tail
+      }
+        checkContinuation(zigOrZag, zagOrZig)
     }
   }
 
