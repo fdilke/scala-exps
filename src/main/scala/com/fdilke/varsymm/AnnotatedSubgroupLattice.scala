@@ -2,12 +2,26 @@ package com.fdilke.varsymm
 
 import scala.language.postfixOps
 
-trait LatticeElement[L <: LatticeElement[L]] {
-  val strictlyAbove: Set[L]
-  val strictlyBelow: Set[L]
+trait AnnotatedInclusion[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+] {
+  val upper: L
+  val lower: L
 }
 
-trait AnnotatedLattice[L <: LatticeElement[L]] {
+trait LatticeElement[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+] {
+  val strictlyAbove: Set[I]
+  val strictlyBelow: Set[I]
+}
+
+trait AnnotatedLattice[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+] {
   val bottom: L
   val top: L
 }
@@ -15,14 +29,20 @@ trait AnnotatedLattice[L <: LatticeElement[L]] {
 object AnnotatedSubgroupLattice {
   def apply[T](
     group: Group[T]
-  ): AnnotatedLattice[group.AnnotatedSubgroup] =
-  new AnnotatedLattice[group.AnnotatedSubgroup] {
+  ): AnnotatedLattice[
+    group.AnnotatedSubgroup,
+    group.AnnotatedSubgroupInclusion
+  ] =
+  new AnnotatedLattice[
+    group.AnnotatedSubgroup,
+    group.AnnotatedSubgroupInclusion
+  ] {
     private val subgroups: Set[group.Subgroup] =
       EnumerateSubgroups(group)
 
     val annotatedSubgroups: Map[
       group.Subgroup,
-      group.AnnotatedSubgroup
+      LocalAnnotatedSubgroup
     ] = subgroups.map { subgroup =>
       subgroup -> new LocalAnnotatedSubgroup(subgroup)
     } toMap
@@ -39,33 +59,46 @@ object AnnotatedSubgroupLattice {
 
     class LocalAnnotatedSubgroup(
       override val toSubgroup: group.Subgroup
-    ) extends group.AnnotatedSubgroup {
+    ) extends group.AnnotatedSubgroup { thisAnnotatedSubgroup =>
       override lazy val strictlyAbove: Set[
-        group.AnnotatedSubgroup
+        group.AnnotatedSubgroupInclusion
       ] =
-        strictlyDifferentWith {
-          _.contains(toSubgroup)
-        }
+        strictlyDifferentWith(
+          _.contains(toSubgroup),
+          above = true
+        )
 
       override lazy val strictlyBelow: Set[
-        group.AnnotatedSubgroup
+        group.AnnotatedSubgroupInclusion
       ] =
-        strictlyDifferentWith {
-          toSubgroup.contains(_)
-        }
+        strictlyDifferentWith(
+          toSubgroup.contains(_),
+          above = false
+        )
 
       private def strictlyDifferentWith(
-        criterion: group.Subgroup => Boolean
+        criterion: group.Subgroup => Boolean,
+        above: Boolean
       ): Set[
-        group.AnnotatedSubgroup
+        group.AnnotatedSubgroupInclusion
       ] =
         subgroups.filter { subgroup: group.Subgroup =>
           subgroup != toSubgroup &&
           criterion(subgroup)
         } map { subgroup: group.Subgroup =>
           annotatedSubgroups(subgroup)
+        } map { annotatedSubgroup: LocalAnnotatedSubgroup =>
+          if (above)
+            new LocalInclusion(thisAnnotatedSubgroup, annotatedSubgroup)
+          else
+            new LocalInclusion(annotatedSubgroup, thisAnnotatedSubgroup)
         }
     }
+
+    class LocalInclusion(
+      override val lower: LocalAnnotatedSubgroup,
+      override val upper: LocalAnnotatedSubgroup
+    ) extends group.AnnotatedSubgroupInclusion
   }
 }
 

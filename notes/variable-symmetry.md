@@ -59,4 +59,34 @@ case class AnnotatedSubgroupLattice[T](
 ) extends AnnotatedLattice[group.AnnotatedSubgroup]
 
 This is because of some small print about constructors
-Try using an object instead ... 
+Try using an object instead ... done.
+
+Could use de Bruijn sequences to run a Markov chain
+and make sure the entire lattice is traversed...
+for now, this seems like too much work
+
+now need: for each subgroup inclusion,
+a normalized coset decomposition
+( sequence of representatives that starts with 1 ).
+Note we are thinking of a typical dihedral symmetry as
+
+    (F^a)(T^b)
+    with generators: F a reflection, T a rotation
+    and F^2 = T^6 = 1, T^F = F^-1
+    
+so had better think of these as acting on points on the right
+The plane is a right D_2n-set
+so: right cosets or left cosets?
+
+Also need an "inclusion cache"    
+so when we generate a zigzag, it is annotated
+(from the store)
+... maybe best to do this as part of the 
+strictlyAbove and strictlyBelow
+so instead of being a Set[L] (L = lattice element)
+they will be a set of "annotated inclusions" H <= K
+where H or K is L, and which includes the coset reps.
+
+add the framework to make all this typesafe,
+then the machinery to calculate the coset reps...
+

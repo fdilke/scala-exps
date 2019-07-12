@@ -3,7 +3,6 @@ package com.fdilke.varsymm
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
-import scala.Function.tupled
 import scala.language.postfixOps
 
 class AlternatingZigZagFactoryTest extends FunSpec {
@@ -18,7 +17,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       val zigzag = zzFactory.initialZig
       zigzag shouldBe 'zig
       zigzag.lower shouldBe lattice.bottom
-      zigzag.upper shouldBe lattice.bottom.strictlyAbove.head
+      zigzag.upper.toSubgroup shouldBe lattice.bottom.strictlyAbove.toSeq(0).upper.toSubgroup
       sanityCheck(zigzag)
     }
 
@@ -26,7 +25,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       val zigzag = zzFactory.initialZag
       zigzag shouldBe 'zag
       zigzag.upper shouldBe lattice.top
-      zigzag.lower shouldBe lattice.top.strictlyBelow.head
+      zigzag.lower.toSubgroup shouldBe lattice.top.strictlyBelow.toSeq(0).lower.toSubgroup
       sanityCheck(zigzag)
     }
 

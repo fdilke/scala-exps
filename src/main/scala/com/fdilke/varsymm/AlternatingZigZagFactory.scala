@@ -1,5 +1,7 @@
 package com.fdilke.varsymm
 
+import scala.language.postfixOps
+
 trait ZigZag[L] {
   val isZig: Boolean
   val lower: L
@@ -22,26 +24,33 @@ case class Zag[L](
   override val isZig = false
 }
 
-class AlternatingZigZagFactory[L <: LatticeElement[L]](
-  lattice: AnnotatedLattice[L],
+class AlternatingZigZagFactory[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+](
+  lattice: AnnotatedLattice[L, I],
   generator: () => Int
 ) {
-  val initialZig: ZigZag[L] =
+  lazy val initialZig: ZigZag[L] =
     zigFrom(lattice.bottom)
 
-  val initialZag: ZigZag[L] =
+  lazy val initialZag: ZigZag[L] =
     zagFrom(lattice.top)
 
   private def zigFrom(element: L): ZigZag[L] =
     Zig(
       element,
-      selectOne(element.strictlyAbove)
+      selectOne(
+        element.strictlyAbove
+      ) upper
     )
 
   private def zagFrom(element: L): ZigZag[L] =
     Zag(
       element,
-      selectOne(element.strictlyBelow)
+      selectOne(
+        element.strictlyBelow
+      ) lower
     )
 
   def apply(zigzag: ZigZag[L]): ZigZag[L] =

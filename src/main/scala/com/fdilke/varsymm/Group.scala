@@ -103,11 +103,19 @@ trait Group[T] { group =>
   final def commutes(x: T, y: T): Boolean =
     multiply(x, y) == multiply(y, x)
 
-  trait AnnotatedSubgroup extends LatticeElement[AnnotatedSubgroup] {
+  trait AnnotatedSubgroup extends LatticeElement[
+    AnnotatedSubgroup,
+    AnnotatedSubgroupInclusion
+  ] {
     val toSubgroup: Subgroup
-    override val strictlyAbove: Set[AnnotatedSubgroup]
-    override val strictlyBelow: Set[AnnotatedSubgroup]
+    override val strictlyAbove: Set[AnnotatedSubgroupInclusion]
+    override val strictlyBelow: Set[AnnotatedSubgroupInclusion]
   }
+
+  trait AnnotatedSubgroupInclusion extends AnnotatedInclusion[
+    AnnotatedSubgroup,
+    AnnotatedSubgroupInclusion
+  ]
 }
 
 object GroupSugar {

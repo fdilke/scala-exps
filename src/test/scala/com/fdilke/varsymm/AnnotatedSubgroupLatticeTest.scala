@@ -12,7 +12,12 @@ class AnnotatedSubgroupLatticeTest extends FunSpec {
       lattice.bottom.toSubgroup shouldBe group.trivialSubgroup
       lattice.bottom.strictlyBelow shouldBe Set.empty
       lattice.bottom.strictlyAbove map {
-        _.toSubgroup
+        _.lower.toSubgroup
+      } shouldBe Set(
+        group.trivialSubgroup
+      )
+      lattice.bottom.strictlyAbove map {
+        _.upper.toSubgroup
       } shouldBe Set(
         group.wholeGroup
       )
@@ -20,9 +25,14 @@ class AnnotatedSubgroupLatticeTest extends FunSpec {
       lattice.top.toSubgroup shouldBe group.wholeGroup
       lattice.top.strictlyAbove shouldBe Set.empty
       lattice.top.strictlyBelow map {
-        _.toSubgroup
+        _.lower.toSubgroup
       } shouldBe Set(
         group.trivialSubgroup
+      )
+      lattice.top.strictlyBelow map {
+        _.upper.toSubgroup
+      } shouldBe Set(
+        group.wholeGroup
       )
     }
   }
