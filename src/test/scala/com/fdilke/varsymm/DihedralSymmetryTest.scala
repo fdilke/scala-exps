@@ -4,6 +4,8 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers._
 
 class DihedralSymmetryTest extends FunSpec {
+  private val TOLERANCE = 0.001
+
   describe("Dihedral symmetries") {
     it("can be straight rotations, composing by addition") {
       val ds1 = DihedralSymmetry(reflect=false, 3)
@@ -52,4 +54,29 @@ class DihedralSymmetryTest extends FunSpec {
     }
   }
 
+  describe("Matrix representation of dihedral symmetries") {
+    it("works as expected for the identity") {
+      Matrix22.withinTolerance(
+        DihedralSymmetry.unit.toMatrix,
+        Matrix22.identity,
+        TOLERANCE
+      ) shouldBe true
+    }
+
+//    it("works as expected for the fundamental reflection") {
+//      Matrix22.withinTolerance(
+//        DihedralSymmetry(true, 0).toMatrix,
+//        Matrix22(1,0,0,-1),
+//        TOLERANCE
+//      ) shouldBe true
+//    }
+//
+//    it("works as expected for the fundamental rotation") {
+//      Matrix22.withinTolerance(
+//        DihedralSymmetry(true, 0).toMatrix,
+//        Matrix22(1,0,0,-1),
+//        TOLERANCE
+//      ) shouldBe true
+//    }
+  }
 }

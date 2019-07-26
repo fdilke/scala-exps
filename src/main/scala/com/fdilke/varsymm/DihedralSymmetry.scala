@@ -17,6 +17,9 @@ case class DihedralSymmetry(
  reflect: Boolean,
  shift : Int
 ) {
+  def toMatrix : Matrix22 =
+    Matrix22.identity
+
   def invert(modulus: Int): DihedralSymmetry =
     if (reflect)
       this
