@@ -3,8 +3,8 @@ package com.fdilke.varsymm
 import com.fdilke.varsymm.DihedralSymmetry.signOf
 
 object DihedralSymmetry {
-  val unit: DihedralSymmetry =
-    DihedralSymmetry(reflect=false, 0)
+  def unit(modulus: Int): DihedralSymmetry =
+    DihedralSymmetry(modulus, reflect=false, 0)
 
   def signOf(reflect: Boolean): Int =
     if (reflect)
@@ -14,26 +14,27 @@ object DihedralSymmetry {
 }
 
 case class DihedralSymmetry(
+ modulus: Int,
  reflect: Boolean,
  shift : Int
 ) {
   def toMatrix : Matrix22 =
     Matrix22.identity
 
-  def invert(modulus: Int): DihedralSymmetry =
+  def invert: DihedralSymmetry =
     if (reflect)
       this
     else if (shift == 0)
-      DihedralSymmetry.unit
+      DihedralSymmetry.unit(modulus)
     else
-      DihedralSymmetry(reflect=false, modulus - shift)
+      DihedralSymmetry(modulus, reflect=false, modulus - shift)
 
   def compose(
-     other: DihedralSymmetry,
-     modulus: Int
+     other: DihedralSymmetry
   ): DihedralSymmetry =
     DihedralSymmetry(
-      reflect= reflect ^ other.reflect,
+      modulus,
+      reflect = reflect ^ other.reflect,
       (
         (signOf(other.reflect) * shift) +
           other.shift + modulus

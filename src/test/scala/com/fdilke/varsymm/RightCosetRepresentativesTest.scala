@@ -30,7 +30,7 @@ class RightCosetRepresentativesTest extends FunSpec {
     it("is sensible for the case G:H = 2") {
       val subgroup =
         group.generateSubgroup(
-          DihedralSymmetry(reflect = false, 1)
+          DihedralSymmetry(3, reflect = false, 1)
         )
       val representatives =
         RightCosetRepresentatives(group)(
@@ -39,7 +39,7 @@ class RightCosetRepresentativesTest extends FunSpec {
         )
       representatives should have size 2
       representatives.head shouldBe group.unit
-      subgroup.elements should not contain(representatives(1))
+      subgroup.elements should not contain representatives(1)
     }
 
     it("is sensible for the case G:H = 3") {
