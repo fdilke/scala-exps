@@ -16,8 +16,12 @@ case class Matrix22(
 }
 
 object Matrix22 {
+
   val identity: Matrix22 =
     Matrix22(1, 0, 0, 1)
+
+  val reflection: Matrix22 =
+    Matrix22(1, 0, 0, -1)
 
   def withinTolerance(
      matrix: Matrix22,

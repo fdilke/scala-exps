@@ -18,8 +18,14 @@ case class DihedralSymmetry(
  reflect: Boolean,
  shift : Int
 ) {
-  def toMatrix : Matrix22 =
-    Matrix22.identity
+  def toMatrix : Matrix22 = {
+    val theta = shift * (2 * Math.PI / modulus)
+    val rotation = Matrix22.rotation(theta)
+    if (reflect)
+      Matrix22.reflection * rotation
+    else
+      rotation
+  }
 
   def invert: DihedralSymmetry =
     if (reflect)

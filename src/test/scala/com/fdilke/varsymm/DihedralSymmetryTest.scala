@@ -71,20 +71,58 @@ class DihedralSymmetryTest extends FunSpec {
       ) shouldBe true
     }
 
-//    it("works as expected for the fundamental reflection") {
-//      Matrix22.withinTolerance(
-//        DihedralSymmetry(true, 0).toMatrix,
-//        Matrix22(1,0,0,-1),
-//        TOLERANCE
-//      ) shouldBe true
-//    }
-//
-//    it("works as expected for the fundamental rotation") {
-//      Matrix22.withinTolerance(
-//        DihedralSymmetry(true, 0).toMatrix,
-//        Matrix22(1,0,0,-1),
-//        TOLERANCE
-//      ) shouldBe true
-//    }
+    it("works as expected for the fundamental reflection") {
+      Matrix22.withinTolerance(
+        DihedralSymmetry(7, reflect=true, 0).toMatrix,
+        Matrix22(1,0,0,-1),
+        TOLERANCE
+      ) shouldBe true
+    }
+
+    it("works as expected for the fundamental rotation") {
+      val c = 1/Math.sqrt(2)
+      val s = c
+      Matrix22.withinTolerance(
+        DihedralSymmetry(8, reflect=false, 1).toMatrix,
+        Matrix22(c, -s, s, c),
+        TOLERANCE
+      ) shouldBe true
+    }
+
+    it("works as expected for a typical hybrid symmetry") {
+      val s = 1/Math.sqrt(2)
+      val c = -s
+      Matrix22.withinTolerance(
+        DihedralSymmetry(8, reflect=true, 3).toMatrix,
+        Matrix22(c, -s, -s, -c),
+        TOLERANCE
+      ) shouldBe true
+    }
+
+    it("is homomorphic") {
+      val x = DihedralSymmetry(9, reflect=true, 4)
+      val y = DihedralSymmetry(9, reflect=false, 7)
+      Matrix22.withinTolerance(
+        x.toMatrix * y.toMatrix,
+        x.compose(y).toMatrix,
+        TOLERANCE
+      ) shouldBe true
+    }
+
+    it("is injective") {
+      val symmetries: Set[DihedralSymmetry] =
+        DihedralGroup(14).elements
+      for {
+        x <- symmetries
+        y <- symmetries
+      }
+        if (x != y)
+          Matrix22.withinTolerance(
+            x.toMatrix,
+            y.toMatrix,
+            TOLERANCE
+          ) shouldBe false
+    }
+
   }
 }
