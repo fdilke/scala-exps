@@ -32,12 +32,15 @@ case class DihedralSymmetry(
   def compose(
      other: DihedralSymmetry
   ): DihedralSymmetry =
-    DihedralSymmetry(
-      modulus,
-      reflect = reflect ^ other.reflect,
-      (
-        (signOf(other.reflect) * shift) +
-          other.shift + modulus
-      ) % modulus
-    )
+    if (modulus == other.modulus)
+      DihedralSymmetry(
+        modulus,
+        reflect = reflect ^ other.reflect,
+        (
+          (signOf(other.reflect) * shift) +
+            other.shift + modulus
+        ) % modulus
+      )
+    else
+      throw new IllegalArgumentException("different moduli - can't compose")
 }

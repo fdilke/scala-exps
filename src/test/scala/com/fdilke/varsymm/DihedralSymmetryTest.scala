@@ -36,6 +36,14 @@ class DihedralSymmetryTest extends FunSpec {
       val ds2 = DihedralSymmetry(8, reflect=true, 4)
       ds.compose(ds2) shouldBe DihedralSymmetry(8, reflect=false, 1)
     }
+
+    it("of differing moduli cannot be composed") {
+      val ds = DihedralSymmetry(7, reflect=true, 3)
+      val ds2 = DihedralSymmetry(8, reflect=true, 4)
+      intercept[IllegalArgumentException] {
+        ds.compose(ds2)
+      }
+    }
   }
 
   describe("Inversion of dihedral symmetries") {
