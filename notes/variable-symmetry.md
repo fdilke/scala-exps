@@ -94,3 +94,22 @@ Next is to use it in LocalInclusion
 and then, we can start drawing things...
 or at least calculating the geometry to do so
 
+# added matrix machinery
+
+can create/multiply 2x2 matrices
+create rotation matrices
+matrix representation of dihedral group is injective / homomorphic
+
+# to draw the pictures:
+
+pick a modulus (n where we operate on an n-gon)
+construct the group
+pick an initial zig 1 <= H. Then:
+given K <=/>= L
+take a (continuously evolving / rotating?) shape S 
+(bunch of circular blobs) 
+draw SK
+turn SK into SL using the patented formula
+
+have concept of Scalar, so X is one if matrices can act on it?
+then circular blobs / patterns can be managed uniformly
