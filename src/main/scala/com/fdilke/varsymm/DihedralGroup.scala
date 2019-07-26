@@ -27,7 +27,7 @@ class DihedralGroup(n: Int) extends Group[DihedralSymmetry] {
     element1: DihedralSymmetry,
     element2: DihedralSymmetry
   ): DihedralSymmetry =
-    element1.compose(element2)
+    element1 * element2
 
   override def invert(
     element: DihedralSymmetry

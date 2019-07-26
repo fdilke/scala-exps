@@ -35,7 +35,7 @@ case class DihedralSymmetry(
     else
       DihedralSymmetry(modulus, reflect=false, modulus - shift)
 
-  def compose(
+  def *(
      other: DihedralSymmetry
   ): DihedralSymmetry =
     if (modulus == other.modulus)

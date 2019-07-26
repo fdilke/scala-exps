@@ -10,38 +10,38 @@ class DihedralSymmetryTest extends FunSpec {
     it("can be straight rotations, composing by addition") {
       val ds1 = DihedralSymmetry(20, reflect=false, 3)
       val ds2 = DihedralSymmetry(20, reflect=false, 5)
-      ds1.compose(ds2) shouldBe DihedralSymmetry(20, false, 8)
+      ds1 * ds2 shouldBe DihedralSymmetry(20, false, 8)
     }
 
     it("can be straight rotations, composing by addition, using modular arithmetic") {
       val ds1 = DihedralSymmetry(6, reflect=false, 3)
       val ds2 = DihedralSymmetry(6, reflect=false, 5)
-      ds1.compose(ds2) shouldBe DihedralSymmetry(6, false, 2)
+      ds1 * ds2 shouldBe DihedralSymmetry(6, false, 2)
     }
 
     it("can be straight reflections, whose squqre is the identity") {
       val ds = DihedralSymmetry(6, reflect=true, 0)
-      ds.compose(ds) shouldBe DihedralSymmetry.unit(6)
+      ds * ds shouldBe DihedralSymmetry.unit(6)
     }
 
     it("can be straight reflections, which composed with any other, flip its bit, depending on order") {
       val ds = DihedralSymmetry(8, reflect=true, 0)
       val ds2 = DihedralSymmetry(8, reflect=false, 7)
-      ds.compose(ds2) shouldBe DihedralSymmetry(8, reflect=true, 7)
-      ds2.compose(ds) shouldBe DihedralSymmetry(8, reflect=true, 1)
+      ds * ds2 shouldBe DihedralSymmetry(8, reflect=true, 7)
+      ds2 * ds shouldBe DihedralSymmetry(8, reflect=true, 1)
     }
 
     it("can be mixed, requiring all these interactions combined") {
       val ds = DihedralSymmetry(8, reflect=true, 3)
       val ds2 = DihedralSymmetry(8, reflect=true, 4)
-      ds.compose(ds2) shouldBe DihedralSymmetry(8, reflect=false, 1)
+      ds * ds2 shouldBe DihedralSymmetry(8, reflect=false, 1)
     }
 
     it("of differing moduli cannot be composed") {
       val ds = DihedralSymmetry(7, reflect=true, 3)
       val ds2 = DihedralSymmetry(8, reflect=true, 4)
       intercept[IllegalArgumentException] {
-        ds.compose(ds2)
+        ds * ds2
       }
     }
   }
@@ -104,7 +104,7 @@ class DihedralSymmetryTest extends FunSpec {
       val y = DihedralSymmetry(9, reflect=false, 7)
       Matrix22.withinTolerance(
         x.toMatrix * y.toMatrix,
-        x.compose(y).toMatrix,
+        (x * y).toMatrix,
         TOLERANCE
       ) shouldBe true
     }
@@ -123,6 +123,5 @@ class DihedralSymmetryTest extends FunSpec {
             TOLERANCE
           ) shouldBe false
     }
-
   }
 }
