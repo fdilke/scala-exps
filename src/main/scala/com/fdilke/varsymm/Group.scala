@@ -140,6 +140,9 @@ trait Group[T] { group =>
   trait MarkTable {
     val blocks: Seq[Block]
     val marks: Seq[Seq[Int]]
+
+    final lazy val orders: Seq[Int] =
+      blocks.map { _.subgroups.head.order }
   }
 
   lazy val markTable: MarkTable =
