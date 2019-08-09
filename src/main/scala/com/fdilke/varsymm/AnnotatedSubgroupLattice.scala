@@ -38,7 +38,7 @@ object AnnotatedSubgroupLattice {
     group.AnnotatedSubgroupInclusion
   ] {
     private val subgroups: Set[group.Subgroup] =
-      EnumerateSubgroups(group)
+      group.subgroups
 
     val annotatedSubgroups: Map[
       group.Subgroup,

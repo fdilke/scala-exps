@@ -9,7 +9,7 @@ class EnumerateSubgroupsTest extends FunSpec {
   describe("Enumerating subgroups") {
     it("of the trivial group works") {
       val trivialGroup = Permutation.group(1)
-      EnumerateSubgroups(trivialGroup) shouldBe Set(
+      trivialGroup.subgroups shouldBe Set(
         trivialGroup.trivialSubgroup
       )
     }
@@ -17,7 +17,7 @@ class EnumerateSubgroupsTest extends FunSpec {
     it("of the 2-element group works") {
       val twoGroup = Permutation.group(2)
 
-      EnumerateSubgroups(twoGroup) shouldBe Set(
+      twoGroup.subgroups shouldBe Set(
         twoGroup.trivialSubgroup,
         twoGroup.wholeGroup
       )
@@ -46,9 +46,7 @@ class EnumerateSubgroupsTest extends FunSpec {
   // with the sign reversed if they're normal!
   // and ordered with the normal subgroups last for each order
   private def subgroupOrdersX[T](group: Group[T]): Seq[Int] =
-    EnumerateSubgroups(
-      group
-    ).toSeq.map { subgroup =>
+    group.subgroups.toSeq.map { subgroup =>
       subgroup.order * (
         if (subgroup.isNormal) -1 else +1
       )

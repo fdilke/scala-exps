@@ -116,6 +116,9 @@ trait Group[T] { group =>
     AnnotatedSubgroup,
     AnnotatedSubgroupInclusion
   ]
+
+  lazy val subgroups: Set[Subgroup] =
+    EnumerateSubgroups(group)
 }
 
 object GroupSugar {
