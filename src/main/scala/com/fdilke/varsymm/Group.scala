@@ -132,7 +132,10 @@ trait Group[T] { group =>
   ] =
     AnnotatedSubgroupLattice(group)
 
-  case class Block(subgroups: Set[Subgroup])
+  case class Block(subgroups: Set[Subgroup]) {
+    final val order: Int =
+      subgroups.head.order
+  }
 
   trait MarkTable {
     val blocks: Seq[Block]

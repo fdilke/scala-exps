@@ -1,5 +1,8 @@
 package com.fdilke.varsymm
 
+// Notation and conventions from here:
+// https://en.wikipedia.org/wiki/Burnside_ring
+
 object MarkTable {
 
   def apply[T](group: Group[T]): group.MarkTable = {
@@ -15,12 +18,36 @@ object MarkTable {
     val orderedBlocks =
       TopologicalSort(unorderedBlocks.toSeq)
 
+    def mark(
+      k: group.Subgroup,
+      h: group.Subgroup
+    ): Int = {
+      val reps: Seq[T] =
+        RightCosetRepresentatives(group)(
+          k,
+          group.wholeGroup
+        )
+      reps.count { g =>
+        k.contains(h ^ g)
+      }
+    }
+
     new group.MarkTable {
       override val blocks: Seq[group.Block] =
         orderedBlocks
 
-      override val marks: Seq[Seq[Int]] =
-        Seq(Seq(1))
+      override val marks: Seq[Seq[Int]] = {
+        val indexedBlockheads: Seq[(group.Subgroup, Int)] =
+          orderedBlocks.map {
+            _.subgroups.head
+          }.zipWithIndex
+
+        for {
+          (k, i) <- indexedBlockheads
+        } yield for {
+          (h, j) <- indexedBlockheads if j <= i
+        } yield mark(k, h)
+      }
     }
   }
 
@@ -37,13 +64,15 @@ object MarkTable {
       override def lteq(
         block: group.Block,
         block2: group.Block
-      ): Boolean = {
-        val subgroup: group.Subgroup =
-          block.subgroups.head
+      ): Boolean =
+        if (false) { // conventional
+          val subgroup: group.Subgroup =
+            block.subgroups.head
 
-        block2.subgroups.exists { containingSubgroup =>
-          containingSubgroup.contains(subgroup)
-        }
-      }
+          block2.subgroups.exists { containingSubgroup =>
+            containingSubgroup.contains(subgroup)
+          }
+        } else // weaker criterion which seems to be used in practice
+          block.order < block2.order
     }
 }
