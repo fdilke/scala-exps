@@ -7,7 +7,7 @@ class AnnotatedSubgroupLatticeTest extends FunSpec {
   describe("The annotated subgroup lattice") {
     it("includes the relevant subgroups") {
       val group = CyclicGroup(2)
-      val lattice = AnnotatedSubgroupLattice(group)
+      val lattice = group.subgroupLattice
 
       lattice.bottom.toSubgroup shouldBe group.trivialSubgroup
       lattice.bottom.strictlyBelow shouldBe Set.empty

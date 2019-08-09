@@ -7,7 +7,7 @@ import scala.language.postfixOps
 
 class AlternatingZigZagFactoryTest extends FunSpec {
   private val group = DihedralGroup(6)
-  private val lattice = AnnotatedSubgroupLattice(group)
+  private val lattice = group.subgroupLattice
   private val generator: () => Int = { () => 0 }
   private val zzFactory =
     new AlternatingZigZagFactory(lattice, generator)
