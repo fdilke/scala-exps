@@ -20,7 +20,7 @@ trait Group[T] { group =>
   final case class Subgroup(
      override val elements: Set[T]
   ) extends Group[T] { subgroup =>
-    final def isNormal: Boolean = {
+    final def isNormal: Boolean =
       group.elements.forall { x =>
         subgroup.elements.subsetOf(
           subgroup.elements.map { y =>
@@ -28,7 +28,6 @@ trait Group[T] { group =>
           }
         )
       }
-    }
 
     override final val unit: T = group.unit
 
@@ -40,6 +39,13 @@ trait Group[T] { group =>
 
     final def contains(other: group.Subgroup): Boolean =
       other.elements.subsetOf(elements)
+
+    final def ^(x: T): group.Subgroup =
+      new group.Subgroup(
+        elements.map {
+          conjugate(_, x)
+        }
+      )
   }
 
   final lazy val trivialSubgroup: Subgroup =
@@ -125,6 +131,16 @@ trait Group[T] { group =>
     AnnotatedSubgroupInclusion
   ] =
     AnnotatedSubgroupLattice(group)
+
+  case class Block(subgroups: Set[Subgroup])
+
+  trait MarkTable {
+    val blocks: Seq[Block]
+    val marks: Seq[Seq[Int]]
+  }
+
+  lazy val markTable: MarkTable =
+    MarkTable(group)
 }
 
 object GroupSugar {

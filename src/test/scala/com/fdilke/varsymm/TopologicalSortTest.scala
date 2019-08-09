@@ -2,7 +2,6 @@ package com.fdilke.varsymm
 
 import org.scalatest.FunSpec
 import org.scalatest.Matchers._
-//import scala.math.ordering._
 
 object PartialOrderingSet {
 
