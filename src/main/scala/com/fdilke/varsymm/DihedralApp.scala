@@ -3,9 +3,12 @@ package com.fdilke.varsymm
 import java.awt.{Color, Graphics, GraphicsDevice, GraphicsEnvironment}
 
 import GroupSugar._
+import com.fdilke.varsymm.AltDihedralApp.device
 import javax.swing.WindowConstants
 import javax.swing.JFrame
 import javax.swing.JPanel
+
+import scala.util.Random
 
 object DihedralApp extends App {
   implicit val group = DihedralGroup(12)
@@ -26,23 +29,65 @@ object DihedralApp extends App {
   }
 }
 
+class BlotPanel extends JPanel {
+  val random: Random = scala.util.Random
+  val shapes: Seq[Drawable] = randomCircles()
+
+  override def paintComponent(gfx: Graphics) {
+    for { shape <- shapes }
+      shape.draw(gfx, getWidth, getHeight)
+  }
+
+  def randomCircles(): Seq[Drawable] = {
+    (1 to 7) map { n =>
+      val radius = random.nextDouble()/2
+      val leeway = 2 * (1 - radius)
+      val x = radius - 1 + leeway * random.nextDouble()
+      val y = radius - 1 + leeway * random.nextDouble()
+      val color = new Color(
+        random.nextInt(256),
+        random.nextInt(256),
+        random.nextInt(256)
+      )
+      new DrawableCircle(x, y, radius, color)
+    }
+  }
+}
+
+trait Drawable {
+  def draw(gfx: Graphics, width: Int, height: Int)
+}
+
+class DrawableCircle(
+  x : Double,
+  y : Double,
+  radius : Double,
+  color: Color
+) extends Drawable {
+  override def draw(gfx: Graphics, width: Int, height: Int): Unit = {
+    gfx.setColor(color)
+    gfx.fillOval(
+      ((1 + x - radius) * width/2).toInt,
+      ((1 + y - radius) * height/2).toInt,
+      (radius * width).toInt,
+      (radius * height).toInt,
+    )
+  }
+}
+
 object AltDihedralApp extends App {
+  val device: GraphicsDevice =
+    GraphicsEnvironment.getLocalGraphicsEnvironment.getScreenDevices()(0)
+
   new JFrame { frame =>
-    setContentPane(new JPanel {
-      override def paintComponent(g: Graphics): Unit = {
-        g.setColor(Color.PINK)
-        g.fillRect(20, 20, 100, 200) // Draw on g here e.g.
-      }
-    })
+    setContentPane(new BlotPanel)
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setUndecorated(true)
 
     pack()
 
-    val device: GraphicsDevice =
-      GraphicsEnvironment.getLocalGraphicsEnvironment.getScreenDevices()(0)
-
     device.setFullScreenWindow(frame)
+    setSize(300, 400)
     setVisible(true)
  }
 }
