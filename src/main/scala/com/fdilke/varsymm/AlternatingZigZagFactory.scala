@@ -6,6 +6,11 @@ trait ZigZag[L] {
   val isZig: Boolean
   val lower: L
   val upper: L
+  final lazy val next: L =
+    if (isZig)
+      lower
+    else
+      upper
 
   final lazy val isZag = !isZig
 }

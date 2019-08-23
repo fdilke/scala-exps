@@ -18,6 +18,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       zigzag shouldBe 'zig
       zigzag.lower shouldBe lattice.bottom
       zigzag.upper.toSubgroup shouldBe lattice.bottom.strictlyAbove.toSeq(0).upper.toSubgroup
+      zigzag.next shouldBe zigzag.lower
       sanityCheck(zigzag)
     }
 
@@ -26,6 +27,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       zigzag shouldBe 'zag
       zigzag.upper shouldBe lattice.top
       zigzag.lower.toSubgroup shouldBe lattice.top.strictlyBelow.toSeq(0).lower.toSubgroup
+      zigzag.next shouldBe zigzag.upper
       sanityCheck(zigzag)
     }
 
