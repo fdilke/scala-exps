@@ -2,35 +2,24 @@ package com.fdilke.varsymm
 
 import java.awt.{Color, Graphics, GraphicsDevice, GraphicsEnvironment}
 
-import javax.swing.{JFrame, JPanel}
+import javax.swing.{JFrame, JPanel, Timer}
 
 import scala.util.Random
 
-object DihedralApp extends App {
-  implicit val group = DihedralGroup(12)
-  println("Listing elements of order 6")
-  for {
-    x <- group.elements if group.orderOf(x) == 2
-  } {
-    val hasSqRoot = group.elements.exists { y =>
-      y * y == x
-    }
-    val hasCubeRoot = group.elements.exists { y =>
-      y * y * y == x
-    }
-    println("element of order 2: " + x +
-      (if (hasSqRoot) "²" else "") +
-      (if (hasCubeRoot) "³" else "")
-    )
-  }
-}
-
 class BlotPanel extends JPanel {
   val random: Random = scala.util.Random
-  val shapes: Seq[Drawable] = randomCircles()
+//  val shapes: Seq[Drawable] = randomCircles()
+
+    new Timer(
+      2000,
+      { _ =>
+        repaint()
+      }
+    ).start()
 
   override def paintComponent(gfx: Graphics) {
-    for { shape <- shapes }
+    gfx.clearRect(0, 0, getWidth, getHeight)
+    for { shape <- randomCircles() }
       shape.draw(gfx, getWidth, getHeight)
   }
 
@@ -90,11 +79,12 @@ object AltDihedralApp extends App {
     setSize(300, 400)
     setVisible(true)
  }
-
-  // GraphicsDevice.getLocalGraphicsEnvironment().getScreenDevices()
-//  device.getDefaultConfiguration.getImageCapabilities.
-//  device.getDefaultConfiguration.getBounds
-//  Screen
-//  javafx.stage.Screen.getPrimary().getDpi()
 }
 
+object DihedralApp extends App {
+  for { n <- 1 to 100 } {
+    val group = Permutation.group(n)
+    val marks = group.markTable
+    println(s"S($n) -> ${marks.blocks.size}")
+  }
+}
