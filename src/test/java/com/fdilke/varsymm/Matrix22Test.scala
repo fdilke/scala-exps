@@ -15,6 +15,14 @@ class Matrix22Test extends FunSpec {
       Matrix22.withinTolerance(matrix, matrix2, 0.01) shouldBe true
     }
 
+    it("have a similar utility method for comparing vectors") {
+      val vector: (Double, Double) = (1.2, 2.3)
+      val vector2: (Double, Double) = (1.201, 2.302)
+
+      Matrix22.withinTolerance(vector, vector2, 0.001) shouldBe false
+      Matrix22.withinTolerance(vector, vector2, 0.01) shouldBe true
+    }
+
     it("can be multiplied") {
       val a = Matrix22(
         2,  3,
@@ -72,6 +80,16 @@ class Matrix22Test extends FunSpec {
         TOLERANCE
       ) shouldBe true
     }
-  }
 
+    it("can act on vectors on the right") {
+      Matrix22.withinTolerance(
+        (1.0, 2.0) *: Matrix22(
+          3, 4,
+          5, 6
+        ),
+        ( 13.0, 16.0 ),
+        TOLERANCE
+      ) shouldBe true
+    }
+  }
 }

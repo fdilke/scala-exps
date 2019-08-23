@@ -13,6 +13,12 @@ case class Matrix22(
       a21*that.a11 + a22*that.a21,
       a21*that.a12 + a22*that.a22
     )
+
+  def *:(vector: (Double, Double)): (Double, Double) =
+    (
+      vector._1 * a11 + vector._2 * a21,
+      vector._1 * a12 + vector._2 * a22
+    )
 }
 
 object Matrix22 {
@@ -32,6 +38,14 @@ object Matrix22 {
     withinTolerance(matrix.a12, matrix2.a12, tolerance) &&
     withinTolerance(matrix.a21, matrix2.a21, tolerance) &&
     withinTolerance(matrix.a22, matrix2.a22, tolerance)
+
+  def withinTolerance(
+     vector: (Double, Double),
+     vector2: (Double, Double),
+     tolerance: Double
+  ) : Boolean =
+    withinTolerance(vector._1, vector2._1, tolerance) &&
+    withinTolerance(vector._2, vector2._2, tolerance)
 
   def withinTolerance(
     value: Double,
