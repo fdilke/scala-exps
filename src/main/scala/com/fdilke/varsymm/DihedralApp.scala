@@ -6,7 +6,7 @@ import javax.swing.{JFrame, JPanel, Timer}
 
 import scala.util.Random
 
-class BlotPanel extends JPanel {
+class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
   val random: Random = scala.util.Random
 //  val shapes: Seq[Drawable] = randomCircles()
 
@@ -17,10 +17,29 @@ class BlotPanel extends JPanel {
       }
     ).start()
 
+  private val generator: () => Int =
+    { () => Math.abs(Random.nextInt()) }
+
+  private val zzFactory =
+    new AlternatingZigZagFactory(
+      group.subgroupLattice,
+      generator
+    )
+  private var zigzag: ZigZag[group.AnnotatedSubgroup] =
+    zzFactory.initialZag
+
   override def paintComponent(gfx: Graphics) {
     gfx.clearRect(0, 0, getWidth, getHeight)
-    for { shape <- randomCircles() }
-      shape.draw(gfx, getWidth, getHeight)
+
+    val shapes = randomCircles()
+    for {
+      shape <- shapes
+      sym <- zigzag.next.toSubgroup.elements
+    } {
+      shape.through(sym).draw(gfx, getWidth, getHeight)
+    }
+
+    zigzag = zzFactory(zigzag)
   }
 
   def randomCircles(): Seq[Drawable] = {
@@ -41,6 +60,10 @@ class BlotPanel extends JPanel {
 
 trait Drawable {
   def draw(gfx: Graphics, width: Int, height: Int)
+
+  def through(
+    sym: DihedralSymmetry
+  ): Drawable
 }
 
 object ScaleFactor { // multiplicative fudge factor to give circular ellipses
@@ -62,14 +85,23 @@ class DrawableCircle(
       (radius * height).toInt,
     )
   }
+
+  override def through(
+    sym: DihedralSymmetry
+  ): Drawable = {
+    val (newX, newY) : (Double, Double) =
+      (x, y) *: sym.toMatrix
+    new DrawableCircle(newX, newY, radius, color)
+  }
 }
 
 object AltDihedralApp extends App {
   val device: GraphicsDevice =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getScreenDevices()(0)
+  val group = DihedralGroup(8)
 
   new JFrame { frame =>
-    setContentPane(new BlotPanel)
+    setContentPane(new BlotPanel(group))
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setUndecorated(true)
 
