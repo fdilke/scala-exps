@@ -2,11 +2,7 @@ package com.fdilke.varsymm
 
 import java.awt.{Color, Graphics, GraphicsDevice, GraphicsEnvironment}
 
-import GroupSugar._
-import com.fdilke.varsymm.AltDihedralApp.device
-import javax.swing.WindowConstants
-import javax.swing.JFrame
-import javax.swing.JPanel
+import javax.swing.{JFrame, JPanel}
 
 import scala.util.Random
 
@@ -58,6 +54,10 @@ trait Drawable {
   def draw(gfx: Graphics, width: Int, height: Int)
 }
 
+object ScaleFactor { // multiplicative fudge factor to give circular ellipses
+  val VALUE = 0.62
+}
+
 class DrawableCircle(
   x : Double,
   y : Double,
@@ -67,9 +67,9 @@ class DrawableCircle(
   override def draw(gfx: Graphics, width: Int, height: Int): Unit = {
     gfx.setColor(color)
     gfx.fillOval(
-      ((1 + x - radius) * width/2).toInt,
+      ((1 + (x - radius) * ScaleFactor.VALUE) * width/2).toInt,
       ((1 + y - radius) * height/2).toInt,
-      (radius * width).toInt,
+      (radius * width * ScaleFactor.VALUE).toInt,
       (radius * height).toInt,
     )
   }
@@ -90,4 +90,11 @@ object AltDihedralApp extends App {
     setSize(300, 400)
     setVisible(true)
  }
+
+  // GraphicsDevice.getLocalGraphicsEnvironment().getScreenDevices()
+//  device.getDefaultConfiguration.getImageCapabilities.
+//  device.getDefaultConfiguration.getBounds
+//  Screen
+//  javafx.stage.Screen.getPrimary().getDpi()
 }
+

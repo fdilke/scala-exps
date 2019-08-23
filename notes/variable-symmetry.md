@@ -113,3 +113,17 @@ turn SK into SL using the patented formula
 
 have concept of Scalar, so X is one if matrices can act on it?
 then circular blobs / patterns can be managed uniformly
+
+# initial Swing experiments
+
+can now draw random ovals - but I want them to be circles
+Can we obtain the physical dimensions of the screen?
+Yes using Eclipse SWT, supposedly but this involves building
+    OS-specific libraries
+Supposedly with javafx but which of the many libraries to use??
+    and anyway all I get is the DPI... which would have to give both
+    dimensions to be useful ... ?
+    - You download an OS-specific version but at least provided off the peg.
+What if I just measured the screen, get to where the ellipses LOOK round.
+of have a SCALE_FACTOR in [0, 1] which is applied to the horz axis:
+    effect will be, there is a left and right margin which aren't used            
