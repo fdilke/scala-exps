@@ -91,5 +91,26 @@ class Matrix22Test extends FunSpec {
         TOLERANCE
       ) shouldBe true
     }
+
+    it("have a convexity operator") {
+      Matrix22.withinTolerance(
+        Matrix22.convexity(
+          Matrix22(
+            1, 10,
+            100, 1000
+          ),
+          0.2,
+          Matrix22(
+            2, 20,
+            200, 2000
+          )
+        ),
+        Matrix22(
+          1.2, 12,
+          120, 1200
+        ),
+        TOLERANCE
+      ) shouldBe true
+    }
   }
 }

@@ -29,6 +29,25 @@ object Matrix22 {
   val reflection: Matrix22 =
     Matrix22(1, 0, 0, -1)
 
+  def convexity(
+    matrix0: Matrix22,
+    unitMeasure: Double,
+    matrix1: Matrix22
+  ): Matrix22 =
+    Matrix22(
+      convexity(matrix0.a11, unitMeasure, matrix1.a11),
+      convexity(matrix0.a12, unitMeasure, matrix1.a12),
+      convexity(matrix0.a21, unitMeasure, matrix1.a21),
+      convexity(matrix0.a22, unitMeasure, matrix1.a22)
+    )
+
+  def convexity(
+    scalar0: Double,
+    unitMeasure: Double,
+    scalar1: Double
+  ): Double =
+    scalar0 * (1 - unitMeasure) + scalar1 * unitMeasure
+
   def withinTolerance(
      matrix: Matrix22,
      matrix2: Matrix22,

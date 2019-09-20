@@ -32,7 +32,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     }
 
     it("turns zigs into zags and vice versa") {
-      val zigzags: Seq[ZigZag[group.AnnotatedSubgroup]] =
+      val zigzags: Seq[ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]] =
         Iterator.iterate(
           zzFactory.initialZig
         ) {
@@ -53,7 +53,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     }
 
     it("turns zags into zigs and vice versa") {
-      val zagzigs: Seq[ZigZag[group.AnnotatedSubgroup]] =
+      val zagzigs: Seq[ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]] =
         Iterator.iterate(
           zzFactory.initialZag
         ) {
@@ -74,10 +74,13 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     }
   }
 
-  private def sanityCheck(zigzag: ZigZag[group.AnnotatedSubgroup]) =
+  private def sanityCheck(zigzag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]) {
     zigzag.upper.toSubgroup.contains(
       zigzag.lower.toSubgroup
     ) shouldBe true
+    zigzag.inclusion.lower shouldBe zigzag.lower
+    zigzag.inclusion.upper shouldBe zigzag.upper
+  }
 
   private def zigOrZag(index: Int): Symbol =
     if (index % 2 == 0)
@@ -89,8 +92,8 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     zigOrZag(index + 1)
 
   private def checkContinuation(
-    zigOrZag: ZigZag[group.AnnotatedSubgroup],
-    zagOrZig: ZigZag[group.AnnotatedSubgroup]
+    zigOrZag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion],
+    zagOrZig: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]
   ) =
     if (zigOrZag.isZig)
       checkZigThenZag(zigOrZag, zagOrZig)
@@ -98,16 +101,16 @@ class AlternatingZigZagFactoryTest extends FunSpec {
       checkZagThenZig(zigOrZag, zagOrZig)
 
   private def checkZigThenZag(
-    zig: ZigZag[group.AnnotatedSubgroup],
-    zag: ZigZag[group.AnnotatedSubgroup]
+    zig: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion],
+    zag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]
   ) {
     zag shouldBe 'zag
     zag.upper shouldBe zig.upper
   }
 
   private def checkZagThenZig(
-    zag: ZigZag[group.AnnotatedSubgroup],
-    zig: ZigZag[group.AnnotatedSubgroup]
+    zag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion],
+    zig: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]
   ) {
     zig shouldBe 'zig
     zig.lower shouldBe zag.lower

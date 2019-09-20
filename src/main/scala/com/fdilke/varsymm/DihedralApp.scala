@@ -25,21 +25,30 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
       group.subgroupLattice,
       generator
     )
-  private var zigzag: ZigZag[group.AnnotatedSubgroup] =
+  private var zigzag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion] =
     zzFactory.initialZag
+
+  private val shapes: Seq[Drawable] = randomCircles()
+  private var unitMeasure: Double = 0
+  private val INCREMENT = 0.05
 
   override def paintComponent(gfx: Graphics) {
     gfx.clearRect(0, 0, getWidth, getHeight)
 
-    val shapes = randomCircles()
     for {
       shape: Drawable <- shapes
       sym: DihedralSymmetry <- zigzag.next.toSubgroup.elements
     } {
-      shape.through(sym.toMatrix).draw(gfx, getWidth, getHeight)
+      shape.through(
+        Matrix22.convexity(Matrix22.identity, unitMeasure, sym.toMatrix)
+      ).draw(gfx, getWidth, getHeight)
     }
 
-    zigzag = zzFactory(zigzag)
+    unitMeasure += INCREMENT
+    if (unitMeasure > 1.0) {
+      zigzag = zzFactory(zigzag)
+      unitMeasure = 0
+    }
   }
 
   def randomCircles(): Seq[Drawable] = {
