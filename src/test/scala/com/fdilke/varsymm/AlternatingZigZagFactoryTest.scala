@@ -16,18 +16,18 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     it("provides an initial zig") {
       val zigzag = zzFactory.initialZig
       zigzag shouldBe 'zig
-      zigzag.lower shouldBe lattice.bottom
-      zigzag.upper.toSubgroup shouldBe lattice.bottom.strictlyAbove.toSeq(0).upper.toSubgroup
-      zigzag.next shouldBe zigzag.lower
+      zigzag.inclusion.lower shouldBe lattice.bottom
+      zigzag.inclusion.upper.toSubgroup shouldBe lattice.bottom.strictlyAbove.toSeq(0).upper.toSubgroup
+      zigzag.next shouldBe zigzag.inclusion.lower
       sanityCheck(zigzag)
     }
 
     it("provides an initial zag") {
       val zigzag = zzFactory.initialZag
       zigzag shouldBe 'zag
-      zigzag.upper shouldBe lattice.top
-      zigzag.lower.toSubgroup shouldBe lattice.top.strictlyBelow.toSeq(0).lower.toSubgroup
-      zigzag.next shouldBe zigzag.upper
+      zigzag.inclusion.upper shouldBe lattice.top
+      zigzag.inclusion.lower.toSubgroup shouldBe lattice.top.strictlyBelow.toSeq(0).lower.toSubgroup
+      zigzag.next shouldBe zigzag.inclusion.upper
       sanityCheck(zigzag)
     }
 
@@ -75,11 +75,9 @@ class AlternatingZigZagFactoryTest extends FunSpec {
   }
 
   private def sanityCheck(zigzag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]) {
-    zigzag.upper.toSubgroup.contains(
-      zigzag.lower.toSubgroup
+    zigzag.inclusion.upper.toSubgroup.contains(
+      zigzag.inclusion.lower.toSubgroup
     ) shouldBe true
-    zigzag.inclusion.lower shouldBe zigzag.lower
-    zigzag.inclusion.upper shouldBe zigzag.upper
   }
 
   private def zigOrZag(index: Int): Symbol =
@@ -105,7 +103,7 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     zag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]
   ) {
     zag shouldBe 'zag
-    zag.upper shouldBe zig.upper
+    zag.inclusion.upper shouldBe zig.inclusion.upper
   }
 
   private def checkZagThenZig(
@@ -113,6 +111,6 @@ class AlternatingZigZagFactoryTest extends FunSpec {
     zig: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion]
   ) {
     zig shouldBe 'zig
-    zig.lower shouldBe zag.lower
+    zig.inclusion.lower shouldBe zag.inclusion.lower
   }
 }

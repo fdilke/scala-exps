@@ -2,23 +2,25 @@ package com.fdilke.varsymm
 
 import scala.language.postfixOps
 
-trait ZigZag[L, I] {
+trait ZigZag[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+] {
   val isZig: Boolean
-  val lower: L
-  val upper: L // TODO: lose lower/upper, don't need them with inclusion?
   val inclusion: I
   final lazy val next: L =
     if (isZig)
-      lower
+      inclusion.lower
     else
-      upper
+      inclusion.upper
 
   final lazy val isZag = !isZig
 }
 
-case class Zig[L, I](
-  override val lower: L,
-  override val upper: L,
+case class Zig[
+  L <: LatticeElement[L, I],
+  I <: AnnotatedInclusion[L, I]
+](
   override val inclusion: I
 ) extends ZigZag[L, I] {
   override val isZig = true
@@ -28,8 +30,6 @@ case class Zag[
   L <: LatticeElement[L, I],
   I <: AnnotatedInclusion[L, I]
 ](
-  override val upper: L,
-  override val lower: L,
   override val inclusion: I
 ) extends ZigZag[L, I] {
   override val isZig = false
@@ -53,8 +53,6 @@ class AlternatingZigZagFactory[
       element.strictlyAbove
     )
     Zig(
-      element,
-      inclusion.upper,
       inclusion
     )
   }
@@ -64,17 +62,15 @@ class AlternatingZigZagFactory[
       element.strictlyBelow
     )
     Zag(
-      element,
-      inclusion.lower,
       inclusion
     )
   }
 
   def apply(zigzag: ZigZag[L, I]): ZigZag[L, I] =
     if (zigzag.isZig)
-      zagFrom(zigzag.upper)
+      zagFrom(zigzag.inclusion.upper)
     else
-      zigFrom(zigzag.lower)
+      zigFrom(zigzag.inclusion.lower)
 
   private def selectOne[X](set: Set[X]): X =
     if (set.isEmpty)
