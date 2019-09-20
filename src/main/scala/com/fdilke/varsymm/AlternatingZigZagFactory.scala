@@ -6,6 +6,12 @@ trait ZigZag[
   L <: LatticeElement[L, I],
   I <: AnnotatedInclusion[L, I]
 ] {
+  def orient(unitMeasure: Double): Double =
+    if (isZag)
+      unitMeasure
+    else
+      (1 - unitMeasure)
+
   val isZig: Boolean
   val inclusion: I
   final lazy val next: L =

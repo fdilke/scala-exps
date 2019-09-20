@@ -10,13 +10,6 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
   val random: Random = scala.util.Random
 //  val shapes: Seq[Drawable] = randomCircles()
 
-    new Timer(
-      2000,
-      { _ =>
-        repaint()
-      }
-    ).start()
-
   private val generator: () => Int =
     { () => Math.abs(Random.nextInt()) }
 
@@ -30,17 +23,30 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
 
   private val shapes: Seq[Drawable] = randomCircles()
   private var unitMeasure: Double = 0
-  private val INCREMENT = 0.05
+  private val UPDATE_INTERVAL = 100
+  private val INCREMENT = 0.02
+
+  new Timer(
+    UPDATE_INTERVAL,
+    { _ =>
+      repaint()
+    }
+  ).start()
 
   override def paintComponent(gfx: Graphics) {
     gfx.clearRect(0, 0, getWidth, getHeight)
 
     for {
       shape: Drawable <- shapes
-      sym: DihedralSymmetry <- zigzag.next.toSubgroup.elements
+      sym: DihedralSymmetry <- zigzag.inclusion.lower.toSubgroup.elements
+      rep: DihedralSymmetry <- zigzag.inclusion.representatives
     } {
       shape.through(
-        Matrix22.convexity(Matrix22.identity, unitMeasure, sym.toMatrix)
+        Matrix22.convexity(
+          Matrix22.identity,
+          zigzag.orient(unitMeasure),
+          (sym * rep).toMatrix
+        )
       ).draw(gfx, getWidth, getHeight)
     }
 
