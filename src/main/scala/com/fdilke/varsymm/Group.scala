@@ -17,7 +17,7 @@ trait Group[T] { group =>
       multiply(x, y)
     )
 
-  final case class Subgroup(
+  case class Subgroup(
      override val elements: Set[T]
   ) extends Group[T] { subgroup =>
     def isNormal: Boolean =
@@ -121,7 +121,10 @@ trait Group[T] { group =>
   trait AnnotatedSubgroupInclusion extends AnnotatedInclusion[
     AnnotatedSubgroup,
     AnnotatedSubgroupInclusion
-  ]
+  ] {
+    lazy val representatives: Seq[T] =
+      RightCosetRepresentatives(group)(lower.toSubgroup, upper.toSubgroup)
+  }
 
   lazy val subgroups: Set[Subgroup] =
     EnumerateSubgroups(group)

@@ -36,7 +36,7 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
       shape: Drawable <- shapes
       sym: DihedralSymmetry <- zigzag.next.toSubgroup.elements
     } {
-      shape.through(sym).draw(gfx, getWidth, getHeight)
+      shape.through(sym.toMatrix).draw(gfx, getWidth, getHeight)
     }
 
     zigzag = zzFactory(zigzag)
@@ -62,7 +62,7 @@ trait Drawable {
   def draw(gfx: Graphics, width: Int, height: Int)
 
   def through(
-    sym: DihedralSymmetry
+    matrix: Matrix22
   ): Drawable
 }
 
@@ -89,10 +89,10 @@ class DrawableCircle(
   }
 
   override def through(
-    sym: DihedralSymmetry
+    matrix: Matrix22
   ): Drawable = {
     val (newX, newY) : (Double, Double) =
-      (x, y) *: sym.toMatrix
+      (x, y) *: matrix
     new DrawableCircle(newX, newY, radius, color)
   }
 }
