@@ -1,4 +1,4 @@
-# scala-exps (Scala experiments)
+# scala-exp (Scala experiments)
 
 This is a sandbox for experiments with aspects of Scala.
 Most of them are just to learn about the language but may turn

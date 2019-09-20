@@ -2,7 +2,7 @@ package com.fdilke.varsymm
 
 import java.awt.{Color, Graphics, GraphicsDevice, GraphicsEnvironment}
 
-import javax.swing.{JFrame, JPanel, Timer}
+import javax.swing.{JFrame, JPanel, Timer, WindowConstants}
 
 import scala.util.Random
 
@@ -104,7 +104,7 @@ object AltDihedralApp extends App {
 
   new JFrame { frame =>
     setContentPane(new BlotPanel(group))
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
     setUndecorated(true)
 
     pack()
