@@ -33,8 +33,8 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
 
     val shapes = randomCircles()
     for {
-      shape <- shapes
-      sym <- zigzag.next.toSubgroup.elements
+      shape: Drawable <- shapes
+      sym: DihedralSymmetry <- zigzag.next.toSubgroup.elements
     } {
       shape.through(sym).draw(gfx, getWidth, getHeight)
     }
@@ -66,7 +66,9 @@ trait Drawable {
   ): Drawable
 }
 
-object ScaleFactor { // multiplicative fudge factor to give circular ellipses
+object ScaleFactor {
+  // multiplicative fudge factor (compensating for screen's aspect ratio)
+  // to give circular ellipses
   val VALUE = 0.62
 }
 
@@ -108,12 +110,12 @@ object AltDihedralApp extends App {
     pack()
 
     device.setFullScreenWindow(frame)
-    setSize(300, 400)
+//    setSize(300, 400)
     setVisible(true)
  }
 }
 
-object DihedralApp extends App {
+object FunWithMarkTableApp extends App {
   for { n <- 1 to 100 } {
     val group = Permutation.group(n)
     val marks = group.markTable
