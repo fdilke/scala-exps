@@ -123,7 +123,7 @@ trait Group[T] { group =>
     AnnotatedSubgroupInclusion
   ] {
     lazy val representatives: Seq[T] =
-      RightCosetRepresentatives(group)(lower.toSubgroup, upper.toSubgroup)
+      LeftCosetRepresentatives(group)(lower.toSubgroup, upper.toSubgroup)
   }
 
   lazy val subgroups: Set[Subgroup] =

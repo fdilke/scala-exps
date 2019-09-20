@@ -24,3 +24,21 @@ object RightCosetRepresentatives {
     }).drop(index - 1).toSeq.head._1
   }
 }
+
+// experimental
+
+object LeftCosetRepresentatives {
+  def apply[G](
+                group: Group[G]
+              )(
+                smallSubgroup: group.Subgroup,
+                bigSubgroup: group.Subgroup
+              ): Seq[G] =
+    RightCosetRepresentatives(
+      group
+    )(
+      smallSubgroup,
+      bigSubgroup
+    ) map
+      group.invert
+}

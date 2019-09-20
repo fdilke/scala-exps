@@ -21,10 +21,11 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
   private var zigzag: ZigZag[group.AnnotatedSubgroup, group.AnnotatedSubgroupInclusion] =
     zzFactory.initialZag
 
-  private val shapes: Seq[Drawable] = randomCircles()
+  private lazy val shapes: Seq[Drawable] = randomCircles()
   private var unitMeasure: Double = 0
-  private val UPDATE_INTERVAL = 100
-  private val INCREMENT = 0.02
+  private lazy val NUM_CIRCLES: Int = 4
+  private lazy val UPDATE_INTERVAL: Int = 100
+  private lazy val INCREMENT: Double = 0.02
 
   new Timer(
     UPDATE_INTERVAL,
@@ -34,7 +35,8 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
   ).start()
 
   override def paintComponent(gfx: Graphics) {
-    gfx.clearRect(0, 0, getWidth, getHeight)
+    gfx.setColor(Color.BLACK)
+    gfx.fillRect(0, 0, getWidth, getHeight)
 
     for {
       shape: Drawable <- shapes
@@ -43,31 +45,34 @@ class BlotPanel(group: Group[DihedralSymmetry]) extends JPanel {
     } {
       shape.through(
         Matrix22.convexity(
-          Matrix22.identity,
+          sym.toMatrix,
           zigzag.orient(unitMeasure),
-          (sym * rep).toMatrix
+          (rep * sym).toMatrix
         )
       ).draw(gfx, getWidth, getHeight)
     }
 
     unitMeasure += INCREMENT
     if (unitMeasure > 1.0) {
+      println(s"zigzagging: isZig=${zigzag.isZig} lower=${zigzag.inclusion.lower.toSubgroup.order} upper=${zigzag.inclusion.upper.toSubgroup.order}")
+      // System.err.println("\u0007");
       zigzag = zzFactory(zigzag)
       unitMeasure = 0
     }
   }
 
   def randomCircles(): Seq[Drawable] = {
-    (1 to 7) map { n =>
-      val radius = random.nextDouble()/2
+    (1 to NUM_CIRCLES) map { n =>
+      val radius = random.nextDouble()/6   // was / 2
       val leeway = 2 * (1 - radius)
       val x = radius - 1 + leeway * random.nextDouble()
       val y = radius - 1 + leeway * random.nextDouble()
-      val color = new Color(
-        random.nextInt(256),
-        random.nextInt(256),
-        random.nextInt(256)
-      )
+      val color = // Color.BLACK
+        new Color(
+          random.nextInt(256),
+          random.nextInt(256),
+          random.nextInt(256)
+        )
       new DrawableCircle(x, y, radius, color)
     }
   }
@@ -113,17 +118,16 @@ class DrawableCircle(
 }
 
 object DihedralApp extends App {
+  val TWO_N = 10
   val device: GraphicsDevice =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getScreenDevices()(0)
-  val group = DihedralGroup(8)
+  val group = DihedralGroup(TWO_N)
 
   new JFrame { frame =>
     setContentPane(new BlotPanel(group))
     setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
     setUndecorated(true)
-
     pack()
-
     device.setFullScreenWindow(frame)
     setVisible(true)
  }
