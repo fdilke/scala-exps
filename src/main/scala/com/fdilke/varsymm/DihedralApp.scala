@@ -84,7 +84,7 @@ class DrawableCircle(
       ((1 + (x - radius) * ScaleFactor.VALUE) * width/2).toInt,
       ((1 + y - radius) * height/2).toInt,
       (radius * width * ScaleFactor.VALUE).toInt,
-      (radius * height).toInt,
+      (radius * height).toInt
     )
   }
 
@@ -97,7 +97,7 @@ class DrawableCircle(
   }
 }
 
-object AltDihedralApp extends App {
+object DihedralApp extends App {
   val device: GraphicsDevice =
     GraphicsEnvironment.getLocalGraphicsEnvironment.getScreenDevices()(0)
   val group = DihedralGroup(8)
@@ -110,7 +110,6 @@ object AltDihedralApp extends App {
     pack()
 
     device.setFullScreenWindow(frame)
-//    setSize(300, 400)
     setVisible(true)
  }
 }

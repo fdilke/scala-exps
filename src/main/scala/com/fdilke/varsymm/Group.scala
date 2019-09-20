@@ -20,7 +20,7 @@ trait Group[T] { group =>
   final case class Subgroup(
      override val elements: Set[T]
   ) extends Group[T] { subgroup =>
-    final def isNormal: Boolean =
+    def isNormal: Boolean =
       group.elements.forall { x =>
         subgroup.elements.subsetOf(
           subgroup.elements.map { y =>
@@ -29,18 +29,18 @@ trait Group[T] { group =>
         )
       }
 
-    override final val unit: T = group.unit
+    override val unit: T = group.unit
 
-    override final def multiply(element1: T, element2: T): T =
+    override def multiply(element1: T, element2: T): T =
       group.multiply(element1, element2)
 
-    override final def invert(element: T): T =
+    override def invert(element: T): T =
       group.invert(element)
 
-    final def contains(other: group.Subgroup): Boolean =
+    def contains(other: group.Subgroup): Boolean =
       other.elements.subsetOf(elements)
 
-    final def ^(x: T): group.Subgroup =
+    def ^(x: T): group.Subgroup =
       new group.Subgroup(
         elements.map {
           conjugate(_, x)
