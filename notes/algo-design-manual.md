@@ -150,6 +150,17 @@ of tickets". This shows fundamental approach was sound, at least.
 (I'm left unclear what the insight is that leads to an efficient solution - it all
 seems brute force. Not an illuminating example...)
 
+## References
 
+for algos: Corman, Kleinberg/Tardos, Manber
+war stories: Jon Bentley's Programming Pearls
 
+See also www.programming-challenges.com -
+doesn't exist any more but there are topcoder, coderbyte, project euler, HackerRank
+
+sample problem: given 25 horses, if you can race them 5 at a time, how many
+races are required to identify the top 3 horses?
+quick analysis: we obviously have to race every horse, so HAVE to do >= 5 races.
+Say initial set of 5 covers all of them. Then race the top 5.
+You now know the top horse. The overall #2 must then be raced against...
 
