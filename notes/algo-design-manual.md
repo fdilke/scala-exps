@@ -164,3 +164,10 @@ quick analysis: we obviously have to race every horse, so HAVE to do >= 5 races.
 Say initial set of 5 covers all of them. Then race the top 5.
 You now know the top horse. The overall #2 must then be raced against...
 
+# 2 Algorithm Analysis
+
+For comparing the efficiency of algorithms in the abstract, 2 tools:
+
+- the RAM model of computation
+- asymptotic analysis of worst case complexity
+
