@@ -1,11 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.language.implicitConversions
 
-class ImplicitConversionsTest extends FunSpec {
+class ImplicitConversionsTest extends AnyFunSpec {
 
   describe("Implicit conversions") {
     it("work by importing an object converting values to a wrapper") {

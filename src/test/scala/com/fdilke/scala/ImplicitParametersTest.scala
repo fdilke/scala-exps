@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ImplicitParametersTest extends FunSpec {
+class ImplicitParametersTest extends AnyFunSpec {
   describe("Implicit parameters") {
     it("can be passed to functions, provided you specify them in advance") {
       def foo(n: Int)(implicit prefix: String) = prefix + n

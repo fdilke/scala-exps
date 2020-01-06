@@ -1,7 +1,8 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+
+import org.scalatest.funspec.AnyFunSpec
 
 case class Foo(name: String)
 
@@ -11,7 +12,7 @@ object FooHelpers {
   }
 }
 
-class StringInterpolationTests extends FunSpec {
+class StringInterpolationTests extends AnyFunSpec {
 
   describe("String interpolation") {
     it("can use direct substitution with expressions") {

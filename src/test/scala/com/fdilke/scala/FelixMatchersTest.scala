@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.matchers.should.Matchers._
 import FelixMatchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class FelixMatchersTest extends FunSpec {
+class FelixMatchersTest extends AnyFunSpec {
   describe("The anInstanceOf matcher") {
     it("should match simple objects of specified type") {
       "" shouldBe anInstanceOf[String]

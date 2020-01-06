@@ -5,7 +5,7 @@ import java.io.InputStream
 import scala.language.postfixOps
 
 case class NontrivialPrimePower(p: Int, n: Int) {
-  val power = Seq.fill(n)(p)./:(1)(_ * _)
+  val power = Seq.fill(n)(p).foldLeft(1)(_ * _)
 }
 
 object NontrivialPrimePower {
@@ -63,7 +63,7 @@ object FiniteField {
 class FiniteField(
   pn: NontrivialPrimePower,
   coeffts: Seq[Int]
-) extends Traversable[Element] {
+) extends Iterable[Element] {
 
   def O = Element(0)
   def I = Element(1)
@@ -126,9 +126,9 @@ class FiniteField(
       } getOrElse 0)
     }
 
-  override def foreach[U](f: Element => U) {
-    elements foreach { n => f(Element(n))}
-  }
+
+  override def iterator: Iterator[Element] =
+    elements.iterator map Element
 
   implicit class RichElement(e: Element) { element =>
     def +(f: Element): Element =

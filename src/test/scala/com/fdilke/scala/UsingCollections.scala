@@ -1,12 +1,14 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
-import org.scalamock.scalatest.MockFactory
+import org.mockito.IdiomaticMockito
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
+
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.collection.mutable
 import scala.language.postfixOps
 
-class UsingCollections extends FunSuite with MockFactory {
+class UsingCollections extends AnyFunSuite with IdiomaticMockito {
     test("iterables") {
       val it : Iterable[String] = new Iterable[String]() {
         def iterator: Iterator[String] = new Iterator[String] {

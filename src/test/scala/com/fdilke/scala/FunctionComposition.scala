@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class FunctionComposition extends FunSpec {
+class FunctionComposition extends AnyFunSpec {
   describe("Function can be composed") {
 
     def f(n: Int): Boolean = n < 3

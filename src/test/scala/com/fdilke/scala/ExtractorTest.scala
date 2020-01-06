@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ExtractorTest extends FunSpec {
+class ExtractorTest extends AnyFunSpec {
   describe("extractors") {
     it("can be invoked from regexes") {
       val propertyRegex = "(.*?)=(.*)".r
@@ -25,7 +25,7 @@ class ExtractorTest extends FunSpec {
       val fileRegex = "file:[/\\w\\-]*?(scala-[\\.\\w]+)[/\\w\\-]*?".r
       val fileRegex(prefix) = getClass.getProtectionDomain.getCodeSource.getLocation.toString
 
-      prefix shouldBe "scala-2.12"
+      prefix shouldBe "scala-2.13"
     }
 
     it("can be invoked from yet fancier regexes") {

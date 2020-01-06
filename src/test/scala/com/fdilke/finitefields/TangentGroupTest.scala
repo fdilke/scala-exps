@@ -1,9 +1,9 @@
 package com.fdilke.finitefields
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TangentGroupTest extends FunSpec {
+class TangentGroupTest extends AnyFunSpec {
   describe("The tangent group") {
     it("can only be computed in the evenly odd case") {
       intercept[IllegalArgumentException] {
@@ -18,7 +18,7 @@ class TangentGroupTest extends FunSpec {
         testGroup
     }
 
-    def testGroup(q: Int) {
+    def testGroup(q: Int) : Unit = {
       println(s"testing GF($q)")
       val group = TangentGroup(q)
       import group.zero

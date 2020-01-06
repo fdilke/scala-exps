@@ -1,9 +1,9 @@
 package com.fdilke.wordgraph
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class PositionTest extends FunSpec {
+class PositionTest extends AnyFunSpec {
   private val graph =
     new IndexedGraph[String](
       Set("foo", "bar", "baz", "corge", "fred") ++

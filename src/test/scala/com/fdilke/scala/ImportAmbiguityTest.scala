@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
+import org.scalatest.funspec.AnyFunSpec
 
-import scala.language.higherKinds
+import org.scalatest.matchers.should.Matchers._
 
-class ImportAmbiguityTest extends FunSpec {
+class ImportAmbiguityTest extends AnyFunSpec {
   object OneObject {
     def foo(text: String) = true
   }

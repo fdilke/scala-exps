@@ -1,9 +1,9 @@
 package com.fdilke.streams
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
-class StreamUtilitiesTest extends FreeSpec {
+class StreamUtilitiesTest extends AnyFreeSpec {
 
   val N: Stream[Int] = 0 #:: N.map(_ + 1)
 

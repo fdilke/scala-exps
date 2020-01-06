@@ -1,10 +1,9 @@
 package com.fdilke.permutations
 
-import org.scalatest.FunSpec
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class OldPermutationTest extends FunSpec {
+class OldPermutationTest extends AnyFunSpec {
   describe("Permutation") {
     it("should have a left and right identity") {
       val id = OldPermutation.identity

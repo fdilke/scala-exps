@@ -1,8 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class DependentTypesTests extends FunSpec {
+class DependentTypesTests extends AnyFunSpec {
   describe("Dependent types") {
     it("can be used as type parameters in function return values") {
       trait Widget {
@@ -33,8 +34,8 @@ class DependentTypesTests extends FunSpec {
         type doodad
       }
       class Enclosing(val widget: Widget) {
-        def gizmo = new Traversable[widget.doodad] {
-          override def foreach[U](f: widget.doodad => U): Unit = ???
+        def gizmo = new Iterable[widget.doodad] {
+          override def iterator: Iterator[widget.doodad] = ???
         }
       }
     }
@@ -47,7 +48,8 @@ class DependentTypesTests extends FunSpec {
       }
       class Enclosing(val widget: Widget) {
         trait MyHK extends HigherKinded[widget.doodad]
-        def gizmo = new RequiresHigherKinded[widget.doodad, MyHK] {}
+        def gizmo: RequiresHigherKinded[widget.doodad, MyHK] =
+          new RequiresHigherKinded[widget.doodad, MyHK] {}
       }
     }
   }

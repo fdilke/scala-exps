@@ -8,7 +8,7 @@ package com.fdilke.semantic
 import org.apache.jena.query.{QueryExecution, QueryExecutionFactory, QueryFactory, ResultSet}
 import org.apache.jena.rdf.model.RDFNode
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 //object FunWithJena extends App {
 //  val nameSpace = "http://example.org/test/"

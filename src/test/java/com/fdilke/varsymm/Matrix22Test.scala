@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class Matrix22Test extends FunSpec {
+class Matrix22Test extends AnyFunSpec {
   private val TOLERANCE = 0.001
 
   describe("2x2 matrices") {

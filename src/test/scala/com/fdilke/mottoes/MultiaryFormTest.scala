@@ -1,11 +1,11 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.StandardLetters._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import FormMatchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class MultiaryFormTest extends FunSpec {
+class MultiaryFormTest extends AnyFunSpec {
   describe("Compound multiary forms") {
 
     it("can be created and stringified") {

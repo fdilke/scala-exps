@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class MultipleConstructorsTest extends FunSpec {
+class MultipleConstructorsTest extends AnyFunSpec {
 
   case class Foo(value: Int, text: String) {
     def this(value: Int) = this(value, value.toString)

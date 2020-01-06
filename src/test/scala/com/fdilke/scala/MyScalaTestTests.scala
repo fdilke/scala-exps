@@ -1,8 +1,16 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
+import org.mockito.{IdiomaticMockito, Mockito}
+import org.mockito.MockitoSugar._
+import org.mockito.VerifyMacro.Once
+
+import scala.language.postfixOps
+//import org.mockito.Mockito._
+import org.mockito.MockitoScalaSession
+import org.mockito.captor.ArgCaptor
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest.exceptions.TestFailedException
-import org.scalamock.scalatest.MockFactory
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Author: fdilke
@@ -12,7 +20,7 @@ object Dummy {
   def myFunc(n : Int) : Int = 2*n + 1
 }
 
-class MyScalaTestTests extends FunSuite with MockFactory {
+class MyScalaTestTests extends AnyFunSuite with IdiomaticMockito {
   test("using ensures") {
     intercept[AssertionError] {
         2 ensuring (_ > 3)
@@ -42,14 +50,14 @@ class MyScalaTestTests extends FunSuite with MockFactory {
 //  }
 
   trait Turtle {
-    def penDown()
-    def penUp()
-    def forward(distance : Double)
-    def setPosition(m : Double, n : Double)
+    def penDown(): Unit
+    def penUp(): Unit
+    def forward(distance : Double): Unit
+    def setPosition(m : Double, n : Double): Unit
     def getPosition : (Double, Double)
   }
 
-  def driveTheTurtle(t : Turtle) {
+  def driveTheTurtle(t : Turtle): Unit = {
     t.penUp()
     t.setPosition(10.0,3.0)
     t.forward(5.0)
@@ -57,30 +65,28 @@ class MyScalaTestTests extends FunSuite with MockFactory {
   }
 
   test("expectations-first style test") {
-    val t = mock[Turtle]
+      val t = mock[Turtle]
 
-    inSequence {
-      inAnyOrder {
-        t.penUp _ expects()
-        t.setPosition _ expects(10.0,3.0)
-        t.forward _ expects 5.0
-        (t.getPosition _ expects()).returning(2.0,3.0)
-      }
-    }
+      t.getPosition returns ((2.0, 3.0))
 
-    driveTheTurtle(t)
-  }
+      driveTheTurtle(t)
 
-  test("record-then-verify style") {
-    val t = stub[Turtle]
+    //    inSequence {
+//      inAnyOrder {
+      t.penUp() wasCalled Once
 
-    t.penUp _ when()
-    (t.getPosition _ when()).returns(2.0,3.0)
-//    (t.setPosition _).when(2.0, 3.0).returns()
+//      val captorHorizontal = ArgCaptor[Double]
+//      val captorVertical = ArgCaptor[Double]
+//      verify(t).setPosition(captorHorizontal, captorVertical)
+      t.setPosition(10.0, 3.0) wasCalled Once
+//      captorHorizontal hasCaptured 10.0
+//      captorVertical hasCaptured 3.0
 
-    driveTheTurtle(t)
-    t.penUp _ verify()
-    (t.setPosition _).verify(10.0, 3.0)
-    (t.forward _).verify(5.0)
+//      val captorDistance = ArgCaptor[Double]
+//      verify(t).forward(captorDistance)
+//      captorDistance hasCaptured 5.0
+      t.forward(5.0) wasCalled Once
+//      }
+//    }
   }
 }

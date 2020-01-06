@@ -1,10 +1,10 @@
 package com.fdilke.varsymm
 
 import com.fdilke.varsymm.GroupMatcher.beAGroupOf
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class DihedralGroupTest extends FunSpec {
+class DihedralGroupTest extends AnyFunSpec {
 
   describe("The dihedral group") {
     it("makes sense only for a positive number of elements") {

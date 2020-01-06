@@ -1,11 +1,11 @@
 package com.fdilke.wordgraph
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.mutable
 
-class IndexedGraphTest extends FunSpec {
+class IndexedGraphTest extends AnyFunSpec {
 
   describe("Indexed graphs") {
     it("create an index of their vertex sets") {

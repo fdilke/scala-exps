@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class InfixTypeTests extends FunSpec {
+class InfixTypeTests extends AnyFunSpec {
 
   type →[T, U] = T => U
   type →:[T, U] = T → U

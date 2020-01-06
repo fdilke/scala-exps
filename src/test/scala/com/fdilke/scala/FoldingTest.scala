@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class FoldingTest extends FunSpec {
+class FoldingTest extends AnyFunSpec {
   describe("folding") {
     it("works from the left (and by default)") {
       Seq(1,2,4).fold(0)((x, y) => x - y) shouldBe -7

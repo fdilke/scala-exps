@@ -1,7 +1,8 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
-import org.scalamock.scalatest.MockFactory
+import org.mockito.IdiomaticMockito
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.language.postfixOps
 
 object InsertionSort {
@@ -17,11 +18,11 @@ object InsertionSort {
   }
 }
 
-class UsingLists extends FunSuite with MockFactory {
+class UsingLists extends AnyFunSuite with IdiomaticMockito {
   test("pattern matching with lists") {
     val list = 2 :: 3 :: 5 :: Nil
     val f : List[Int] => Int = {
-      case x :: xs => xs.length
+      case _ :: xs => xs.length
       case _ => -1
     }
     assert(f(list) === 2)
@@ -72,8 +73,8 @@ class UsingLists extends FunSuite with MockFactory {
   test("folding left and right") {
     val op = (a : String, b : String) => "[" + a + b + "]"
     val list = List("a", "b", "c")
-    assert(("z" /: list)(op) === "[[[za]b]c]")
-    assert((list :\ "z")(op) === "[a[b[cz]]]")
+    assert(list.foldLeft("z")(op) === "[[[za]b]c]")
+    assert((list foldRight "z")(op) === "[a[b[cz]]]")
   }
 
   test("repetitious lists") {

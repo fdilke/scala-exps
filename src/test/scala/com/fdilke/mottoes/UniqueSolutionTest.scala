@@ -1,15 +1,17 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.StandardLetters._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
 import FormMatchers._
 import UniqueSolution._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.mutable
-import scala.collection.mutable.MutableList
+import org.scalatest.matchers.should.Matchers._
 
-class UniqueSolutionTest extends FunSpec {
+import scala.collection.mutable.ListBuffer
+
+class UniqueSolutionTest extends AnyFunSpec {
 
   private val candidates: Seq[Int] =
     Seq(1, 2, 3)
@@ -37,8 +39,8 @@ class UniqueSolutionTest extends FunSpec {
     }
 
     it("will end as soon as we know the solution isn't unique") {
-      val seen: mutable.MutableList[Int] =
-        new mutable.MutableList[Int]
+      val seen: ListBuffer[Int] =
+        new ListBuffer[Int]
 
       solveWith { candidate =>
         seen += candidate
@@ -48,8 +50,8 @@ class UniqueSolutionTest extends FunSpec {
     }
 
     it("will be abandoned if the criterion signals it") {
-      val seen: mutable.MutableList[Int] =
-        new mutable.MutableList[Int]
+      val seen: ListBuffer[Int] =
+        new ListBuffer[Int]
 
       solveWith { candidate =>
         seen += candidate
@@ -84,8 +86,8 @@ class UniqueSolutionTest extends FunSpec {
     }
 
     it("will end as soon as we know the solution isn't unique") {
-      val seen: mutable.MutableList[Int] =
-        new mutable.MutableList[Int]
+      val seen: ListBuffer[Int] =
+        new ListBuffer[Int]
 
       checkWith { candidate =>
         seen += candidate

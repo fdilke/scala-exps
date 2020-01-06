@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{FreeSpec, Matchers}
-import Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class TraitCompositionTest extends FreeSpec {
+class TraitCompositionTest extends AnyFreeSpec {
   "Traits" - {
     "compose as expected" in {
       class IntHandler {

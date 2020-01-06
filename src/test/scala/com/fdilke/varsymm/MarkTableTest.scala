@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class MarkTableTest extends FunSpec {
+class MarkTableTest extends AnyFunSpec {
 
   describe("The mark table") {
     it("of the trivial group is as expected") {

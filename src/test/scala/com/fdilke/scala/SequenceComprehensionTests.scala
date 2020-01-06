@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class SequenceComprehensionTests extends FunSpec {
+class SequenceComprehensionTests extends AnyFunSpec {
   describe("The built-in monadic logic of 'for'") {
     it("should express 'map' implicitly") {
       class Foo {

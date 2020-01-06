@@ -1,11 +1,11 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
 import scala.language.postfixOps
+import org.scalatest.matchers.should.Matchers._
 
-class EnumerateSubgroupsTest extends FunSpec {
+class EnumerateSubgroupsTest extends AnyFunSpec {
   describe("Enumerating subgroups") {
     it("of the trivial group works") {
       val trivialGroup = Permutation.group(1)

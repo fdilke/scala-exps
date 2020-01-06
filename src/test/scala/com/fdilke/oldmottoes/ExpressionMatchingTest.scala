@@ -3,10 +3,10 @@ package com.fdilke.oldmottoes
 import com.fdilke.oldmottoes.ExpressionMatching._
 import com.fdilke.oldmottoes.Expressions._
 import com.fdilke.oldmottoes.Sort._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ExpressionMatchingTest extends FreeSpec {
+class ExpressionMatchingTest extends AnyFreeSpec {
   private val Seq(x, y) = Seq('x, 'y)
 
   "Expression matching works for" - {

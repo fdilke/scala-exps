@@ -1,11 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.{FreeSpec, Matchers}
-import Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.util.control.TailCalls._
 
-class TailRecTest extends FreeSpec {
+class TailRecTest extends AnyFreeSpec {
   "Tail recursive computations encode" - {
     "values" in {
       val completed: TailRec[Int] = done(3)

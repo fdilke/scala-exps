@@ -1,11 +1,12 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
+
 import scala.reflect._
 import scala.reflect.runtime.universe._
-import Matchers._
 
-class TypeAndClassTagTests extends FunSpec {
+class TypeAndClassTagTests extends AnyFunSpec {
   describe("TypeTags") {
     it("can be obtained directly") {
       val intTypeTag = typeTag[Int]

@@ -1,9 +1,9 @@
 package com.fdilke.approx
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class RationalTest extends FunSpec {
+class RationalTest extends AnyFunSpec {
   describe("Rational numbers") {
     it("can be created from integers or pairs of integers") {
       Rational(6) shouldBe Rational(6, 1)

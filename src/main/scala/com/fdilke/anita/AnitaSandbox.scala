@@ -3,8 +3,12 @@ package com.fdilke.anita
 import com.fdilke.util.FancyMultiplicationImplicits._
 
 object AnitaSandbox extends App {
-  def showTable[X](rowRange : Seq[Int], columnRange : Seq[Int], operator:String, f: (Int, Int) => X) {
-
+  def showTable[X](
+      rowRange : Seq[Int],
+      columnRange : Seq[Int],
+      operator:String,
+      f: (Int, Int) => X
+  ) {
     val maxLength = (for (i <- rowRange ; j <- columnRange)
       yield f(i, j).toString.length).max
 

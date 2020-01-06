@@ -12,16 +12,23 @@ object RightCosetRepresentatives {
 
     Iterator.iterate(
       Seq(group.unit) -> smallSubgroup.elements
-    ) (Function.tupled { (reps, repsH) =>
-      val newRep: G =
-        bigSubgroup.elements.diff(
+    ) (
+      Function.tupled { (reps: Seq[G], repsH: Set[G]) =>
+        val theDiff = bigSubgroup.elements.diff(
           repsH
-        ).head
-      val newRepH = smallSubgroup.elements.map { h =>
-        group.multiply(newRep, h)
+        )
+
+        val newRep: G =
+          bigSubgroup.elements.diff(
+            repsH
+          ).head
+
+        val newRepH = smallSubgroup.elements.map { h =>
+          group.multiply(newRep, h)
+        }
+        (reps :+ newRep) -> (repsH union newRepH)
       }
-      (reps :+ newRep) -> (repsH union newRepH)
-    }).drop(index - 1).toSeq.head._1
+    ).drop(index - 1).next._1
   }
 }
 
@@ -29,11 +36,11 @@ object RightCosetRepresentatives {
 
 object LeftCosetRepresentatives {
   def apply[G](
-                group: Group[G]
-              )(
-                smallSubgroup: group.Subgroup,
-                bigSubgroup: group.Subgroup
-              ): Seq[G] =
+    group: Group[G]
+  )(
+    smallSubgroup: group.Subgroup,
+    bigSubgroup: group.Subgroup
+  ): Seq[G] =
     RightCosetRepresentatives(
       group
     )(

@@ -1,13 +1,14 @@
 package com.fdilke.scala
 
-import java.util.concurrent.{ExecutorService, Executors, Callable}
+import java.util.concurrent.{Callable, ExecutorService, Executors}
 import java.util.concurrent.atomic.AtomicBoolean
 
-//import com.twitter.util.{Future, Await, FutureTask}
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class TwitterFuturesTests extends FunSpec {
+//import com.twitter.util.{Future, Await, FutureTask}
+import org.scalatest.matchers.should.Matchers._
+
+class TwitterFuturesTests extends AnyFunSpec {
   describe("Twitter futures") {
     // Placeholder. The Twitter futures library hasn't been ported
     // to Scala 2.1 as of January 2017, so it's unclear that it HAS a future

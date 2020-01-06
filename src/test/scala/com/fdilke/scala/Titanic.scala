@@ -1,9 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
 import org.junit.Assert
 import Assert._
 import Titanic._
+import org.scalatest.funsuite.AnyFunSuite
+
+import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.language.postfixOps
 
@@ -11,7 +13,7 @@ class Grid(gridSize: Int) {
 
   class Line(p: Point, q: Point) {
     require(p != q)
-    val points = buildPoints(p, q)
+    val points: Set[Point] = buildPoints(p, q)
 
     private def buildPoints(p: Point, q: Point): Set[Point] = {
       var diff = (q - p).unit
@@ -31,14 +33,14 @@ class Grid(gridSize: Int) {
 
     def size: Int = points.size
 
-    override def equals(that: Any) = that match {
+    override def equals(that: Any): Boolean = that match {
       case that: Line => points == that.points
       case _ => false
     }
 
     override def hashCode: Int = points.hashCode()
 
-    override def toString = points.toString()
+    override def toString: String = points.toString()
   }
 
   def line(p: Point, q: Point) = new Line(p, q)
@@ -49,7 +51,7 @@ class Grid(gridSize: Int) {
     }
   }
 
-  lazy val points =
+  lazy val points: Seq[Point] =
     for {i <- 0 to gridSize
          j <- 0 to gridSize
     } yield Point(i, j)
@@ -62,7 +64,7 @@ class Grid(gridSize: Int) {
     buffer.toSet
   }
 
-  def contains: (Point => Boolean) = {
+  def contains: Point => Boolean = {
     case Point(x, y) => x >= 0 && x <= gridSize &&
       y >= 0 && y <= gridSize
   }
@@ -106,16 +108,18 @@ case class Point(x: Int, y: Int) {
     Point(x / d, y / d)
   }
 
-  override def equals(that: Any) = that match {
+  override def equals(that: Any): Boolean = that match {
     case p: Point => x == p.x && y == p.y
     case _ => false
   }
 
-  override def hashCode = x + 17 * y
+  override def hashCode: Int = x + 17 * y
 
-  def -(that: Point) = Point(x - that.x, y - that.y)
+  def -(that: Point): Point =
+    Point(x - that.x, y - that.y)
 
-  def +(that: Point) = Point(x + that.x, y + that.y)
+  def +(that: Point): Point =
+    Point(x + that.x, y + that.y)
 }
 
 object Titanic {
@@ -133,7 +137,7 @@ object Titanic {
     }
   }
 
-  def T(N: Int) = {
+  def T(N: Int): Int = {
     var sum = 0
     new Grid(N) enumeratePointSets {
       set =>
@@ -143,7 +147,7 @@ object Titanic {
   }
 
   def pow(n: Int, exp: Int): BigInt =
-    List.fill(exp)(n)./:(BigInt(1)) {
+    List.fill(exp)(n).foldLeft(BigInt(1)) {
       _ * _
     }
 
@@ -156,17 +160,18 @@ object Titanic {
     val collinears = (
       for ((size, count) <- new Grid(N).mapLines)
       yield count * (pow(2, size) - 1 - size)
-      )./:(BigInt(0)) {
+      ).foldLeft(BigInt(0)) {
       _ + _
     } + 1 + singletons
 
     totalPointSets - collinears + doubletons
   }
 
+  @tailrec
   def enumerateSubsets(set: Set[Point])(f: Set[Point] => Unit) {
     set.toList match {
       case Nil => f(Set.empty)
-      case (x :: rest) => enumerateSubsets(rest toSet) {
+      case x :: rest => enumerateSubsets(rest toSet) {
         s =>
           f(s)
           f(s union Set(x))
@@ -193,6 +198,7 @@ object Titanic {
     }
   }
 
+  @tailrec
   def gcd(m: Int, n: Int): Int =
     if (m < n) gcd(n, m)
     else if (m == 0) 1
@@ -200,7 +206,7 @@ object Titanic {
     else gcd(m - n, n)
 }
 
-class TitanicTest extends FunSuite {
+class TitanicTest extends AnyFunSuite {
 
   test("gcd") {
     assert(gcd(0, 0) === 1)

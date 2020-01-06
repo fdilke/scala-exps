@@ -2,11 +2,12 @@ package com.fdilke.scala
 
 import java.io.{BufferedReader, File, FileReader, FileWriter}
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
+
 import scala.language.implicitConversions
 
-class FileWriterTest extends FunSpec {
+class FileWriterTest extends AnyFunSpec {
   describe("A FileWriter") {
     it("can write to a file") {
       val newFile = new File("/tmp/my-test-file")

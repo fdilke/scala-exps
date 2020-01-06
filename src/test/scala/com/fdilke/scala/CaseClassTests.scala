@@ -1,17 +1,17 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSuite}
-import org.scalamock.scalatest.MockFactory
+import org.scalatest.matchers.should.Matchers._
 import org.junit.Assert
 import Assert._
-import Matchers._
 import FelixMatchers._
+import org.scalatest.funsuite.AnyFunSuite
+
 import scala.language.implicitConversions
 import scala.language.postfixOps
 
 object Expression {
-  implicit def numberAsExpression(x : Double) = Number(x)
-  implicit def numberAsExpression(x : Int) = Number(x)
+  implicit def numberAsExpression(x : Double): Number = Number(x)
+  implicit def numberAsExpression(x : Int): Number = Number(x)
 }
 
 sealed abstract class Expression {
@@ -46,7 +46,7 @@ case class Number(num:Double) extends Expression
 case class UnaryOp(operator: String, arg:Expression) extends Expression
 case class BinaryOp(operator: String, left:Expression, right:Expression) extends Expression
 
-class CaseClassTests extends FunSuite with MockFactory {
+class CaseClassTests extends AnyFunSuite {
   test("using factory methods") {
     val x = Var("x")
     assert(x.isInstanceOf[Var])
@@ -139,7 +139,7 @@ class CaseClassTests extends FunSuite with MockFactory {
       case Var(name) => name
       case BinaryOp(op, left, right) => "[" + left.describe + " " + op + " " + right.describe + "]"
       case UnaryOp(op, e) => op + "[" + e.describe + "]"
-      case Number(num) => num toString()
+      case Number(num) => num.toString()
     }
 
     output shouldBe List("3.0", "x", "[a variable + a number * a number]", "-[a number * a variable]")

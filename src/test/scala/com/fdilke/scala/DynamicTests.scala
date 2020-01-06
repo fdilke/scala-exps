@@ -1,10 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
+
 import scala.language.dynamics
 
-class DynamicTests extends FunSpec {
+class DynamicTests extends AnyFunSpec {
   describe("Dynamic invocation") {
     it("can be used for selecting a field") {
       class Foo extends Dynamic {

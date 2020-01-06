@@ -1,11 +1,11 @@
 package com.fdilke.mottoes
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import StandardLetters._
 import FormMatchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class BinaryFormTest extends FunSpec {
+class BinaryFormTest extends AnyFunSpec {
   describe("Basic forms") {
     it("can be created and stringified") {
       val basicForm: BinaryForm = BasicForm(0)

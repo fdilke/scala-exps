@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class DihedralSymmetryTest extends FunSpec {
+class DihedralSymmetryTest extends AnyFunSpec {
   private val TOLERANCE = 0.001
 
   describe("Dihedral symmetries") {

@@ -1,11 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-
 import scala.meta._
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class MetaProgrammingTests extends FunSpec {
+class MetaProgrammingTests extends AnyFunSpec {
   describe("Metaprogramming") {
     it("can tokenize simple expressions") {
       val tokenized: Tokens = "val x = 2".tokenize.get

@@ -1,10 +1,10 @@
 package com.fdilke.wordgraph
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.matchers.should.Matchers._
 import com.fdilke.wordgraph.WordGraphCriterion.adjacent
+import org.scalatest.funspec.AnyFunSpec
 
-class WordGraphCriterionTest extends FunSpec {
+class WordGraphCriterionTest extends AnyFunSpec {
   describe("The adjacency criterion") {
     it("has the right basic properties") {
       adjacent("foo", "foo") shouldBe false

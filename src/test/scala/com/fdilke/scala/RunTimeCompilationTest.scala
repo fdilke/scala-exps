@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
 import com.fdilke.runtime.RunTimeCompilation
-import org.scalatest.{FunSpec, Ignore, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class RunTimeCompilationTest extends FunSpec with RunTimeCompilation {
+class RunTimeCompilationTest extends AnyFunSpec with RunTimeCompilation {
   describe("Run time compilation") {
 
     it("can verify what compiles and what doesn't") {

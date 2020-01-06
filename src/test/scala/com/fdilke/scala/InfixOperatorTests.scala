@@ -1,11 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
 // User: Felix Date: 05/05/2014 Time: 18:45
 
-class InfixOperatorTests extends FunSpec {
+class InfixOperatorTests extends AnyFunSpec {
   describe("Infix operators") {
     it("left associate") {
       case class Foo(value: Int) {

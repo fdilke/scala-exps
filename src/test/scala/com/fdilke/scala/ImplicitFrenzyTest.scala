@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ImplicitFrenzyTest extends FunSpec {
+class ImplicitFrenzyTest extends AnyFunSpec {
   describe("Implicit conversions with implicit parameters") {
     it("work just fine") {
       case class Prefix(prefix: String)

@@ -2,15 +2,16 @@ package com.fdilke.scala
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+
+import org.scalatest.funspec.AnyFunSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionException, Future}
 import scala.language.postfixOps
 
-class FuturesTests extends FunSpec {
+class FuturesTests extends AnyFunSpec {
   private val ASAP: FiniteDuration = 200 millis
 
   describe("Futures") {

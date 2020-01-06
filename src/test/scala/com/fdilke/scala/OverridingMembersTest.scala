@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.flatspec.AnyFlatSpec
 
-class OverridingMembersTest extends FlatSpec {
+class OverridingMembersTest extends AnyFlatSpec {
 
   trait Doodad[+T] {
     def doThing(arg: Int): T

@@ -3,12 +3,12 @@ package com.fdilke.oldmottoes
 import com.fdilke.oldmottoes.ExpressionMatching._
 import com.fdilke.oldmottoes.Expressions._
 import com.fdilke.oldmottoes.Sort._
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.language.implicitConversions
 
-class FunctionalMottoesTest extends FreeSpec {
+class FunctionalMottoesTest extends AnyFreeSpec {
   private val Seq(a, h, x, y, z, w, s) = Seq('a, 'h, 'x, 'y, 'z, 'w, 's)
 
   "The -: operator" - {

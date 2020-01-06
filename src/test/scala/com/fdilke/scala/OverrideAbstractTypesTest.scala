@@ -1,11 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
-import scala.language.higherKinds
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
+
 import scala.language.implicitConversions
 
-class OverrideAbstractTypesTest extends FunSpec {
+class OverrideAbstractTypesTest extends AnyFunSpec {
 
   describe("Xxx") {
     it("Yyy") {

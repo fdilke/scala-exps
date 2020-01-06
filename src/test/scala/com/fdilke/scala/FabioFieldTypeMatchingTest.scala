@@ -1,7 +1,7 @@
 package com.fdilke.scala
 
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.flatspec.AnyFlatSpec
 
 sealed trait DbType[T]
 case object StringDbType extends DbType[String]
@@ -12,7 +12,7 @@ trait FieldAdapter {
   def dbType: DbType[U]
 }
 
-class FabioFieldTypeMatchingTest extends FlatSpec {
+class FabioFieldTypeMatchingTest extends AnyFlatSpec {
   "Pattern matching" should "work for a generalised ADT" in {
     val x: FieldAdapter = new FieldAdapter {
       override type U = String

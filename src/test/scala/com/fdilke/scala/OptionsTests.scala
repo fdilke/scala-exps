@@ -1,10 +1,10 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
-import org.scalatest.FunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class OptionsTests extends FunSpec  {
+import org.scalatest.funspec.AnyFunSpec
+
+class OptionsTests extends AnyFunSpec  {
   describe("Options") {
     it("include None") {
       None should not be 'defined

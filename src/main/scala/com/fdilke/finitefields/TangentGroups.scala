@@ -19,7 +19,7 @@ case class Ratio(
   denominator: Element
 )
 
-case class TangentGroup(q: Int) extends Traversable[GroupElement] {
+case class TangentGroup(q: Int) extends Iterable[GroupElement] {
   if (q % 4 != 3) {
     throw new IllegalArgumentException(s"$q is not evenly odd")
   }
@@ -33,14 +33,12 @@ case class TangentGroup(q: Int) extends Traversable[GroupElement] {
   val infinity =
     groupElement(None)
 
-  override def foreach[U](
-    f: GroupElement => U
-  ) {
-    field.foreach { e =>
-      f(groupElement(Some(e)))
-    }
-    f(groupElement(None))
-  }
+  override def iterator: Iterator[GroupElement] =
+    (
+      field.iterator map { e => groupElement(Some(e)) }
+    ) ++ (
+      Iterator(groupElement(None))
+    )
 
   def fromRatio(ratio: Ratio) =
     if (ratio.denominator == field.O)

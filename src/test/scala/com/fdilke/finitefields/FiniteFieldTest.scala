@@ -1,9 +1,9 @@
 package com.fdilke.finitefields
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class FiniteFieldTest extends FunSpec {
+class FiniteFieldTest extends AnyFunSpec {
   describe("The finite field arithmetic library") {
     it("can recognize nontrivial prime powers") {
       val NontrivialPrimePower(q, r) = 7

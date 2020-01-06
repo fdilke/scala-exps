@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
-class SmartPairTest extends FreeSpec {
+class SmartPairTest extends AnyFreeSpec {
 
   case class x[A, B](_1: A, _2: B)
 

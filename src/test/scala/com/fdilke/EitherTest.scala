@@ -1,9 +1,9 @@
 package com.fdilke
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class EitherTest extends FunSpec {
+class EitherTest extends AnyFunSpec {
   describe("Eithers") {
     it("can be inherited from Left and Right, then mapped on either side") {
       val left: Either[Int, String] = Left(2)

@@ -1,11 +1,11 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.StandardLetters._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 //import FormMatchers._
 
-class FormSolverTest extends FunSpec {
+class FormSolverTest extends AnyFunSpec {
   describe("The form solver") {
     it("rejects basic forms and non-uniquely-solvable ones") {
       FormSolver(A) shouldBe None

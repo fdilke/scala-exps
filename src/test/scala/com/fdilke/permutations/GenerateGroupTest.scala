@@ -1,9 +1,9 @@
 package com.fdilke.permutations
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class GenerateGroupTest extends FunSpec {
+class GenerateGroupTest extends AnyFunSpec {
   describe("Generating groups") {
     it("should work even with the empty set as a basis") {
       GenerateGroup().set should be (

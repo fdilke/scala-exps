@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
-class CaseObjectTests extends FreeSpec {
+class CaseObjectTests extends AnyFreeSpec {
 
   class Widget(
     val property: String

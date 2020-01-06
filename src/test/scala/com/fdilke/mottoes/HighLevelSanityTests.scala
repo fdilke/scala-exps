@@ -1,9 +1,9 @@
 package com.fdilke.mottoes
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class HighLevelSanityTests extends FunSpec {
+class HighLevelSanityTests extends AnyFunSpec {
   it("the concatenation operator respects conversions to binary") {
     for {
       form <- EnumerateForms(3)

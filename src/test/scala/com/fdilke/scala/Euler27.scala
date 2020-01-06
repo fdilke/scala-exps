@@ -1,7 +1,7 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSuite
-import org.scalamock.scalatest.MockFactory
+import org.mockito.IdiomaticMockito
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Author: fdilke
@@ -48,7 +48,7 @@ object Euler27 extends App {
   println("Best: " + best_a_b + "with " + highScore + " consecutive primes, product = " + (a*b))
 }
 
-class Euler27Test extends FunSuite with MockFactory {
+class Euler27Test extends AnyFunSuite with IdiomaticMockito {
   test("primality") {
     import Euler27._
 

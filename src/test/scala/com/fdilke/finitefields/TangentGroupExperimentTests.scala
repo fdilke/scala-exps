@@ -1,9 +1,9 @@
 package com.fdilke.finitefields
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
-class TangentGroupExperimentTests extends FreeSpec {
+class TangentGroupExperimentTests extends AnyFreeSpec {
 
   "The arctan2 formula inspires a spiffy monoid" in {
 

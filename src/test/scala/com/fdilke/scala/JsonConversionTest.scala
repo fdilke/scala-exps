@@ -1,13 +1,13 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
 import play.api.libs.json.{Json, Reads, Writes}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
 // Illustrates both pretty-printing values from a dummy domain model, and
 // verifying that they give equivalent results to Play's Json serialization.
 
-class JsonConversionTest extends FunSpec {
+class JsonConversionTest extends AnyFunSpec {
   case class JoinerField(
    fieldName: String,
    propertyChain: Seq[String]

@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class AnnotatedSubgroupLatticeTest extends FunSpec {
+class AnnotatedSubgroupLatticeTest extends AnyFunSpec {
   describe("The annotated subgroup lattice") {
     it("includes the relevant subgroups") {
       val group = CyclicGroup(2)

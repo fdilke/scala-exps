@@ -1,13 +1,12 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
-import org.scalatest.mockito.MockitoSugar.mock
+import org.scalatest.funspec.AnyFunSpec
+
 import scala.util.{Failure, Success, Try}
+import org.scalatest.matchers.should.Matchers._
+import org.mockito.{IdiomaticMockito, Mock}
 
-// User: Felix Date: 04/04/2014 Time: 13:48
-
-class TryCatchTest extends FunSpec {
+class TryCatchTest extends AnyFunSpec with IdiomaticMockito {
   describe("Try/Catch") {
     it("should return a Success object if there is no problem") {
       Try({ 2 * 3 }) should be(Success(6))

@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FreeSpec}
-import Matchers._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ExtendingInnerTraits extends FreeSpec {
+class ExtendingInnerTraits extends AnyFreeSpec {
   
   trait HasInner {
     trait Inner {

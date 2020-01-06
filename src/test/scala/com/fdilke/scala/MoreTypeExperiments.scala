@@ -1,7 +1,8 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import scala.language.higherKinds
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
+
 import scala.language.existentials
 
 object MoreTypeExperiments {
@@ -32,7 +33,7 @@ object MoreTypeExperiments {
   abstract class SimplifiedToposTests[
   T <: Topos,
   F <: ToposFixtures[T]
-  ](topos: T, fixtures: F) extends FunSpec {
+  ](topos: T, fixtures: F) extends AnyFunSpec {
     self =>
 
     describe(s"The topos ${topos.getClass.getSimpleName}") {

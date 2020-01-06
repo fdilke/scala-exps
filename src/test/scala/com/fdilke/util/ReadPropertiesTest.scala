@@ -1,9 +1,9 @@
 package com.fdilke.util
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ReadPropertiesTest extends FunSpec {
+class ReadPropertiesTest extends AnyFunSpec {
   describe("ReadProperties") {
     it("loads properties from a file") {
       ReadProperties("src/test/resources/sample.config") shouldBe

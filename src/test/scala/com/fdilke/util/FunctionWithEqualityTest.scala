@@ -1,9 +1,9 @@
 package com.fdilke.util
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class FunctionWithEqualityTest extends FunSpec {
+class FunctionWithEqualityTest extends AnyFunSpec {
   describe("functions with equality") {
     it("pass through the function argument and return value") {
       val f = (x: Int) => x + x

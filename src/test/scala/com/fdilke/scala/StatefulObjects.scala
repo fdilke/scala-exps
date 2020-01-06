@@ -1,7 +1,8 @@
 package com.fdilke.scala
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.FunSuite
+import org.scalatest.matchers.should.Matchers._
+
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Author: fdilke
@@ -56,7 +57,7 @@ abstract class Simulation {
   }
 }
 
-class StatefulObjectsTest extends FunSuite with MockFactory {
+class StatefulObjectsTest extends AnyFunSuite {
   test("setting and getting values on Temperature") {
     val t = new Temperature
     t.celsius = 0

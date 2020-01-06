@@ -1,12 +1,12 @@
 package com.fdilke.scala
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
 import scala.util.parsing.combinator.RegexParsers
 import scala.util.parsing.input.{NoPosition, Position, Positional}
 
-class ParserCombinatorTest extends FreeSpec {
+class ParserCombinatorTest extends AnyFreeSpec {
 
   trait Token extends Positional
   case class SymbolToken(text: String) extends Token

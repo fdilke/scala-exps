@@ -1,10 +1,10 @@
 package com.fdilke.util
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
+import org.scalatest.matchers.should.Matchers._
 import com.fdilke.util.FancyMultiplicationImplicits._
+import org.scalatest.funspec.AnyFunSpec
 
-class FancyMultiplicationTest extends FunSpec {
+class FancyMultiplicationTest extends AnyFunSpec {
   describe("The fancy multiplication") {
     it("gives the values we expect") {
       0 ** 3 shouldBe 0

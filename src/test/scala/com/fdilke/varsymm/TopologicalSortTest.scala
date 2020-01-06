@@ -1,7 +1,7 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
 object PartialOrderingSet {
 
@@ -22,7 +22,7 @@ object PartialOrderingSet {
    }
 }
 
-class TopologicalSortTest extends FunSpec {
+class TopologicalSortTest extends AnyFunSpec {
   implicit val orderingInt: PartialOrdering[Int] =
     implicitly[Ordering[Int]]
 

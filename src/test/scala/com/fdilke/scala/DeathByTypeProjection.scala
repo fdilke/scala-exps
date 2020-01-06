@@ -1,7 +1,5 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import scala.language.higherKinds
 import scala.language.existentials
 
 case class Pair[L, R](left: L, right: R)

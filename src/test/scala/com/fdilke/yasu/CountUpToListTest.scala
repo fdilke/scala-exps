@@ -1,9 +1,9 @@
 package com.fdilke.yasu
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class CountUpToListTest extends FunSpec {
+class CountUpToListTest extends AnyFunSpec {
   it("handles a list of length 0") {
     CountUpToList(List()) shouldBe
     List(

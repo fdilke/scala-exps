@@ -1,11 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.FreeSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
 import scala.Function.tupled
 
-class RecursiveStreamsTest extends FreeSpec {
+class RecursiveStreamsTest extends AnyFreeSpec {
   "Recursive streams" - {
     "can be used to model infinite lists" in {
       lazy val N: Stream[Int] = 0 #:: N.map { _ + 1 }

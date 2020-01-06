@@ -1,9 +1,9 @@
 package com.fdilke.approx
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
-class ContinuedFractionTest extends FunSpec {
+class ContinuedFractionTest extends AnyFunSpec {
   describe("A continued fraction") {
     it("of depth 0 has no coefficients") {
       ContinuedFraction(3.14, 0) should have(

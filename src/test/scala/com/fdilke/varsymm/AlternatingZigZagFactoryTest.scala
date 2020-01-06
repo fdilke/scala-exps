@@ -1,11 +1,11 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
 import scala.language.postfixOps
 
-class AlternatingZigZagFactoryTest extends FunSpec {
+class AlternatingZigZagFactoryTest extends AnyFunSpec {
   private val group = DihedralGroup(6)
   private val lattice = group.subgroupLattice
   private val generator: () => Int = { () => 0 }

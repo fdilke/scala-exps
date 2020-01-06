@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class PermutationTest extends FunSpec {
+class PermutationTest extends AnyFunSpec {
   describe("Permutations") {
     it("of a given degree can be created and composed") {
       val p1 = Permutation(1,0,2)

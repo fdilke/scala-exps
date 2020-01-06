@@ -1,7 +1,7 @@
 package com.fdilke.scala
 
-import org.scalatest.{FunSpec, Matchers}
-import Matchers._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers._
 
 import scala.annotation.tailrec
 
@@ -20,7 +20,7 @@ object Collatz {
       iterations(iterate(n), accumulate + 1)
 }
 
-class CollatzConjectureTest extends FunSpec {
+class CollatzConjectureTest extends AnyFunSpec {
   it("should give the right number of iterations") {
     Collatz.iterations(1) shouldBe 0
     Collatz.iterations(2) shouldBe 1

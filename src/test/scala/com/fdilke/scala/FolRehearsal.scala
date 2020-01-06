@@ -1,12 +1,11 @@
 package com.fdilke.scala
 
-import org.scalatest.{Matchers, FunSpec}
-import Matchers._
-import org.scalatest.FreeSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.freespec.AnyFreeSpec
 
 // ∀∃
 
-class FolRehearsal extends FreeSpec {
+class FolRehearsal extends AnyFreeSpec {
   "Experiments with a first order logic DSL" - {
     "xx" in {
       val set: Set[Int] = Set(1,2,3)

@@ -1,9 +1,9 @@
 package com.fdilke.scala
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class ListUtilTest extends FunSpec {
+class ListUtilTest extends AnyFunSpec {
 
   private val fruits : List[String] = List(
     "apple", "orange", "banana", "pear"

@@ -1,10 +1,47 @@
 package com.fdilke.scala
 
+import java.io.PrintWriter
+
+import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter._
+import scala.tools.nsc.interpreter.shell.{ReplReporterImpl, ShellConfig}
+import scala.reflect.internal.util.Position
+
+class MinimalErrorReporter(settings: Settings, out: PrintWriter) extends ReplReporterImpl(settings, out) {
+  private var _firstError: Option[(Position, String)] = None
+  def firstError = _firstError
+
+  override def doReport(pos: Position, msg: String, severity: Severity): Unit =
+    if (severity == ERROR && _firstError.isEmpty) _firstError = Some((pos, msg))
+
+  override def reset() = { super.reset(); _firstError = None }
+
+  override def printResult(result: Either[String, String]): Unit = ()
+}
 
 object WeirdCharacters extends App {
 
-  val engine = new IMain(new scala.tools.nsc.Settings)
+  final val ctx = s"$$ctx"
+
+  def importContextPreamble(wanted: Set[String]): ImportContextPreamble = {
+         // cull references that can be satisfied from the current dynamic context
+         val contextual = wanted
+
+         if (contextual.isEmpty) ImportContextPreamble.empty
+         else {
+             val adjusted = contextual.map { valname =>
+                 s"""def `$valname` = $ctx.`$valname`; """ +
+                 s"""def `${valname}_=`(x: _root_.java.lang.Object) = $ctx.`$valname` = x;"""
+               }.mkString("", "\n", "\n")
+             ImportContextPreamble(contextual, Set(ctx), adjusted)
+           }
+       }
+  val out: PrintWriter = new PrintWriter(System.err)
+  val reporter: MinimalErrorReporter = new MinimalErrorReporter(settings, out)
+  val engine : ScriptedRepl = new ScriptedInterpreter(settings, reporter, importContextPreamble)
+  engine.initializeCompiler()
+
+//  val engine = new ScriptedInterpreter(new scala.tools.nsc.Settings, new ReplReporterImpl(new ShellConfig()))
   val settings = engine.settings
   settings.embeddedDefaults[WeirdCharacters.type]
   settings.usejavacp.value = true
@@ -13,8 +50,8 @@ object WeirdCharacters extends App {
 //  val result = engine.eval("1 to n.asInstanceOf[Int] foreach println")
 //  println(s"result = $result")
 
-  def validIdentifier(c: Char) =
-    engine.beSilentDuring {
+  def validIdentifier(c: Char): Boolean =
+    reporter.suppressOutput {
       try {
         engine.reset()
         engine.interpret(s"val $c = 2") != null

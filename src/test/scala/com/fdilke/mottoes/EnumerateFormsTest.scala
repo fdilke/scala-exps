@@ -1,11 +1,11 @@
 package com.fdilke.mottoes
 
 import com.fdilke.mottoes.StandardLetters._
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import FormMatchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class EnumerateFormsTest extends FunSpec {
+class EnumerateFormsTest extends AnyFunSpec {
 
     describe("enumeration of forms") {
       it("covers the case of length 0") {

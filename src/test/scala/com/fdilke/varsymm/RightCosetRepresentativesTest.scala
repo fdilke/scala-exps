@@ -1,9 +1,9 @@
 package com.fdilke.varsymm
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
+import org.scalatest.funspec.AnyFunSpec
 
-class RightCosetRepresentativesTest extends FunSpec {
+class RightCosetRepresentativesTest extends AnyFunSpec {
   private val group = DihedralGroup(6)
 
   describe("A set of right coset representatives") {
