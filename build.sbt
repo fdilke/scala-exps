@@ -2,7 +2,7 @@ name := "scala-exp"
 
 version := "1.0"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 
 scalacOptions ++= Seq("-feature", "-deprecation")
 
